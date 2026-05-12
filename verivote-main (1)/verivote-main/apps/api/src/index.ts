@@ -551,6 +551,31 @@ function createAggregatorReport(electionId: string): AggregatorReport {
     validVoteRecords.map((vote) => vote.receiptCode)
   );
   const receiptChainVerification = verifyReceiptChain(electionVotes);
+
+  // --- Pedersen homomorphic tally verification ---
+  let pedersenTallyVerified: boolean | undefined;
+  let pedersenTallyMessage: string | undefined;
+  let pedersenContextHash: string | undefined;
+  try {
+    const candidateCount = getCandidatesForElection(electionId).length;
+    if (candidateCount > 0 && validVoteRecords.length > 0) {
+      const pedersenContext = createPedersenContext(electionId, candidateCount);
+      pedersenContextHash = pedersenContext.contextHash;
+      const batch = validVoteRecords.map((vote) => ({
+        voteVector: vote.voteVector,
+        randomness: vote.randomness,
+        commitment: vote.commitment
+      }));
+      const verification = verifyAggregateOpening(pedersenContext, batch);
+      pedersenTallyVerified = verification.verified;
+      pedersenTallyMessage = verification.verified
+        ? "Pedersen 同态计票验证通过：∏C_i == commit(Σv_i, Σr_i)。"
+        : "Pedersen 同态计票验证失败：∏C_i ≠ commit(Σv_i, Σr_i)，聚合数据可能被篡改。";
+    }
+  } catch {
+    pedersenTallyMessage = "Pedersen 同态计票验证异常。";
+  }
+
   const coreFields = {
     electionId,
     totalVotes: electionVotes.length,
@@ -563,7 +588,10 @@ function createAggregatorReport(electionId: string): AggregatorReport {
     duplicateTokenHashes,
     tallyResult,
     commitmentRoot,
-    receiptRoot
+    receiptRoot,
+    pedersenTallyVerified,
+    pedersenTallyMessage,
+    pedersenContextHash
   };
 
   return {
@@ -1051,6 +1079,7 @@ app.post<
   const randomness = randomHex();
   const createdAt = now();
   const commitment = createCommitment(election.id, voteVector, randomness);
+  const pedersenContextHash = createPedersenContext(election.id, voteVector.length).contextHash;
   const receiptCode = createReceiptCode(
     election.id,
     commitment,
@@ -1067,7 +1096,8 @@ app.post<
     commitment,
     receiptCode,
     createdAt,
-    status: "pending"
+    status: "pending",
+    pedersenContextHash
   };
 
   pendingBallots.push(pendingBallot);
@@ -1923,6 +1953,7 @@ app.post<{ id: string }, CastVoteResponse | { error: string }, CastVoteRequest>(
     const randomness = randomHex();
     const createdAt = now();
     const commitment = createCommitment(election.id, voteVector, randomness);
+    const pedersenContextHash = createPedersenContext(election.id, voteVector.length).contextHash;
     const receiptCode = createReceiptCode(
       election.id,
       commitment,
@@ -1939,7 +1970,8 @@ app.post<{ id: string }, CastVoteResponse | { error: string }, CastVoteRequest>(
       randomness,
       commitment,
       receiptCode,
-      createdAt
+      createdAt,
+      pedersenContextHash
     });
 
     response.status(201).json({

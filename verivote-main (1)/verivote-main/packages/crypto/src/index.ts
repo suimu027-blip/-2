@@ -1,4 +1,9 @@
 import { createHash, randomBytes } from "node:crypto";
+import {
+  createPedersenContext,
+  createPedersenCommitment,
+  verifyPedersenOpening
+} from "./pedersen.js";
 
 export * from "./pedersen.js";
 
@@ -63,21 +68,40 @@ export function createVoteVector(
   );
 }
 
+/**
+ * Create a Pedersen commitment for a vote vector.
+ *
+ * Internally derives a deterministic PedersenContext from the electionId and
+ * the vote vector length (= candidate count), then computes
+ *   C = g^r · ∏ h_i^{v_i}  (mod p)
+ *
+ * The function signature is intentionally kept identical to the former SHA-256
+ * version so that all existing callers (API, benchmark, attacks) continue to
+ * work without modification.
+ */
 export function createCommitment(
   electionId: string,
   voteVector: number[],
   randomness: string
 ): string {
-  return hashText(`${electionId}${voteVector.join(",")}${randomness}`);
+  const context = createPedersenContext(electionId, voteVector.length);
+  const result = createPedersenCommitment(context, voteVector, randomness);
+  return result.commitment;
 }
 
+/**
+ * Verify that a (voteVector, randomness) pair opens to the given Pedersen
+ * commitment.  Recomputes the deterministic context and delegates to
+ * verifyPedersenOpening.
+ */
 export function verifyCommitmentOpening(
   electionId: string,
   voteVector: number[],
   randomness: string,
   commitment: string
 ): boolean {
-  return createCommitment(electionId, voteVector, randomness) === commitment;
+  const context = createPedersenContext(electionId, voteVector.length);
+  return verifyPedersenOpening(context, voteVector, randomness, commitment);
 }
 
 export function createReceiptCode(

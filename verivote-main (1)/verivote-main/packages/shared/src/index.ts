@@ -33,6 +33,8 @@ export interface Vote {
   previousReceiptCodeHash?: string | null;
   receiptChainHash?: string;
   createdAt: string;
+  /** Pedersen context hash binding this commitment to its election generators. */
+  pedersenContextHash?: string;
 }
 
 export interface ReceiptChainBreak {
@@ -63,6 +65,8 @@ export interface PendingBallot {
   receiptCode: string;
   createdAt: string;
   status: PendingBallotStatus;
+  /** Pedersen context hash binding this commitment to its election generators. */
+  pedersenContextHash?: string;
 }
 
 export interface ChallengeRecord {
@@ -74,6 +78,8 @@ export interface ChallengeRecord {
   commitment: string;
   openingVerified: boolean;
   createdAt: string;
+  /** Pedersen context hash binding this commitment to its election generators. */
+  pedersenContextHash?: string;
 }
 
 export interface ChallengeOpeningVerification {
@@ -135,6 +141,11 @@ export interface AggregatorReport {
   receiptRoot: string;
   auditHash: string;
   createdAt: string;
+  /** Pedersen homomorphic tally verification result. */
+  pedersenTallyVerified?: boolean;
+  pedersenTallyMessage?: string;
+  /** Pedersen context hash used for tally verification. */
+  pedersenContextHash?: string;
 }
 
 export type BlockchainAuditMode = "local-mock" | "hardhat";
@@ -268,6 +279,8 @@ export interface CastVoteResponse {
   previousReceiptCodeHash: string | null;
   receiptChainHash: string;
   message: string;
+  /** Pedersen context hash for auditability. */
+  pedersenContextHash?: string;
 }
 
 export interface PrepareBallotRequest {

@@ -1,10 +1,11 @@
 import { createHash, randomBytes } from "node:crypto";
 
 /**
- * Pedersen-style vector commitment experiment module.
+ * Pedersen-style vector commitment module.
  *
- * This module is a Haechi-inspired EXPERIMENT. It does NOT replace the existing
- * SHA-256 commitment used by the main voting flow (see `createCommitment`).
+ * This is the PRIMARY commitment scheme used by the voting flow.  The
+ * SHA-256 `createCommitment` wrapper in `index.ts` delegates here to
+ * produce Pedersen commitments.
  *
  * Construction:
  *   - Work in the multiplicative subgroup of Z_p* of prime order q,
