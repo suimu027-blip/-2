@@ -1,0 +1,25 @@
+{
+  "name": "verivote",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.33.3",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "dev:web": "pnpm --filter @verivote/web dev",
+    "dev:api": "pnpm --filter @verivote/api dev",
+    "build": "pnpm -r --workspace-concurrency=1 build",
+    "typecheck": "pnpm -r typecheck",
+    "benchmark": "tsx scripts/benchmark.ts",
+    "zk:setup": "tsx scripts/zk-setup.ts",
+    "zk:demo": "tsx scripts/zk-demo.ts",
+    "contract:compile": "pnpm --filter @verivote/contracts compile",
+    "contract:test": "pnpm --filter @verivote/contracts test",
+    "contract:node": "pnpm --filter @verivote/contracts node",
+    "contract:deploy": "pnpm --filter @verivote/contracts run deploy"
+  },
+  "devDependencies": {
+    "snarkjs": "^0.7.6",
+    "tsx": "^4.21.0",
+    "typescript": "^5.0.0"
+  }
+}

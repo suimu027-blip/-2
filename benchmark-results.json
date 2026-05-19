@@ -1,0 +1,770 @@
+{
+  "generatedAt": "2026-05-05T10:09:47.136Z",
+  "environment": {
+    "nodeVersion": "v24.15.0",
+    "platform": "win32",
+    "arch": "x64",
+    "osRelease": "10.0.22631",
+    "cpuModel": "Intel(R) Core(TM) i7-14700HX",
+    "cpuCount": 28,
+    "totalMemoryGb": 31.78
+  },
+  "config": {
+    "voteCounts": [
+      100,
+      1000,
+      5000,
+      10000
+    ],
+    "candidateCount": 4,
+    "repetitions": 3,
+    "proofSampleLimit": 32,
+    "defaultVotePolicy": "valid-only"
+  },
+  "results": [
+    {
+      "voteCount": 100,
+      "candidateCount": 4,
+      "repetitions": 3,
+      "proofSampleSize": 32,
+      "runs": [
+        {
+          "runIndex": 1,
+          "voteCount": 100,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 3.861,
+          "merkleBuildMs": 0.281,
+          "merkleProofGenerationMs": 5.506,
+          "merkleProofVerificationMs": 0.323,
+          "aggregationMs": 0.552,
+          "auditHashGenerationMs": 0.035,
+          "totalMs": 10.702,
+          "merkleRoot": "90bb015e6a7343b34ec00229b61880151e21b9e0e19fab267fdcdc924718db24",
+          "auditHash": "6918a6ec944428938c13ed40944f89aabd3eca3c7381fb036c69d61775d48430",
+          "aggregation": {
+            "totalVotes": 100,
+            "validVotes": 100,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-100-run-1",
+              "totalVotes": 100,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 25
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 25
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 25
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 25
+                }
+              ]
+            }
+          }
+        },
+        {
+          "runIndex": 2,
+          "voteCount": 100,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 0.898,
+          "merkleBuildMs": 0.096,
+          "merkleProofGenerationMs": 4.082,
+          "merkleProofVerificationMs": 0.233,
+          "aggregationMs": 1.234,
+          "auditHashGenerationMs": 0.02,
+          "totalMs": 6.603,
+          "merkleRoot": "088e92ba7885ece0a8228efa879a2552d4ab0cbfc42f535a7ab175d703a54a77",
+          "auditHash": "945ddc64b86541eeb76b4ddeda0857371b9adb937c26445e0d7e7f5801f8c81c",
+          "aggregation": {
+            "totalVotes": 100,
+            "validVotes": 100,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-100-run-2",
+              "totalVotes": 100,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 25
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 25
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 25
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 25
+                }
+              ]
+            }
+          }
+        },
+        {
+          "runIndex": 3,
+          "voteCount": 100,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 0.868,
+          "merkleBuildMs": 0.098,
+          "merkleProofGenerationMs": 4.643,
+          "merkleProofVerificationMs": 0.243,
+          "aggregationMs": 0.346,
+          "auditHashGenerationMs": 0.019,
+          "totalMs": 6.234,
+          "merkleRoot": "84ecfecd1456abb9fdd6ced749af1a0a1ca3c91325ba718998d29e08ab99289f",
+          "auditHash": "20f7e82fc824e871f5df79853d248ccc3725e6b5be107977d03d2589a5178fa1",
+          "aggregation": {
+            "totalVotes": 100,
+            "validVotes": 100,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-100-run-3",
+              "totalVotes": 100,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 25
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 25
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 25
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 25
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "summary": {
+        "commitmentGenerationMs": {
+          "average": 1.876,
+          "min": 0.868,
+          "max": 3.861
+        },
+        "merkleBuildMs": {
+          "average": 0.158,
+          "min": 0.096,
+          "max": 0.281
+        },
+        "merkleProofGenerationMs": {
+          "average": 4.744,
+          "min": 4.082,
+          "max": 5.506
+        },
+        "merkleProofVerificationMs": {
+          "average": 0.266,
+          "min": 0.233,
+          "max": 0.323
+        },
+        "aggregationMs": {
+          "average": 0.711,
+          "min": 0.346,
+          "max": 1.234
+        },
+        "auditHashGenerationMs": {
+          "average": 0.025,
+          "min": 0.019,
+          "max": 0.035
+        },
+        "totalMs": {
+          "average": 7.846,
+          "min": 6.234,
+          "max": 10.702
+        }
+      }
+    },
+    {
+      "voteCount": 1000,
+      "candidateCount": 4,
+      "repetitions": 3,
+      "proofSampleSize": 32,
+      "runs": [
+        {
+          "runIndex": 1,
+          "voteCount": 1000,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 8.187,
+          "merkleBuildMs": 1.022,
+          "merkleProofGenerationMs": 33.254,
+          "merkleProofVerificationMs": 0.258,
+          "aggregationMs": 2.886,
+          "auditHashGenerationMs": 0.157,
+          "totalMs": 45.841,
+          "merkleRoot": "ad6e53f7d23ea2b5b5da355c87497d4852ac190e5ee54cc9ece54a9369cb1365",
+          "auditHash": "a297451ec33369ee84e20d519e79614c5e2285444ec3065dc834c4972635d338",
+          "aggregation": {
+            "totalVotes": 1000,
+            "validVotes": 1000,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-1000-run-1",
+              "totalVotes": 1000,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 250
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 250
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 250
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 250
+                }
+              ]
+            }
+          }
+        },
+        {
+          "runIndex": 2,
+          "voteCount": 1000,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 7.862,
+          "merkleBuildMs": 0.815,
+          "merkleProofGenerationMs": 31.835,
+          "merkleProofVerificationMs": 0.269,
+          "aggregationMs": 2.919,
+          "auditHashGenerationMs": 0.188,
+          "totalMs": 43.95,
+          "merkleRoot": "b112ed9c48f5b7fd23549c6421b9e2efb1eefb51456aca0326559262bbec9a65",
+          "auditHash": "caf8e8ef1731556d044250e9a88788ad0e012b672f17b2f56975f5290b1489d0",
+          "aggregation": {
+            "totalVotes": 1000,
+            "validVotes": 1000,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-1000-run-2",
+              "totalVotes": 1000,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 250
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 250
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 250
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 250
+                }
+              ]
+            }
+          }
+        },
+        {
+          "runIndex": 3,
+          "voteCount": 1000,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 7.945,
+          "merkleBuildMs": 0.762,
+          "merkleProofGenerationMs": 28.923,
+          "merkleProofVerificationMs": 0.359,
+          "aggregationMs": 6.554,
+          "auditHashGenerationMs": 0.196,
+          "totalMs": 44.794,
+          "merkleRoot": "6c22a5636f10064725923f44c04fc721dc7136a0e3afc72fd557b1991f291e1a",
+          "auditHash": "c6f596c16514e0c27215b616a32c3f219796f414cf6b705d34d31c492ef85c93",
+          "aggregation": {
+            "totalVotes": 1000,
+            "validVotes": 1000,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-1000-run-3",
+              "totalVotes": 1000,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 250
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 250
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 250
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 250
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "summary": {
+        "commitmentGenerationMs": {
+          "average": 7.998,
+          "min": 7.862,
+          "max": 8.187
+        },
+        "merkleBuildMs": {
+          "average": 0.866,
+          "min": 0.762,
+          "max": 1.022
+        },
+        "merkleProofGenerationMs": {
+          "average": 31.337,
+          "min": 28.923,
+          "max": 33.254
+        },
+        "merkleProofVerificationMs": {
+          "average": 0.295,
+          "min": 0.258,
+          "max": 0.359
+        },
+        "aggregationMs": {
+          "average": 4.12,
+          "min": 2.886,
+          "max": 6.554
+        },
+        "auditHashGenerationMs": {
+          "average": 0.18,
+          "min": 0.157,
+          "max": 0.196
+        },
+        "totalMs": {
+          "average": 44.862,
+          "min": 43.95,
+          "max": 45.841
+        }
+      }
+    },
+    {
+      "voteCount": 5000,
+      "candidateCount": 4,
+      "repetitions": 3,
+      "proofSampleSize": 32,
+      "runs": [
+        {
+          "runIndex": 1,
+          "voteCount": 5000,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 37.46,
+          "merkleBuildMs": 3.937,
+          "merkleProofGenerationMs": 166.133,
+          "merkleProofVerificationMs": 0.35,
+          "aggregationMs": 12.815,
+          "auditHashGenerationMs": 0.777,
+          "totalMs": 221.657,
+          "merkleRoot": "550440fa0d5e333a10120302f04313d3d4604f5bfc86af489380e80c715200ec",
+          "auditHash": "81087e09f5a250476c531609eb8902f84ac3c172e407e055ee2b482b34df2a11",
+          "aggregation": {
+            "totalVotes": 5000,
+            "validVotes": 5000,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-5000-run-1",
+              "totalVotes": 5000,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 1250
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 1250
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 1250
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 1250
+                }
+              ]
+            }
+          }
+        },
+        {
+          "runIndex": 2,
+          "voteCount": 5000,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 38.371,
+          "merkleBuildMs": 4.139,
+          "merkleProofGenerationMs": 160.065,
+          "merkleProofVerificationMs": 0.351,
+          "aggregationMs": 12.327,
+          "auditHashGenerationMs": 0.695,
+          "totalMs": 216.074,
+          "merkleRoot": "ecda398c29adea24064247f2e14e8e7d8f54b939783e19a4dff479c5d1ecd887",
+          "auditHash": "e5d6f7de1c2fbe9540052eba9235401a77afe600a570b803ed8dce36234f930c",
+          "aggregation": {
+            "totalVotes": 5000,
+            "validVotes": 5000,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-5000-run-2",
+              "totalVotes": 5000,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 1250
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 1250
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 1250
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 1250
+                }
+              ]
+            }
+          }
+        },
+        {
+          "runIndex": 3,
+          "voteCount": 5000,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 37.578,
+          "merkleBuildMs": 4.175,
+          "merkleProofGenerationMs": 165.725,
+          "merkleProofVerificationMs": 0.348,
+          "aggregationMs": 13.252,
+          "auditHashGenerationMs": 0.778,
+          "totalMs": 222.122,
+          "merkleRoot": "2e6ad62253f14c859ec05b74cf0748743d40d5cca4686986837d218d1101c1e1",
+          "auditHash": "cf4e269ce6a71013f9d8c60740e6f7fe84d677054d232c2239be7a2512dcd77a",
+          "aggregation": {
+            "totalVotes": 5000,
+            "validVotes": 5000,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-5000-run-3",
+              "totalVotes": 5000,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 1250
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 1250
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 1250
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 1250
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "summary": {
+        "commitmentGenerationMs": {
+          "average": 37.803,
+          "min": 37.46,
+          "max": 38.371
+        },
+        "merkleBuildMs": {
+          "average": 4.084,
+          "min": 3.937,
+          "max": 4.175
+        },
+        "merkleProofGenerationMs": {
+          "average": 163.974,
+          "min": 160.065,
+          "max": 166.133
+        },
+        "merkleProofVerificationMs": {
+          "average": 0.35,
+          "min": 0.348,
+          "max": 0.351
+        },
+        "aggregationMs": {
+          "average": 12.798,
+          "min": 12.327,
+          "max": 13.252
+        },
+        "auditHashGenerationMs": {
+          "average": 0.75,
+          "min": 0.695,
+          "max": 0.778
+        },
+        "totalMs": {
+          "average": 219.951,
+          "min": 216.074,
+          "max": 222.122
+        }
+      }
+    },
+    {
+      "voteCount": 10000,
+      "candidateCount": 4,
+      "repetitions": 3,
+      "proofSampleSize": 32,
+      "runs": [
+        {
+          "runIndex": 1,
+          "voteCount": 10000,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 74.259,
+          "merkleBuildMs": 7.69,
+          "merkleProofGenerationMs": 316.525,
+          "merkleProofVerificationMs": 0.391,
+          "aggregationMs": 40.466,
+          "auditHashGenerationMs": 1.347,
+          "totalMs": 440.907,
+          "merkleRoot": "e081c1c8cd1e3b2ec9df57c9e32a6c15175492da42415aed6c54a33fe6c75bb8",
+          "auditHash": "4e6361a94dbd39069d72d3fcebf6a9bebab691d25a6fb41eb62737d5bb1f7c9a",
+          "aggregation": {
+            "totalVotes": 10000,
+            "validVotes": 10000,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-10000-run-1",
+              "totalVotes": 10000,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 2500
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 2500
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 2500
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 2500
+                }
+              ]
+            }
+          }
+        },
+        {
+          "runIndex": 2,
+          "voteCount": 10000,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 72.36,
+          "merkleBuildMs": 7.868,
+          "merkleProofGenerationMs": 310.708,
+          "merkleProofVerificationMs": 0.498,
+          "aggregationMs": 80.737,
+          "auditHashGenerationMs": 1.999,
+          "totalMs": 474.386,
+          "merkleRoot": "8d8ec2f25f05a4bf5be5b84ae0b0427761b5502e1c00cb8f9e0cce0a7c88218b",
+          "auditHash": "63894dd8fbed62a570727ae2a61a1e9fba2f69e0ca43c7f9a1c53b337ff9616b",
+          "aggregation": {
+            "totalVotes": 10000,
+            "validVotes": 10000,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-10000-run-2",
+              "totalVotes": 10000,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 2500
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 2500
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 2500
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 2500
+                }
+              ]
+            }
+          }
+        },
+        {
+          "runIndex": 3,
+          "voteCount": 10000,
+          "candidateCount": 4,
+          "proofSampleSize": 32,
+          "commitmentGenerationMs": 113.816,
+          "merkleBuildMs": 10.695,
+          "merkleProofGenerationMs": 328.888,
+          "merkleProofVerificationMs": 0.405,
+          "aggregationMs": 27.3,
+          "auditHashGenerationMs": 1.387,
+          "totalMs": 482.761,
+          "merkleRoot": "8df0e29b05860fbd9b3c2c59a128c5b866da7eed14c0377bc27b2d92544f4d90",
+          "auditHash": "76b11c00f2c9e0beb73982a3301e2b5c9bbf209992e28c75e8aa66d9527934e0",
+          "aggregation": {
+            "totalVotes": 10000,
+            "validVotes": 10000,
+            "invalidVotes": 0,
+            "duplicateVotes": 0,
+            "tallyResult": {
+              "electionId": "benchmark-election-10000-run-3",
+              "totalVotes": 10000,
+              "results": [
+                {
+                  "candidateId": "candidate-1",
+                  "candidateName": "Candidate 1",
+                  "voteCount": 2500
+                },
+                {
+                  "candidateId": "candidate-2",
+                  "candidateName": "Candidate 2",
+                  "voteCount": 2500
+                },
+                {
+                  "candidateId": "candidate-3",
+                  "candidateName": "Candidate 3",
+                  "voteCount": 2500
+                },
+                {
+                  "candidateId": "candidate-4",
+                  "candidateName": "Candidate 4",
+                  "voteCount": 2500
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "summary": {
+        "commitmentGenerationMs": {
+          "average": 86.812,
+          "min": 72.36,
+          "max": 113.816
+        },
+        "merkleBuildMs": {
+          "average": 8.751,
+          "min": 7.69,
+          "max": 10.695
+        },
+        "merkleProofGenerationMs": {
+          "average": 318.707,
+          "min": 310.708,
+          "max": 328.888
+        },
+        "merkleProofVerificationMs": {
+          "average": 0.431,
+          "min": 0.391,
+          "max": 0.498
+        },
+        "aggregationMs": {
+          "average": 49.501,
+          "min": 27.3,
+          "max": 80.737
+        },
+        "auditHashGenerationMs": {
+          "average": 1.578,
+          "min": 1.347,
+          "max": 1.999
+        },
+        "totalMs": {
+          "average": 466.018,
+          "min": 440.907,
+          "max": 482.761
+        }
+      }
+    }
+  ]
+}

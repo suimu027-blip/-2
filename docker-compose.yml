@@ -1,0 +1,61 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    image: verivote/api:local
+    container_name: verivote-api
+    environment:
+      PORT: "3001"
+      # 持久化开关：auto / memory / sqlite (见 docs/DEPLOYMENT.md)
+      VERIVOTE_PERSISTENCE: "sqlite"
+      VERIVOTE_SQLITE_PATH: "/data/verivote.db"
+      # 链上审计默认走 local-mock；需要 hardhat 时改这三个变量
+      BLOCKCHAIN_AUDIT_MODE: "local-mock"
+      # AUDIT_CONTRACT_ADDRESS: "0x..."
+      # HARDHAT_RPC_URL: "http://hardhat:8545"
+    volumes:
+      - verivote_data:/data
+    ports:
+      - "3001:3001"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:3001/health', timeout=3)"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+      args:
+        VITE_API_BASE_URL: "http://localhost:3001"
+    image: verivote/web:local
+    container_name: verivote-web
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "18340:18340"
+    restart: unless-stopped
+
+  # 可选：一键拉起一个本地 hardhat 节点供链上审计使用。默认不启动。
+  # docker compose --profile hardhat up
+  hardhat:
+    image: node:22-alpine
+    container_name: verivote-hardhat
+    profiles: ["hardhat"]
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: >
+      sh -c "corepack enable && corepack prepare pnpm@10.33.3 --activate &&
+             pnpm install --frozen-lockfile &&
+             pnpm contract:compile &&
+             pnpm --filter @verivote/contracts exec hardhat node --hostname 0.0.0.0"
+    ports:
+      - "8545:8545"
+
+volumes:
+  verivote_data:
