@@ -21,6 +21,36 @@
 - ⬜ **planned**：仅有文档和接口占位。
 - API 路径省略 `http://localhost:3001` 前缀。
 
+## 0.1 可执行验证脚本
+
+仓库现在提供一条可重复运行的后端闭环与安全边界烟测：
+
+```bash
+python scripts/api_smoke_test.py
+```
+
+如果使用 pnpm，也可以运行：
+
+```bash
+pnpm test:api-smoke
+```
+
+脚本默认使用 `VERIVOTE_PERSISTENCE=memory`，会覆盖：
+
+1. 创建选举、添加候选人、注册用户、正式投票。
+2. cast-or-challenge：一张 pending ballot 被 challenge 且不进入 tally，另一张 pending ballot 被 cast 后进入 tally。
+3. receipt chain、Merkle inclusion proof、AggregatorReport 与公告板一致性。
+4. Mock ZK validity proof、Pedersen opening、local mock chain audit、artifact bundle 导出。
+5. 重复投票 API 拒绝、投票 finalized 后拒绝继续投票/加候选人、challenge 生命周期防重复处理。
+6. 伪造 ZK publicSignals、非法 one-hot、错误 tally proof、Pedersen 聚合 opening 篡改。
+7. 注入重复票、注入非法票、篡改 tally、篡改 commitment、删除 vote、链上摘要与链下结果不一致以及 attack log 记录。
+
+完整验收可以直接运行：
+
+```bash
+pnpm verify:plan
+```
+
 ## 1. 威胁矩阵
 
 ### T1. 重复投票 (double voting)
