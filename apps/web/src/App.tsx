@@ -355,6 +355,28 @@ function ElectionSelect({
   );
 }
 
+function VoterIcon() {
+  return (
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-blue)", marginBottom: "4px" }}>
+      <path d="M18 12v10H6V12" />
+      <path d="M2 8h20v4H2V8z" />
+      <path d="M12 2v6" />
+      <path d="M9 5l3-3 3 3" />
+      <path d="M9 16l2 2 4-4" />
+    </svg>
+  );
+}
+
+function AdminIcon() {
+  return (
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ color: "var(--accent-green)", marginBottom: "4px" }}>
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M12 8v5" />
+      <path d="M12 16h.01" />
+    </svg>
+  );
+}
+
 function PlatformHomePage({
   onSelectPortal
 }: {
@@ -376,6 +398,7 @@ function PlatformHomePage({
             className={`portal-card ${card.portal}`}
             onClick={() => onSelectPortal(card.portal)}
           >
+            {card.portal === "voter" ? <VoterIcon /> : <AdminIcon />}
             <span>{card.subtitle}</span>
             <strong>{card.title}</strong>
             <p>{card.description}</p>
@@ -430,20 +453,41 @@ function HomePage({
       <p className="page-lead">{portalInfo.homeLead}</p>
 
       <div className="stats">
-        <div>
-          <span>{elections.length}</span>
-          <p>投票数</p>
+        <div className="stat-card">
+          <div className="stat-icon-wrapper blue">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+              <path d="M9 12l2 2 4-4"/>
+            </svg>
+          </div>
+          <div className="stat-info">
+            <span className="stat-value">{elections.length}</span>
+            <span className="stat-label">总投票项目</span>
+          </div>
         </div>
-        <div>
-          <span>{elections.filter((election) => election.status === "active").length}</span>
-          <p>进行中</p>
+        <div className="stat-card">
+          <div className="stat-icon-wrapper green">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+          </div>
+          <div className="stat-info">
+            <span className="stat-value">{elections.filter((election) => election.status === "active").length}</span>
+            <span className="stat-label">进行中选举</span>
+          </div>
         </div>
       </div>
 
       <div className="panel">
         <h2>投票列表</h2>
         {elections.length === 0 ? (
-          <p className="empty">暂无投票</p>
+          <div className="empty">
+            <svg className="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <p className="empty-text">暂无投票项目</p>
+            <p className="empty-subtext">当前系统内尚无创建的选举活动。请前往“创建投票”页面发起新的选举。</p>
+          </div>
         ) : (
           <div className="list">
             {elections.map((election) => (
@@ -4130,29 +4174,35 @@ export function App() {
         </div>
         {activePortal ? (
           <div className="topbar-actions">
-            <nav aria-label={`${portalLabels[activePortal].title}导航`}>
-              {activeNavItems.map((item) => (
-                <button
-                  key={item.view}
-                  type="button"
-                  className={view === item.view ? "active" : ""}
-                  onClick={() => setView(item.view)}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
             <button type="button" className="secondary home-return" onClick={goPlatformHome}>
-              平台首页
+              返回平台首页
             </button>
           </div>
         ) : null}
       </header>
 
-      <main>
-        <NoticeMessage notice={notice} />
-        {activePortal ? (
-          <>
+      {activePortal ? (
+        <div className={`portal-container ${activePortal}`}>
+          <aside className="sidebar">
+            <div className="sidebar-header">
+              <h3>{portalLabels[activePortal].subtitle}</h3>
+            </div>
+            <nav className="sidebar-nav" aria-label={`${portalLabels[activePortal].title}导航`}>
+              {activeNavItems.map((item) => (
+                <button
+                  key={item.view}
+                  type="button"
+                  className={`sidebar-nav-item ${view === item.view ? "active" : ""}`}
+                  onClick={() => setView(item.view)}
+                >
+                  <span className="sidebar-nav-dot"></span>
+                  {item.label}
+                </button>
+              ))}
+            </nav>
+          </aside>
+          <main className="portal-main">
+            <NoticeMessage notice={notice} />
             {view === "home" ? (
               <HomePage
                 portal={activePortal}
@@ -4202,11 +4252,14 @@ export function App() {
             ) : null}
             {view === "benchmark" ? <PerformancePage /> : null}
             {view === "attack" ? <AttackLabPage elections={elections} /> : null}
-          </>
-        ) : (
+          </main>
+        </div>
+      ) : (
+        <main className="platform-main">
+          <NoticeMessage notice={notice} />
           <PlatformHomePage onSelectPortal={enterPortal} />
-        )}
-      </main>
+        </main>
+      )}
     </div>
   );
 }
