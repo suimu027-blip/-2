@@ -13,7 +13,7 @@
 | 变量 | 默认 | 说明 |
 | --- | --- | --- |
 | `PORT` | `3001` | API 监听端口 |
-| `VERIVOTE_PERSISTENCE` | `auto` | `auto` / `memory` / `sqlite`。Python 后端使用标准库 SQLite，`auto` 会启用 sqlite；本地临时演示可设为 `memory` |
+| `VERIVOTE_PERSISTENCE` | `auto` | `auto` / `memory` / `sqlite`。`auto` 在找不到 `better-sqlite3` 时自动退回 memory |
 | `VERIVOTE_SQLITE_PATH` | `./data/verivote.db` | SQLite 数据库路径 |
 | `BLOCKCHAIN_AUDIT_MODE` | `local-mock` | `local-mock` / `hardhat` |
 | `HARDHAT_RPC_URL` | `http://127.0.0.1:8545` | Hardhat 链上审计 RPC |
@@ -37,7 +37,7 @@ docker compose up -d --build
 - Web: http://localhost:18340
 - API: http://localhost:3001/health
 
-首次构建会为 API 安装 Python 依赖、为 Web 安装 pnpm workspace 依赖；之后的 `docker compose up` 会重用缓存。
+首次构建会用 pnpm 做 workspace 多阶段安装与编译；之后的 `docker compose up` 会重用缓存。
 
 ### 2.2 可选：启动本地 Hardhat 节点
 
@@ -76,7 +76,7 @@ docker compose restart api
 ### 3.1 服务器初始化
 
 ```bash
-sudo apt update && sudo apt install -y nginx git build-essential python3 python3-venv python3-pip
+sudo apt update && sudo apt install -y nginx git build-essential
 # Install Node 22 (via NodeSource)
 curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
 sudo apt install -y nodejs
@@ -87,7 +87,7 @@ sudo npm i -g pnpm@10.33.3
 
 ```bash
 sudo useradd -r -m -d /opt/verivote -s /bin/bash verivote
-sudo -u verivote bash -lc 'cd ~ && git clone <repo-url> app && cd app && python3 -m venv .venv && .venv/bin/pip install -r apps/api/requirements.txt && pnpm install --frozen-lockfile && pnpm build'
+sudo -u verivote bash -lc 'cd ~ && git clone <repo-url> app && cd app && pnpm install --frozen-lockfile && pnpm build'
 ```
 
 ### 3.3 环境变量
@@ -113,7 +113,7 @@ User=verivote
 Group=verivote
 WorkingDirectory=/opt/verivote/app
 EnvironmentFile=/opt/verivote/.env
-ExecStart=/opt/verivote/app/.venv/bin/python -m uvicorn verivote_api.main:app --app-dir apps/api/src --host 127.0.0.1 --port 3001
+ExecStart=/usr/bin/node apps/api/dist/index.js
 Restart=on-failure
 RestartSec=5
 LimitNOFILE=65536
@@ -190,14 +190,14 @@ sudo certbot --nginx -d verivote.example.com
 ## 5. 升级 / 回滚
 
 - Docker：`docker compose pull && docker compose up -d --build`
-- systemd：`git pull && .venv/bin/pip install -r apps/api/requirements.txt && pnpm install && pnpm build && sudo systemctl restart verivote-api`
+- systemd：`git pull && pnpm install && pnpm build && sudo systemctl restart verivote-api`
 - 回滚：切回上一次 tag，重启服务即可；SQLite schema 为 KV payload + JSON，通常无需迁移。如未来改 schema，`data/` 目录需备份。
 
 ## 6. 运维观察点
 
 - `GET /health` 返回 `{ok:true}`。Docker 和 Nginx 健康检查均可直接探测。
-- 日志：启动时会打印 `[persistence] memory-only mode` 或 `[persistence] sqlite mode at ...`；链上交易失败会走 500 + 错误信息。
-- 指标：当前版本没有集成 Prometheus exporter。后续可在 API 里加结构化 logging + OpenTelemetry。
+- 日志：启动时会打印 `persistence: memory|sqlite`；链上交易失败会走 500 + 错误信息。
+- 指标：当前版本没有集成 Prometheus exporter。后续可在 API 里加 `pino` + OpenTelemetry。
 - 备份：SQLite 文件定期 `cp verivote.db verivote.db.$(date +%F)`，或 `sqlite3 verivote.db ".backup verivote.backup.db"`。
 
 ## 7. 安全清单（部署前必看）

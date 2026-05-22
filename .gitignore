@@ -11,3 +11,6 @@ venv/
 *.db
 data/
 zk-artifacts/
+contracts/artifacts/
+contracts/cache/
+contracts/types/

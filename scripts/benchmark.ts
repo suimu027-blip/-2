@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -519,21 +519,18 @@ ${resultRows.join("\n")}
 async function main(): Promise<void> {
   const scriptPath = fileURLToPath(import.meta.url);
   const repoRoot = path.resolve(path.dirname(scriptPath), "..");
-  const webDataDir = path.join(repoRoot, "apps", "web", "src", "data");
   const output = createBenchmarkOutput();
 
-  await mkdir(webDataDir, { recursive: true });
-
-  const jsonPayload = `${JSON.stringify(output, null, 2)}\n`;
-
-  await writeFile(path.join(repoRoot, "benchmark-results.json"), jsonPayload, "utf8");
-  await writeFile(path.join(webDataDir, "benchmark-results.json"), jsonPayload, "utf8");
+  await writeFile(
+    path.join(repoRoot, "benchmark-results.json"),
+    `${JSON.stringify(output, null, 2)}\n`,
+    "utf8"
+  );
   await writeFile(path.join(repoRoot, "benchmark-results.csv"), createCsv(output), "utf8");
   await writeFile(path.join(repoRoot, "docs", "BENCHMARK.md"), createMarkdown(output), "utf8");
 
   console.log("Benchmark complete.");
   console.log(`Results written to ${path.join(repoRoot, "benchmark-results.json")}`);
-  console.log(`Web data synced to ${path.join(webDataDir, "benchmark-results.json")}`);
   console.log(`CSV written to ${path.join(repoRoot, "benchmark-results.csv")}`);
   console.log(`Docs written to ${path.join(repoRoot, "docs", "BENCHMARK.md")}`);
 }

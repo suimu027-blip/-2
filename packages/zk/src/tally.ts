@@ -1,15 +1,5 @@
-/**
- * Tally correctness adapter.
- *
- * Circuit: `circuits/tally_correctness.circom`, fixed to N=8 ballots and
- * C=4 candidates in this demo. Given the public tally vector and a batch
- * size, the circuit verifies that the (private) per-ballot one-hot matrix
- * aggregates to that tally.
- *
- * This is the first end-to-end "batch ZK proof of tally correctness" in
- * VeriVote. It is still bounded (N=8, C=4) and uses a local trusted setup,
- * so it is demo-grade, not production-grade.
- */
+// Tally correctness ZK proof adapter.
+// Uses circuits/tally_correctness.circom (fixed to 8 ballots, 4 candidates).
 
 import { spawnSync } from "node:child_process";
 import { createHash, randomUUID } from "node:crypto";
@@ -451,14 +441,7 @@ export function verifyTallyCorrectnessProof(
   }
 }
 
-/**
- * Encode a snarkjs Groth16 proof into the calldata tuple expected by the
- * auto-generated Solidity verifier:
- *   verifyProof(uint[2] a, uint[2][2] b, uint[2] c, uint[5] input)
- *
- * Matches the snarkjs helper `groth16.exportSolidityCallData` but without
- * requiring a live snarkjs dependency at call time.
- */
+// Encodes a Groth16 proof into Solidity verifier calldata format.
 export function encodeTallySolidityCalldata(proof: unknown): TallySolidityCalldata {
   const tallyProof = proof as Partial<TallyProof>;
   if (

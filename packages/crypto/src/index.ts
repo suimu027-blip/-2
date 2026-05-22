@@ -68,17 +68,7 @@ export function createVoteVector(
   );
 }
 
-/**
- * Create a Pedersen commitment for a vote vector.
- *
- * Internally derives a deterministic PedersenContext from the electionId and
- * the vote vector length (= candidate count), then computes
- *   C = g^r · ∏ h_i^{v_i}  (mod p)
- *
- * The function signature is intentionally kept identical to the former SHA-256
- * version so that all existing callers (API, benchmark, attacks) continue to
- * work without modification.
- */
+// Create a Pedersen commitment for a vote vector.
 export function createCommitment(
   electionId: string,
   voteVector: number[],
@@ -89,11 +79,7 @@ export function createCommitment(
   return result.commitment;
 }
 
-/**
- * Verify that a (voteVector, randomness) pair opens to the given Pedersen
- * commitment.  Recomputes the deterministic context and delegates to
- * verifyPedersenOpening.
- */
+// Verify that a (voteVector, randomness) pair opens to the given Pedersen commitment.
 export function verifyCommitmentOpening(
   electionId: string,
   voteVector: number[],

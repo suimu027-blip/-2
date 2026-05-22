@@ -1,27 +1,7 @@
 import { createHash, randomBytes } from "node:crypto";
 
-/**
- * Pedersen-style vector commitment module.
- *
- * This is the PRIMARY commitment scheme used by the voting flow.  The
- * SHA-256 `createCommitment` wrapper in `index.ts` delegates here to
- * produce Pedersen commitments.
- *
- * Construction:
- *   - Work in the multiplicative subgroup of Z_p* of prime order q,
- *     using the RFC 3526 MODP 2048-bit group (Group 14).
- *   - All generators g, h_1, ..., h_n are derived deterministically from
- *     electionId (and optional contextLabel) via hash-to-group
- *     (hash -> exponent -> g^exp). This makes the generators reproducible but
- *     binds them to the election's public context.
- *   - commit(v, r) = g^r * prod_i h_i^{v_i}  (mod p)
- *   - Homomorphic aggregation:
- *       commit(v1, r1) * commit(v2, r2) mod p
- *         === commit(v1 + v2, r1 + r2 mod q)
- *
- * NOT production grade. The group parameters, hash-to-group construction,
- * serialization, and side-channel characteristics have not been audited.
- */
+// Pedersen-style vector commitment module.
+// Used for homomorphic tally verification.
 
 // RFC 3526 MODP Group 14 (2048-bit).
 const RFC3526_GROUP_14_PRIME_HEX = [
@@ -120,11 +100,7 @@ function modPow(base: bigint, exponent: bigint, modulus: bigint): bigint {
   return result;
 }
 
-/**
- * Hash-to-exponent, then raise a fixed base (2) to that exponent mod p. The
- * resulting element always lies in the prime-order subgroup because it is a
- * quadratic residue (squaring via `2 * e`).
- */
+// Derives generators deterministically from a seed.
 function deriveGeneratorFromSeed(seed: string): bigint {
   // Expand to 512 bits by chaining two sha256 invocations, then reduce mod q.
   const firstHalf = sha256Hex(`verivote.pedersen.gen.v1.part1:${seed}`);
@@ -136,12 +112,7 @@ function deriveGeneratorFromSeed(seed: string): bigint {
   return modPow(2n, safeExponent, PEDERSEN_P);
 }
 
-/**
- * Derive a reproducible Pedersen context for an election.
- *
- * The same (electionId, contextLabel, candidateCount) always yields the same
- * generators, so auditors can reproduce the context locally.
- */
+// Generates context/generators for an election.
 export function createPedersenContext(
   electionId: string,
   candidateCount: number,
@@ -193,7 +164,7 @@ export function exportPedersenContext(
   };
 }
 
-/** Draw a fresh randomness r uniformly in [1, q-1]. */
+// Draw a fresh randomness r in [1, q-1].
 export function randomPedersenScalar(context: PedersenContext): string {
   // 256 random bits are more than enough to mod-reduce into [0, q) uniformly
   // for a 2048-bit prime (the bias is < 2^-1900 for 2048 bits of material, and
@@ -215,7 +186,7 @@ function assertVectorLength(vector: number[], context: PedersenContext): void {
   }
 }
 
-/** Compute C = g^r * prod h_i^{v_i} mod p. */
+// Compute C = g^r * prod h_i^{v_i} mod p.
 export function createPedersenCommitment(
   context: PedersenContext,
   voteVector: number[],
@@ -252,7 +223,7 @@ export function createPedersenCommitment(
   };
 }
 
-/** Verify opening: check commitment == g^r * prod h_i^{v_i} mod p. */
+// Verify opening.
 export function verifyPedersenOpening(
   context: PedersenContext,
   voteVector: number[],
@@ -278,10 +249,7 @@ function normalizeHex(hex: string): string {
   return lower.length % 2 === 0 ? lower : `0${lower}`;
 }
 
-/**
- * Multiply a list of commitments mod p. Because Pedersen is homomorphic,
- * aggregateCommitments(Cs) opens to (sum of vectors, sum of randomness).
- */
+// Multiply commitments mod p.
 export function aggregateCommitments(
   context: PedersenContext,
   commitments: string[]
@@ -333,14 +301,7 @@ export interface PedersenAggregateVerification {
   verified: boolean;
 }
 
-/**
- * Given a batch of (vector, randomness) openings plus a commitment list, check
- * that the product of commitments equals commit(sum_vectors, sum_randomness).
- *
- * This is the headline audit check for Pedersen aggregation. It is the
- * Haechi-style "tally consistency verification": the aggregator cannot lie
- * about the sum of votes without also producing an inconsistent opening.
- */
+// Verify that the product of commitments equals commit(sum_vectors, sum_randomness).
 export function verifyAggregateOpening(
   context: PedersenContext,
   batch: Array<{ voteVector: number[]; randomness: string; commitment: string }>

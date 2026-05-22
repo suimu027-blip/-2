@@ -20,7 +20,7 @@ services:
       - "3001:3001"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:3001/health', timeout=3)"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
       interval: 15s
       timeout: 5s
       retries: 5
