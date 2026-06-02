@@ -26,34 +26,34 @@ const PEDERSEN_P: bigint = BigInt(`0x${RFC3526_GROUP_14_PRIME_HEX}`);
 const PEDERSEN_Q: bigint = (PEDERSEN_P - 1n) / 2n;
 
 export interface PedersenContext {
-  /** Prime modulus p (RFC 3526 MODP Group 14). */
+  
   p: bigint;
-  /** Order q of the prime-order subgroup. */
+  
   q: bigint;
-  /** Primary generator g, bound to the election context. */
+  
   g: bigint;
-  /** Per-slot generators h_1, ..., h_n, one per candidate slot. */
+  
   h: bigint[];
-  /** Election identifier the context was derived from. */
+  
   electionId: string;
-  /** Optional human-readable label stored for auditability. */
+  
   contextLabel: string;
-  /** Hex digest binding all of the above. */
+  
   contextHash: string;
 }
 
 export interface PedersenCommitment {
-  /** Commitment value C = g^r * prod h_i^{v_i} mod p, as hex. */
+  
   commitment: string;
-  /** Randomness r (reduced mod q), as hex. */
+  
   randomness: string;
-  /** Vector length (== h.length == candidate count). */
+  
   length: number;
-  /** contextHash the commitment was produced in. */
+  
   contextHash: string;
 }
 
-/** Serializable snapshot of a context, safe to export or store. */
+
 export interface PedersenContextSnapshot {
   electionId: string;
   contextLabel: string;
@@ -112,7 +112,7 @@ function deriveGeneratorFromSeed(seed: string): bigint {
   return modPow(2n, safeExponent, PEDERSEN_P);
 }
 
-// Generates context/generators for an election.
+
 export function createPedersenContext(
   electionId: string,
   candidateCount: number,
@@ -205,7 +205,7 @@ export function createPedersenCommitment(
   let commitment = modPow(context.g, rBigInt, context.p);
   for (let i = 0; i < voteVector.length; i += 1) {
     const exponent = BigInt(voteVector[i]);
-    // Handle negative entries by reducing mod q (rarely used, but safe).
+    
     const normalizedExp =
       exponent >= 0n ? exponent % context.q : ((exponent % context.q) + context.q) % context.q;
     if (normalizedExp !== 0n) {
@@ -223,7 +223,7 @@ export function createPedersenCommitment(
   };
 }
 
-// Verify opening.
+
 export function verifyPedersenOpening(
   context: PedersenContext,
   voteVector: number[],
@@ -261,7 +261,7 @@ export function aggregateCommitments(
   return bigIntToHex(product);
 }
 
-/** Sum a list of randomness values mod q. */
+
 export function aggregateRandomness(
   context: PedersenContext,
   randomness: string[]
@@ -273,7 +273,7 @@ export function aggregateRandomness(
   return bigIntToHex(sum);
 }
 
-/** Sum a list of equal-length integer vectors element-wise. */
+
 export function aggregateVoteVectors(vectors: number[][]): number[] {
   if (vectors.length === 0) {
     return [];
@@ -301,7 +301,7 @@ export interface PedersenAggregateVerification {
   verified: boolean;
 }
 
-// Verify that the product of commitments equals commit(sum_vectors, sum_randomness).
+
 export function verifyAggregateOpening(
   context: PedersenContext,
   batch: Array<{ voteVector: number[]; randomness: string; commitment: string }>

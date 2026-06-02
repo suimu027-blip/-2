@@ -1,19 +1,4 @@
-/**
- * Persistence adapter for the VeriVote API.
- *
- * Goals:
- * 1. Keep the existing in-memory arrays untouched (no breaking change to the
- *    main request handlers).
- * 2. Optionally hydrate those arrays from SQLite on startup and persist every
- *    mutation back to the database so the service survives a restart.
- * 3. Degrade gracefully when `better-sqlite3` is not installed: we fall back
- *    to memory-only mode and print a warning.
- *
- * Mode selection (environment variable `VERIVOTE_PERSISTENCE`):
- *   - "auto"   (default): use sqlite if available, otherwise memory
- *   - "memory"          : always memory
- *   - "sqlite"          : require sqlite, throw if the driver is missing
- */
+
 
 import { existsSync, mkdirSync } from "node:fs";
 import { dirname, resolve } from "node:path";
@@ -34,7 +19,7 @@ export type PersistenceMode = "memory" | "sqlite";
 
 export interface PersistenceAdapter {
   readonly mode: PersistenceMode;
-  /** Load everything from the backing store into the supplied arrays / map. */
+  
   load(state: PersistenceState): void;
   saveUser(user: User): void;
   saveElection(election: Election): void;
@@ -47,7 +32,7 @@ export interface PersistenceAdapter {
   saveAggregatorReport(report: AggregatorReport): void;
   saveAttackLog(log: AttackLog): void;
   saveBlockchainAuditRecord(record: BlockchainAuditRecord): void;
-  /** Persist numeric counters so IDs don't collide after restart. */
+  
   saveCounters(counters: Record<string, number>): void;
   close(): void;
 }

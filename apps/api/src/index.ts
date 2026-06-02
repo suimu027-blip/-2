@@ -52,7 +52,7 @@ app.get("/health", (_request, response) => {
   });
 });
 
-// Mount routers
+// 挂载各种路由
 app.use("/zk", zkRouter);
 app.use("/crypto/pedersen", pedersenRouter);
 app.use("/attack", attackRouter);
@@ -60,7 +60,7 @@ app.use("/challenge", challengeRouter);
 app.use("/blockchain", blockchainRouter);
 app.use("/", electionsRouter);
 
-function installPersistenceHooks(adapter: PersistenceAdapter): void {
+function initDB(adapter: PersistenceAdapter): void {
   setPersistence(adapter);
 
   const hydrated = {
@@ -78,7 +78,7 @@ function installPersistenceHooks(adapter: PersistenceAdapter): void {
   };
   adapter.load(hydrated);
 
-  // Wrap array push methods so inserts are persisted transparently.
+  // 劫持数组的push方法，这样存内存的时候就顺便持久化了
   function wrapPush<T>(
     arr: T[],
     save: (item: T) => void,
@@ -103,14 +103,14 @@ function installPersistenceHooks(adapter: PersistenceAdapter): void {
   wrapPush(aggregatorReports, (item) => adapter.saveAggregatorReport(item));
   wrapPush(attackLogs, (item) => adapter.saveAttackLog(item), persistCounters);
 
-  // Map persistence
+  // 处理链上审计记录的保存
   const originalSet = blockchainAuditRecords.set.bind(blockchainAuditRecords);
   blockchainAuditRecords.set = ((key: string, value: BlockchainAuditRecord) => {
     adapter.saveBlockchainAuditRecord(value);
     return originalSet(key, value);
   }) as typeof blockchainAuditRecords.set;
 
-  // Wrap splice so that votes deletions (used by the attack lab) propagate.
+  // 包装splice方法处理删除逻辑（攻击实验室会用到）
   const originalSplice = votes.splice.bind(votes);
   votes.splice = ((start: number, deleteCount?: number, ...inserted: Vote[]) => {
     const deleted = originalSplice(
@@ -123,7 +123,7 @@ function installPersistenceHooks(adapter: PersistenceAdapter): void {
     return deleted;
   }) as typeof votes.splice;
 
-  // Wrap saveAggregatorReport because it mutates in place instead of push.
+  // 处理聚合报告的保存
   const originalSaveAggregator = saveAggregatorReport;
   setSaveAggregatorReport((report: AggregatorReport) => {
     originalSaveAggregator(report);
@@ -131,10 +131,10 @@ function installPersistenceHooks(adapter: PersistenceAdapter): void {
   });
 }
 
-async function bootstrap(): Promise<void> {
+async function startApp(): Promise<void> {
   try {
     const adapter = await createPersistenceAdapter();
-    installPersistenceHooks(adapter);
+    initDB(adapter);
   } catch (error) {
     console.error("[persistence] failed to initialize:", error);
     if ((process.env.VERIVOTE_PERSISTENCE ?? "auto").toLowerCase() === "sqlite") {
@@ -144,12 +144,12 @@ async function bootstrap(): Promise<void> {
 
   app.listen(port, () => {
     console.log(
-      `VeriVote API listening on http://localhost:${port} (persistence: ${persistence?.mode ?? "memory"})`
+      `后端跑起来了，监听端口 ${port}，当前数据库模式是: ${persistence?.mode ?? "memory"}`
     );
   });
 }
 
-bootstrap().catch((error) => {
+startApp().catch((error) => {
   console.error(error);
   process.exit(1);
 });

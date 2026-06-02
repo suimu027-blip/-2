@@ -65,6 +65,7 @@ const router = Router();
 router.post<never, RegisterUserResponse | { error: string }, RegisterUserRequest>(
   "/users/register",
   (request, response) => {
+    console.log("-------有人来注册了-------", request.body.name);
     const name = clean(request.body.name);
 
     if (!name) {
@@ -252,6 +253,7 @@ router.post<
 router.post<{ id: string }, CastVoteResponse | { error: string }, CastVoteRequest>(
   "/elections/:id/vote",
   (request, response) => {
+    console.log("-------用户开始投票了-------");
     const election = findElection(request.params.id);
 
     if (!election) {

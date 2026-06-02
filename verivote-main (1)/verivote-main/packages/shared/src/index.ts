@@ -33,7 +33,7 @@ export interface Vote {
   previousReceiptCodeHash?: string | null;
   receiptChainHash?: string;
   createdAt: string;
-  /** Pedersen context hash binding this commitment to its election generators. */
+  
   pedersenContextHash?: string;
 }
 
@@ -65,7 +65,7 @@ export interface PendingBallot {
   receiptCode: string;
   createdAt: string;
   status: PendingBallotStatus;
-  /** Pedersen context hash binding this commitment to its election generators. */
+  
   pedersenContextHash?: string;
 }
 
@@ -78,7 +78,7 @@ export interface ChallengeRecord {
   commitment: string;
   openingVerified: boolean;
   createdAt: string;
-  /** Pedersen context hash binding this commitment to its election generators. */
+  
   pedersenContextHash?: string;
 }
 
@@ -141,10 +141,10 @@ export interface AggregatorReport {
   receiptRoot: string;
   auditHash: string;
   createdAt: string;
-  /** Pedersen homomorphic tally verification result. */
+  
   pedersenTallyVerified?: boolean;
   pedersenTallyMessage?: string;
-  /** Pedersen context hash used for tally verification. */
+  
   pedersenContextHash?: string;
 }
 
@@ -169,7 +169,7 @@ export interface BlockchainAuditRecord extends BlockchainAuditFields {
   createdAt: string;
   submitter?: string;
   mockSubmitter?: string;
-  /** True when the chain verifier accepted a Groth16 tally proof. */
+  
   zkVerified?: boolean;
   status: BlockchainAuditStatus;
 }
@@ -279,7 +279,7 @@ export interface CastVoteResponse {
   previousReceiptCodeHash: string | null;
   receiptChainHash: string;
   message: string;
-  /** Pedersen context hash for auditability. */
+  
   pedersenContextHash?: string;
 }
 
@@ -364,7 +364,7 @@ export interface SubmitBlockchainAuditResponse {
 // --- on-chain tally-proof gated audit submission ---
 
 export interface SubmitBlockchainAuditWithTallyProofRequest {
-  /** Output of POST /zk/prove-tally-correctness on the same election. */
+  
   tallyProofResponse: TallyProofResponseShared;
 }
 
@@ -488,13 +488,13 @@ export interface PedersenAggregateResponse {
 // --------------------------------------------------------------------------
 
 export interface ArtifactEnvelope {
-  /** Monotonic version tag for the bundle schema. */
+  
   schemaVersion: "verivote.artifact.v1";
-  /** ISO timestamp when the bundle was generated. */
+  
   generatedAt: string;
-  /** electionId the bundle describes. */
+  
   electionId: string;
-  /** Commit hash of the bundle payload (for integrity). */
+  
   bundleHash: string;
 }
 
@@ -542,7 +542,7 @@ export interface ElectionExportBundle {
   aggregatorReport: AggregatorReportArtifact | null;
   zkSummary: ZkSummaryArtifact;
   chainAudit: ChainAuditArtifact;
-  /** Openings of challenged ballots (safe to publish). */
+  
   challengeRecords: ChallengeRecord[];
 }
 

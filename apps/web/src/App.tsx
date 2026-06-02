@@ -32,6 +32,7 @@ import { ArtifactExportPage } from "./pages/ArtifactExportPage";
 import { PerformancePage } from "./pages/PerformancePage";
 import { AttackLabPage } from "./pages/AttackLabPage";
 
+// TODO: 这文件太长了，后面有空把路由拆到单独文件里去
 export function App() {
   const [portal, setPortal] = useState<Portal>("home");
   const [view, setView] = useState<View>("home");

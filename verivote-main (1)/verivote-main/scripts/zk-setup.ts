@@ -28,11 +28,7 @@ interface CircuitPlan {
   ptauPower: number; // 2^k constraints budget
   zkeyBase: string; // e.g. "valid_vote"
   contributionLabel: string;
-  /**
-   * If set, the zkey will be exported as a Solidity verifier. The generated
-   * file is placed under `contracts/<contractName>.sol`, with the default
-   * `Groth16Verifier` class renamed to `<contractName>`.
-   */
+  
   solidityVerifier?: {
     contractName: string;
   };

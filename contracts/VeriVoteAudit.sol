@@ -3,10 +3,7 @@ pragma solidity ^0.8.28;
 
 import {ITallyVerifier} from "./ITallyVerifier.sol";
 
-/// @title VeriVoteAudit
-/// @notice Stores per-election audit summaries. Optionally gates new audit
-///         submissions behind a Groth16 tally-correctness proof verified on
-///         chain, via an external `ITallyVerifier` contract.
+// 保存每次选举的审计结果。如果有配置 ZK 验证器，还要检查 tally proof。
 contract VeriVoteAudit {
     struct AuditRecord {
         bytes32 electionId;
@@ -21,12 +18,10 @@ contract VeriVoteAudit {
         bool exists;
     }
 
-    /// @notice Verifier contract implementing Groth16 verification for
-    ///         `tally_correctness.circom`. Zero means "not configured" and
-    ///         disables proof-gated submissions.
+    // ZK验证器合约地址，如果是0就不验证
     address public tallyVerifier;
 
-    /// @notice Contract deployer. Allowed to rotate the verifier address.
+    // 部署人
     address public immutable admin;
 
     mapping(bytes32 => AuditRecord) private auditRecords;
@@ -67,8 +62,7 @@ contract VeriVoteAudit {
         emit TallyVerifierUpdated(previous, newVerifier);
     }
 
-    /// @notice Submit a plain audit summary without a tally proof. Preserved
-    ///         for backwards compatibility with the original demo flow.
+    // 直接提交，没有zk证明（兼容老版本测试）
     function submitAudit(
         bytes32 electionId,
         bytes32 merkleRoot,
@@ -88,10 +82,7 @@ contract VeriVoteAudit {
         );
     }
 
-    /// @notice Submit an audit summary together with a Groth16 tally-correctness
-    ///         proof. Reverts if the configured `tallyVerifier` rejects the proof.
-    /// @dev    Public signal layout enforced by `tally_correctness.circom`:
-    ///         [tally[0], tally[1], tally[2], tally[3], batchSize]
+    // 提交并且要验证ZK，验证不过就报错
     function submitAuditWithTallyProof(
         bytes32 electionId,
         bytes32 merkleRoot,

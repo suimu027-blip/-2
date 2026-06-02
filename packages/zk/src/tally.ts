@@ -20,9 +20,9 @@ export const TALLY_CANDIDATE_COUNT = 4;
 
 export interface TallyProofRequest {
   electionId: string;
-  /** N x C private matrix. Each row must be one-hot. */
+  
   voteVectors: number[][];
-  /** Public tally; must equal column sums. */
+  
   tally: number[];
 }
 
@@ -64,12 +64,12 @@ export interface TallyVerifyResponse {
   message: string;
 }
 
-/** On-chain calldata format expected by the snarkjs Solidity verifier. */
+
 export interface TallySolidityCalldata {
   a: [string, string];
   b: [[string, string], [string, string]];
   c: [string, string];
-  /** Public signals in the order emitted by the circuit: [tally[0..3], batchSize]. */
+  
   input: string[];
 }
 

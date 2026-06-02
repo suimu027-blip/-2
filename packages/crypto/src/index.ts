@@ -79,7 +79,7 @@ export function createCommitment(
   return result.commitment;
 }
 
-// Verify that a (voteVector, randomness) pair opens to the given Pedersen commitment.
+
 export function verifyCommitmentOpening(
   electionId: string,
   voteVector: number[],
