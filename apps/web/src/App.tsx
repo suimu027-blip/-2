@@ -67,6 +67,9 @@ export function App() {
 
   return (
     <div className="app-shell">
+      <div className="glow-sphere sphere-1"></div>
+      <div className="glow-sphere sphere-2"></div>
+      <div className="glow-sphere sphere-3"></div>
       <header className="topbar">
         <div className="brand-group">
           <button type="button" className="brand" onClick={goPlatformHome}>
@@ -77,25 +80,30 @@ export function App() {
           ) : null}
         </div>
         {activePortal ? (
-          <div className="topbar-actions">
-            <nav aria-label={`${portalLabels[activePortal].title}导航`}>
-              {activeNavItems.map((item) => (
-                <button
-                  key={item.view}
-                  type="button"
-                  className={view === item.view ? "active" : ""}
-                  onClick={() => setView(item.view)}
-                >
-                  {item.label}
-                </button>
-              ))}
-            </nav>
-            <button type="button" className="secondary home-return" onClick={goPlatformHome}>
-              平台首页
-            </button>
-          </div>
+          <button type="button" className="secondary home-return" onClick={goPlatformHome}>
+            平台首页
+          </button>
         ) : null}
       </header>
+
+      {activePortal ? (
+        <div className="sub-navbar-container">
+          <div className="scroll-fade-left"></div>
+          <nav className="sub-navbar" aria-label={`${portalLabels[activePortal].title}导航`}>
+            {activeNavItems.map((item) => (
+              <button
+                key={item.view}
+                type="button"
+                className={view === item.view ? "active" : ""}
+                onClick={() => setView(item.view)}
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
+          <div className="scroll-fade-right"></div>
+        </div>
+      ) : null}
 
       <main>
         <NoticeMessage notice={notice} />
