@@ -1,0 +1,45 @@
+{
+  "proofId": "proof_tally_demo_001",
+  "proofMode": "mock",
+  "verifierMode": "local-mock",
+  "circuitId": "tally-correctness-8x4-v2",
+  "publicSignals": {
+    "electionIdHash": "a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8",
+    "batchId": "batch_demo_001",
+    "tally": [
+      2,
+      2,
+      2,
+      2
+    ],
+    "batchSize": 8,
+    "validVoteCount": 8,
+    "tallyHash": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
+    "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+    "partitionHash": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1",
+    "circuitId": "tally-correctness-8x4-v2"
+  },
+  "proof": {
+    "pi_a": [
+      "1",
+      "2"
+    ],
+    "pi_b": [
+      [
+        "3",
+        "4"
+      ],
+      [
+        "5",
+        "6"
+      ]
+    ],
+    "pi_c": [
+      "7",
+      "8"
+    ]
+  },
+  "proofHash": "h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1",
+  "valid": true,
+  "message": "Demo tally proof matches the sample report."
+}

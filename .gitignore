@@ -4,11 +4,15 @@ dist/
 **/dist/
 __pycache__/
 **/__pycache__/
+.env
+.env.*
+!.env.example
 .venv/
 venv/
 *.pyc
 *.pyo
 *.db
+*-dev*.log
 data/
 zk-artifacts/
 contracts/artifacts/

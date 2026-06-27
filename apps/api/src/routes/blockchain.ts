@@ -116,6 +116,8 @@ router.post<{ id: string }, SubmitBlockchainAuditResponse | { error: string }>(
         receipt?.hash ?? transaction.hash,
         contractAddress
       );
+      audit.gasUsed =
+        receipt?.gasUsed === undefined ? undefined : Number(receipt.gasUsed);
 
       blockchainAuditRecords.set(election.id, audit);
       response.status(201).json({
@@ -199,6 +201,7 @@ router.post<
         auditMode,
         createdAt,
         mockSubmitter: MOCK_SUBMITTER,
+        verifierMode: "local-mock",
         zkVerified: true,
         status: "submitted"
       };
@@ -246,6 +249,9 @@ router.post<
       receipt?.hash ?? transaction.hash,
       contractAddress
     );
+    audit.verifierMode = "real-hardhat";
+    audit.gasUsed =
+      receipt?.gasUsed === undefined ? undefined : Number(receipt.gasUsed);
     blockchainAuditRecords.set(election.id, audit);
 
     response.status(201).json({

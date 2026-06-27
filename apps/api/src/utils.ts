@@ -21,6 +21,7 @@ import type {
   Candidate,
   Vote,
   AggregatorReport,
+  AggregatorReportV2,
   AttackLog,
   AttackType,
   BlockchainAuditFields,
@@ -548,6 +549,8 @@ export function createPublicInputsArtifact(input: {
   bulletin: BulletinBoard;
   report: AggregatorReport | null;
 }) {
+  const reportV2 = input.report as AggregatorReportV2 | null;
+
   return {
     electionId: input.election.id,
     electionIdHash: toBytes32Hex(input.election.id),
@@ -559,6 +562,9 @@ export function createPublicInputsArtifact(input: {
     receiptRoot: input.report?.receiptRoot ?? "",
     tallyHash: input.report ? createTallyHash(input.report) : "",
     auditHash: input.report?.auditHash ?? "",
+    partitionHash: reportV2?.partitionAudit?.partitionHash ?? "",
+    diagnosticsHash: reportV2?.diagnosticsHash ?? "",
+    pedersenAggregateHash: reportV2?.pedersenAggregateHash ?? null,
     zkCircuitId: "valid-vote-4"
   };
 }
@@ -619,26 +625,53 @@ export function buildExportBundle(
     aggregatorReport: context.aggregatorReportArtifact,
     zkSummary: {
       proofMode: null,
+      verifierMode:
+        context.auditMode === "hardhat"
+          ? ("real-hardhat" as const)
+          : ("local-mock" as const),
       circuitId: "valid-vote-4",
       proofGenerated: false,
+      proofHash: null,
       publicSignals: null,
       message:
         "导出时未内联 ZK proof。可单独调用 /zk/prove-vote-validity生成，再合并到 bundle。"
     },
+    tallyProofSummary: null,
     chainAudit: {
       auditMode: context.auditMode,
+      verifierMode:
+        context.auditRecord?.verifierMode ??
+        (context.auditRecord?.zkVerified
+          ? context.auditMode === "hardhat"
+            ? ("real-hardhat" as const)
+            : ("local-mock" as const)
+          : undefined),
       contractAddress: getDisplayedContractAddress(context.auditMode),
+      transactionHash: context.auditRecord?.transactionHash ?? null,
+      zkVerified: context.auditRecord?.zkVerified ?? false,
+      gasUsed: context.auditRecord?.gasUsed,
+      status: context.auditRecord?.status ?? "not_found",
       hasAudit: context.auditRecord !== null,
       audit: context.auditRecord
     },
-    challengeRecords: context.challenges
+    challengeRecords: context.challenges,
+    demoMetadata: {
+      fixtureMode: "api" as const,
+      generatedAt: now(),
+      electionId: context.election.id,
+      candidateCount: context.detail.candidates.length,
+      castVotes: context.bulletin.totalVotes,
+      challengeBallots: context.challenges.length,
+      normalFlow:
+        "create election -> register users -> cast votes -> finalize bulletin -> run aggregator -> export bundle"
+    }
   };
 
   const bundleHash = hashText(JSON.stringify(bundlePayload));
 
   return {
     envelope: {
-      schemaVersion: "verivote.artifact.v1",
+      schemaVersion: "verivote.artifact.v2",
       generatedAt: now(),
       electionId: context.election.id,
       bundleHash

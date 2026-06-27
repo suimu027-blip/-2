@@ -1,0 +1,143 @@
+{
+  "electionId": "demo-election-v2",
+  "totalVotes": 8,
+  "validVotes": 8,
+  "invalidVotes": 0,
+  "duplicateVotes": 0,
+  "receiptChainVerified": true,
+  "receiptChainBreaks": [],
+  "voteTokenHashes": [
+    "v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1",
+    "v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2",
+    "v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3",
+    "v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4",
+    "v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5",
+    "v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6",
+    "v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7",
+    "v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8"
+  ],
+  "duplicateTokenHashes": [],
+  "tallyResult": {
+    "electionId": "demo-election-v2",
+    "totalVotes": 8,
+    "results": [
+      {
+        "candidateId": "candidate_1",
+        "candidateName": "Ada",
+        "voteCount": 2
+      },
+      {
+        "candidateId": "candidate_2",
+        "candidateName": "Bert",
+        "voteCount": 2
+      },
+      {
+        "candidateId": "candidate_3",
+        "candidateName": "Cora",
+        "voteCount": 2
+      },
+      {
+        "candidateId": "candidate_4",
+        "candidateName": "Drew",
+        "voteCount": 2
+      }
+    ]
+  },
+  "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+  "receiptRoot": "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+  "auditHash": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
+  "createdAt": "2026-06-18T08:01:00.000Z",
+  "pedersenTallyVerified": true,
+  "pedersenTallyMessage": "Pedersen tally verified in demo sample.",
+  "pedersenContextHash": "a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2",
+  "partitionAudit": {
+    "buckets": [
+      {
+        "candidateId": "candidate_1",
+        "candidateName": "Ada",
+        "voteCount": 2,
+        "voteIds": [
+          "vote_1",
+          "vote_5"
+        ],
+        "tokenRoot": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1",
+        "commitmentRoot": "q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1",
+        "receiptRoot": "r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1",
+        "bucketAuditHash": "b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1"
+      },
+      {
+        "candidateId": "candidate_2",
+        "candidateName": "Bert",
+        "voteCount": 2,
+        "voteIds": [
+          "vote_2",
+          "vote_6"
+        ],
+        "tokenRoot": "p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2",
+        "commitmentRoot": "q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2",
+        "receiptRoot": "r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2",
+        "bucketAuditHash": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+      },
+      {
+        "candidateId": "candidate_3",
+        "candidateName": "Cora",
+        "voteCount": 2,
+        "voteIds": [
+          "vote_3",
+          "vote_7"
+        ],
+        "tokenRoot": "p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3",
+        "commitmentRoot": "q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3",
+        "receiptRoot": "r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3",
+        "bucketAuditHash": "b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3"
+      },
+      {
+        "candidateId": "candidate_4",
+        "candidateName": "Drew",
+        "voteCount": 2,
+        "voteIds": [
+          "vote_4",
+          "vote_8"
+        ],
+        "tokenRoot": "p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4",
+        "commitmentRoot": "q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4",
+        "receiptRoot": "r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4",
+        "bucketAuditHash": "b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4"
+      }
+    ],
+    "coverComplete": true,
+    "disjoint": true,
+    "noDuplicateValidTokenHashes": true,
+    "allValidVotesBucketed": true,
+    "partitionHash": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1"
+  },
+  "invalidVoteDiagnostics": [],
+  "diagnosticsHash": "d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2",
+  "pedersenAggregateAudit": {
+    "contextHash": "a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3",
+    "aggregatedCommitment": "a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4",
+    "expectedCommitment": "a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5",
+    "aggregatedVector": [
+      2,
+      2,
+      2,
+      2
+    ],
+    "aggregatedRandomnessHash": "a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6",
+    "castVoteCount": 8,
+    "verified": true,
+    "message": "Pedersen aggregate verified in demo sample.",
+    "pedersenAggregateHash": "a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+  },
+  "pedersenAggregateHash": "a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
+  "publicInputHints": {
+    "electionIdHash": "a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8",
+    "candidateCount": 4,
+    "validVotes": 8,
+    "tallyHash": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
+    "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+    "receiptRoot": "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+    "partitionHash": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1",
+    "pedersenAggregateHash": "a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+  }
+}
