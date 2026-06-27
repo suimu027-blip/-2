@@ -1,0 +1,37 @@
+{
+  "seedName": "demo-seed-4x8",
+  "election": {
+    "title": "VeriVote Demo Election v2",
+    "description": "4 candidates, 8 users, 8 cast votes, 2 challenge ballots"
+  },
+  "candidates": [
+    { "id": "candidate_1", "name": "Ada" },
+    { "id": "candidate_2", "name": "Bert" },
+    { "id": "candidate_3", "name": "Cora" },
+    { "id": "candidate_4", "name": "Drew" }
+  ],
+  "users": [
+    { "id": "user_1", "name": "Demo User 1" },
+    { "id": "user_2", "name": "Demo User 2" },
+    { "id": "user_3", "name": "Demo User 3" },
+    { "id": "user_4", "name": "Demo User 4" },
+    { "id": "user_5", "name": "Demo User 5" },
+    { "id": "user_6", "name": "Demo User 6" },
+    { "id": "user_7", "name": "Demo User 7" },
+    { "id": "user_8", "name": "Demo User 8" }
+  ],
+  "castPlan": [
+    { "voteId": "vote_1", "userId": "user_1", "candidateId": "candidate_1" },
+    { "voteId": "vote_2", "userId": "user_2", "candidateId": "candidate_2" },
+    { "voteId": "vote_3", "userId": "user_3", "candidateId": "candidate_3" },
+    { "voteId": "vote_4", "userId": "user_4", "candidateId": "candidate_4" },
+    { "voteId": "vote_5", "userId": "user_5", "candidateId": "candidate_1" },
+    { "voteId": "vote_6", "userId": "user_6", "candidateId": "candidate_2" },
+    { "voteId": "vote_7", "userId": "user_7", "candidateId": "candidate_3" },
+    { "voteId": "vote_8", "userId": "user_8", "candidateId": "candidate_4" }
+  ],
+  "challengePlan": [
+    { "pendingBallotId": "challenge_1", "userId": "user_1", "candidateId": "candidate_2" },
+    { "pendingBallotId": "challenge_2", "userId": "user_2", "candidateId": "candidate_3" }
+  ]
+}

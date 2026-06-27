@@ -297,7 +297,6 @@ p {
   right: 0;
   background: linear-gradient(270deg, rgba(12, 12, 16, 0.9) 0%, transparent 100%);
 }
-}
 
 /* --- Premium Buttons --- */
 button {
@@ -596,6 +595,95 @@ main {
   padding: 36px;
   box-shadow: var(--glass-shadow);
   backdrop-filter: blur(40px);
+}
+
+.two-column {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+
+.button-row,
+.inline-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.align-end {
+  align-self: end;
+}
+
+.result-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.receipt-panel,
+.attack-warning {
+  display: grid;
+  gap: 20px;
+}
+
+.checklist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.checklist-grid span,
+.inline-list span,
+.compact-list li {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  padding: 10px 14px;
+  font-size: 0.92rem;
+}
+
+.compact-list {
+  display: grid;
+  gap: 10px;
+  list-style: none;
+}
+
+.attack-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+}
+
+.attack-card,
+.attack-log,
+.attack-log-list {
+  display: grid;
+  gap: 16px;
+}
+
+.log-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.log-grid span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-tertiary);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.preview-block {
+  max-height: 34rem;
+  white-space: pre-wrap;
 }
 
 .centered-page {
@@ -971,6 +1059,11 @@ pre {
   .capability-grid {
     grid-template-columns: 1fr;
     gap: 20px;
+  }
+
+  .two-column,
+  .log-grid {
+    grid-template-columns: 1fr;
   }
   
   .topbar {

@@ -1,0 +1,16 @@
+{
+  "contextHash": "a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3",
+  "aggregatedCommitment": "a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4",
+  "expectedCommitment": "a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5",
+  "aggregatedVector": [
+    2,
+    2,
+    2,
+    2
+  ],
+  "aggregatedRandomnessHash": "a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6",
+  "castVoteCount": 8,
+  "verified": true,
+  "message": "Pedersen aggregate verified in demo sample.",
+  "pedersenAggregateHash": "a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+}

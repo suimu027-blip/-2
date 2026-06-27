@@ -1,25 +1,14 @@
 import { useEffect, useState } from "react";
-import type { Election } from "@verivote/shared";
+import type { Election, TallyProofResponseShared } from "@verivote/shared";
 import {
   apiRequest,
   getErrorMessage,
   NoticeMessage,
   ElectionSelect,
+  formatJson,
   type Notice
 } from "../common";
-
-interface TallyProofResponseUI {
-  proofId: string;
-  publicSignals: {
-    electionIdHash: string;
-    tally: number[];
-    batchSize: number;
-    circuitId: string;
-  };
-  proof: unknown;
-  valid: boolean;
-  message: string;
-}
+import { demoTallyProofV2Sample } from "../data/demo-fixtures";
 
 const TALLY_BATCH = 8;
 const TALLY_CANDS = 4;
@@ -33,7 +22,9 @@ function createBalancedBatch(): number[][] {
 function columnSums(matrix: number[][]): number[] {
   const sums = new Array(TALLY_CANDS).fill(0);
   for (const row of matrix) {
-    for (let j = 0; j < TALLY_CANDS; j++) sums[j] += row[j];
+    for (let j = 0; j < TALLY_CANDS; j += 1) {
+      sums[j] += row[j];
+    }
   }
   return sums;
 }
@@ -41,55 +32,70 @@ function columnSums(matrix: number[][]): number[] {
 export function TallyZkPage({ elections }: { elections: Election[] }) {
   const [electionId, setElectionId] = useState("");
   const [matrixText, setMatrixText] = useState(
-    JSON.stringify(createBalancedBatch())
+    JSON.stringify(createBalancedBatch(), null, 2)
   );
   const [tallyText, setTallyText] = useState(
     JSON.stringify(columnSums(createBalancedBatch()))
   );
-  const [proofResult, setProofResult] = useState<TallyProofResponseUI | null>(null);
+  const [proofResult, setProofResult] = useState<TallyProofResponseShared | null>(null);
   const [submitResult, setSubmitResult] = useState<string | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [loadingProof, setLoadingProof] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [sampleMode, setSampleMode] = useState(false);
 
   useEffect(() => {
-    if (!electionId && elections.length > 0) setElectionId(elections[0].id);
+    if (!electionId && elections.length > 0) {
+      setElectionId(elections[0].id);
+    }
   }, [electionId, elections]);
 
   function loadSamplePreset(preset: "valid" | "invalid-tally") {
     const batch = createBalancedBatch();
-    setMatrixText(JSON.stringify(batch));
     const sums = columnSums(batch);
     if (preset === "invalid-tally") {
       sums[0] += 1;
       sums[1] -= 1;
     }
+    setMatrixText(JSON.stringify(batch, null, 2));
     setTallyText(JSON.stringify(sums));
     setProofResult(null);
     setSubmitResult(null);
+    setSampleMode(false);
     setNotice(null);
+  }
+
+  function loadSampleProof() {
+    setProofResult(demoTallyProofV2Sample as TallyProofResponseShared);
+    setSubmitResult(null);
+    setSampleMode(true);
+    setNotice({ type: "success", text: "Loaded TallyProof v2 sample." });
   }
 
   async function handleGenerate() {
     setNotice(null);
     setProofResult(null);
     setSubmitResult(null);
+    setSampleMode(false);
+
     if (!electionId) {
-      setNotice({ type: "error", text: "请先选择 election" });
+      setNotice({ type: "error", text: "Select an election first." });
       return;
     }
+
     let voteVectors: number[][];
     let tally: number[];
     try {
-      voteVectors = JSON.parse(matrixText);
-      tally = JSON.parse(tallyText);
+      voteVectors = JSON.parse(matrixText) as number[][];
+      tally = JSON.parse(tallyText) as number[];
     } catch {
-      setNotice({ type: "error", text: "voteVectors / tally 必须是合法 JSON 数组" });
+      setNotice({ type: "error", text: "voteVectors and tally must be JSON arrays." });
       return;
     }
+
     setLoadingProof(true);
     try {
-      const data = await apiRequest<TallyProofResponseUI>(
+      const data = await apiRequest<TallyProofResponseShared>(
         "/zk/prove-tally-correctness",
         {
           method: "POST",
@@ -97,10 +103,7 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
         }
       );
       setProofResult(data);
-      setNotice({
-        type: data.valid ? "success" : "error",
-        text: data.message
-      });
+      setNotice({ type: data.valid ? "success" : "error", text: data.message });
     } catch (error) {
       setNotice({ type: "error", text: getErrorMessage(error) });
     } finally {
@@ -110,13 +113,17 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
 
   async function handleSubmitWithProof() {
     if (!electionId || !proofResult) {
-      setNotice({ type: "error", text: "请先生成 tally proof" });
+      setNotice({ type: "error", text: "Generate or load a tally proof first." });
       return;
     }
+
     setSubmitResult(null);
     setLoadingSubmit(true);
     try {
-      const data = await apiRequest<{ audit: { zkVerified?: boolean; transactionHash: string }; message: string }>(
+      const data = await apiRequest<{
+        audit: { zkVerified?: boolean; transactionHash: string };
+        message: string;
+      }>(
         `/blockchain/elections/${encodeURIComponent(electionId)}/submit-audit-with-tally-proof`,
         {
           method: "POST",
@@ -124,7 +131,7 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
         }
       );
       setSubmitResult(
-        `zkVerified=${String(Boolean(data.audit?.zkVerified))}  tx=${data.audit?.transactionHash}`
+        `zkVerified=${String(Boolean(data.audit?.zkVerified))} tx=${data.audit?.transactionHash}`
       );
       setNotice({ type: "success", text: data.message });
     } catch (error) {
@@ -138,15 +145,13 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
     <section className="page-section">
       <div className="section-header">
         <div>
-          <p className="eyebrow">ZK · batch</p>
-          <h1>Tally Correctness ZK（批次计票正确性 + 链上 verifier）</h1>
+          <p className="eyebrow">Tally ZK</p>
+          <h1>Tally Correctness</h1>
         </div>
       </div>
       <p className="page-lead">
-        对 {TALLY_BATCH} 张票 × {TALLY_CANDS} 候选人固定规模的批次，生成 Groth16 证明：
-        每张票是合法 one-hot，并且列求和 = 公共 tally。
-        可继续把该 proof 提交给 <code>/blockchain/elections/:id/submit-audit-with-tally-proof</code>，
-        由链上 <code>TallyVerifier</code> 合约真正验证后写入 audit 记录。
+        This page renders the B-line TallyProof v2 contract. It can call the current
+        API, or load a sample proof while the real verifier path is still pending.
       </p>
 
       <NoticeMessage notice={notice} />
@@ -154,111 +159,135 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
       <div className="panel form">
         <div className="two-column">
           <label>
-            选择 election
+            Election
             <ElectionSelect
               elections={elections}
               value={electionId}
               onChange={setElectionId}
             />
           </label>
-          <div className="inline-list" style={{ alignSelf: "flex-end" }}>
+          <div className="inline-list align-end">
             <button
               type="button"
               className="secondary"
               onClick={() => loadSamplePreset("valid")}
             >
-              载入 合法 batch
+              Valid 8x4 batch
             </button>
             <button
               type="button"
               className="secondary"
               onClick={() => loadSamplePreset("invalid-tally")}
             >
-              载入 篡改 tally
+              Tampered tally
+            </button>
+            <button type="button" className="secondary" onClick={loadSampleProof}>
+              Load v2 sample proof
             </button>
           </div>
         </div>
 
         <label>
-          voteVectors（{TALLY_BATCH} × {TALLY_CANDS} 的 JSON 矩阵）
+          voteVectors JSON
           <textarea
-            rows={6}
+            rows={8}
             value={matrixText}
-            onChange={(e) => setMatrixText(e.target.value)}
+            onChange={(event) => setMatrixText(event.target.value)}
           />
         </label>
 
         <label>
-          tally（长度 {TALLY_CANDS} 的 JSON 数组）
-          <input value={tallyText} onChange={(e) => setTallyText(e.target.value)} />
+          tally JSON
+          <input value={tallyText} onChange={(event) => setTallyText(event.target.value)} />
         </label>
 
         <div className="inline-list">
           <button type="button" onClick={() => void handleGenerate()} disabled={loadingProof}>
-            {loadingProof ? "生成中..." : "生成 tally proof"}
+            {loadingProof ? "Generating..." : "Generate proof from current election"}
           </button>
           <button
             type="button"
             className="secondary"
             onClick={() => void handleSubmitWithProof()}
-            disabled={!proofResult || !proofResult.valid || loadingSubmit}
+            disabled={!proofResult || !proofResult.valid || loadingSubmit || sampleMode}
           >
-            {loadingSubmit ? "提交中..." : "提交到链上 (submitAuditWithTallyProof)"}
+            {loadingSubmit ? "Submitting..." : "Submit with proof"}
           </button>
         </div>
       </div>
 
       {proofResult ? (
         <div className="panel">
-          <h2>proof 概览</h2>
+          <div className="verification-heading">
+            <h2>proof overview</h2>
+            <span className={proofResult.valid ? "status-pill ok" : "status-pill bad"}>
+              {proofResult.valid ? "valid" : "invalid"}
+            </span>
+          </div>
+          {sampleMode ? (
+            <p className="receipt-note">
+              Fixture mode: the submit button is disabled to avoid sending sample calldata as real chain evidence.
+            </p>
+          ) : null}
           <div className="hash-list">
             <div>
               <span>proofId</span>
               <code className="hash-value">{proofResult.proofId}</code>
             </div>
             <div>
-              <span>valid</span>
-              <code className="hash-value">{String(proofResult.valid)}</code>
+              <span>proofMode</span>
+              <code className="hash-value">{proofResult.proofMode ?? "mock"}</code>
+            </div>
+            <div>
+              <span>verifierMode</span>
+              <code className="hash-value">{proofResult.verifierMode ?? "pending"}</code>
             </div>
             <div>
               <span>circuitId</span>
-              <code className="hash-value">{proofResult.publicSignals.circuitId}</code>
+              <code className="hash-value">
+                {proofResult.circuitId ?? proofResult.publicSignals.circuitId}
+              </code>
             </div>
             <div>
-              <span>tally (public)</span>
+              <span>proofHash</span>
+              <code className="hash-value">{proofResult.proofHash ?? "pending"}</code>
+            </div>
+            <div>
+              <span>tally</span>
               <code className="hash-value">
                 [{proofResult.publicSignals.tally.join(", ")}]
               </code>
             </div>
             <div>
-              <span>batchSize (public)</span>
+              <span>batchSize</span>
               <code className="hash-value">{proofResult.publicSignals.batchSize}</code>
             </div>
             <div>
-              <span>electionIdHash</span>
-              <code className="hash-value">{proofResult.publicSignals.electionIdHash}</code>
+              <span>partitionHash</span>
+              <code className="hash-value">
+                {proofResult.publicSignals.partitionHash ?? "pending"}
+              </code>
             </div>
           </div>
+          <pre>{formatJson(proofResult.publicSignals)}</pre>
         </div>
       ) : null}
 
       {submitResult ? (
         <div className="panel receipt-panel">
-          <h2>链上审计结果</h2>
-          <code className="hash-value" style={{ whiteSpace: "pre-wrap" }}>
-            {submitResult}
-          </code>
+          <h2>chain submit result</h2>
+          <code className="hash-value">{submitResult}</code>
         </div>
       ) : null}
 
       <div className="panel">
-        <h2>流程解释</h2>
-        <ol>
-          <li>在 <strong>合法 batch</strong>、<strong>篡改 tally</strong> 两个预设间切换；前者 witness 生成 + Groth16 verify 都通过，后者 witness 生成阶段就会失败。</li>
-          <li>点 <strong>提交到链上</strong> 会先调 <code>/blockchain/elections/:id/submit-audit-with-tally-proof</code>，后端再把 proof 编码成 <code>(a, b, c, input)</code> calldata 调 <code>VeriVoteAudit.submitAuditWithTallyProof(...)</code>。</li>
-          <li>链上合约会委托 <code>TallyVerifier</code>（snarkjs 导出的 Solidity verifier；本地未生成时会回退到 <code>MockTallyVerifier</code>）。只有合约认可的 proof 才能写入 audit 记录，<code>record.zkVerified=true</code>。</li>
-          <li>默认 <code>BLOCKCHAIN_AUDIT_MODE=local-mock</code>，不会真上链；要跑真实链上验证请切到 <code>hardhat</code> 模式并 <code>pnpm contract:deploy</code>。</li>
-        </ol>
+        <h2>status model</h2>
+        <div className="checklist-grid">
+          <span>{proofResult ? "ok" : "pending"} proof generated</span>
+          <span>{proofResult?.proofHash ? "ok" : "pending"} proofHash</span>
+          <span>{proofResult?.verifierMode ?? "pending"} verifierMode</span>
+          <span>{submitResult ? "ok" : "pending"} chain matched</span>
+        </div>
       </div>
     </section>
   );

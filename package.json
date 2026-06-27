@@ -4,18 +4,19 @@
   "private": true,
   "packageManager": "pnpm@10.33.3",
   "scripts": {
-    "dev": "pnpm -r --parallel dev",
-    "dev:web": "pnpm --filter @verivote/web dev",
-    "dev:api": "pnpm --filter @verivote/api dev",
-    "build": "pnpm -r --workspace-concurrency=1 build",
-    "typecheck": "pnpm -r typecheck",
+    "dev": "corepack pnpm -r --parallel dev",
+    "dev:web": "corepack pnpm --filter @verivote/web dev",
+    "dev:api": "corepack pnpm --filter @verivote/api dev",
+    "build": "corepack pnpm -r --workspace-concurrency=1 build",
+    "typecheck": "corepack pnpm --filter @verivote/shared build && corepack pnpm --filter @verivote/crypto build && corepack pnpm --filter @verivote/zk build && corepack pnpm --filter @verivote/api typecheck && corepack pnpm --filter @verivote/web typecheck",
     "benchmark": "tsx scripts/benchmark.ts",
+    "demo:seed": "tsx scripts/demo-seed.ts",
     "zk:setup": "tsx scripts/zk-setup.ts",
     "zk:demo": "tsx scripts/zk-demo.ts",
-    "contract:compile": "pnpm --filter @verivote/contracts compile",
-    "contract:test": "pnpm --filter @verivote/contracts test",
-    "contract:node": "pnpm --filter @verivote/contracts node",
-    "contract:deploy": "pnpm --filter @verivote/contracts run deploy"
+    "contract:compile": "corepack pnpm --filter @verivote/contracts compile",
+    "contract:test": "corepack pnpm --filter @verivote/contracts test",
+    "contract:node": "corepack pnpm --filter @verivote/contracts node",
+    "contract:deploy": "corepack pnpm --filter @verivote/contracts run deploy"
   },
   "devDependencies": {
     "snarkjs": "^0.7.6",

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import type { Election, AttackLog, GetAttackLogsResponse, AttackResponse } from "@verivote/shared";
+import { useEffect, useMemo, useState } from "react";
+import type { AttackLog, AttackResponse, Election, GetAttackLogsResponse } from "@verivote/shared";
 import {
   apiRequest,
   getErrorMessage,
@@ -9,40 +9,37 @@ import {
   formatJson,
   type Notice
 } from "../common";
+import { demoAttackMatrix } from "../data/demo-fixtures";
 
 const attackActions = [
   {
-    label: "演示攻击：篡改 commitment",
+    label: "Tamper commitment",
     path: "tamper-commitment",
-    tip: "验证：重新运行聚合器或查看审计报告，receipt chain 应能发现 chain hash 不匹配。"
+    tip: "Next: re-run Aggregator and check AuditReport hashes."
   },
   {
-    label: "演示攻击：删除选票",
+    label: "Delete vote",
     path: "delete-vote",
-    tip: "验证：重新运行聚合器或查看审计报告，删除或重排正式票会导致 receipt chain 验证失败。"
+    tip: "Next: check BulletinBoard receipt chain and Merkle proof."
   },
   {
-    label: "演示攻击：注入重复投票",
+    label: "Inject duplicate vote",
     path: "inject-duplicate-vote",
-    tip: "验证：重新运行聚合器，然后查看 duplicateVotes。"
+    tip: "Next: re-run Aggregator and inspect duplicateVotes."
   },
   {
-    label: "演示攻击：注入非法投票",
+    label: "Inject invalid vote",
     path: "inject-invalid-vote",
-    tip: "验证：重新运行聚合器，然后查看 invalidVotes。"
+    tip: "Next: re-run Aggregator and inspect invalidVotes."
   },
   {
-    label: "演示攻击：篡改 tallyResult",
+    label: "Tamper tally",
     path: "tamper-tally",
-    tip: "验证：去审计报告页面查看 tallyConsistent 是否为 false。"
+    tip: "Next: open AuditReport and check tallyConsistent=false."
   }
 ] as const;
 
-interface AttackLogCardProps {
-  log: AttackLog;
-}
-
-function AttackLogCard({ log }: AttackLogCardProps) {
+function AttackLogCard({ log }: { log: AttackLog }) {
   return (
     <article className="attack-log">
       <div className="result-heading">
@@ -66,11 +63,7 @@ function AttackLogCard({ log }: AttackLogCardProps) {
   );
 }
 
-interface AttackLabPageProps {
-  elections: Election[];
-}
-
-export function AttackLabPage({ elections }: AttackLabPageProps) {
+export function AttackLabPage({ elections }: { elections: Election[] }) {
   const [electionId, setElectionId] = useState("");
   const [logs, setLogs] = useState<AttackLog[]>([]);
   const [latestLog, setLatestLog] = useState<AttackLog | null>(null);
@@ -96,7 +89,6 @@ export function AttackLabPage({ elections }: AttackLabPageProps) {
         const data = await apiRequest<GetAttackLogsResponse>(
           `/attack/elections/${electionId}/logs`
         );
-
         if (!ignore) {
           setLogs(data.logs);
           setNotice(null);
@@ -110,18 +102,19 @@ export function AttackLabPage({ elections }: AttackLabPageProps) {
     }
 
     void loadLogs();
-
     return () => {
       ignore = true;
     };
   }, [electionId]);
+
+  const orderedLogs = useMemo(() => [...logs].reverse(), [logs]);
 
   async function handleAttack(path: string) {
     setNotice(null);
     setLatestLog(null);
 
     if (!electionId) {
-      setNotice({ type: "error", text: "请先选择投票" });
+      setNotice({ type: "error", text: "Select an election first." });
       return;
     }
 
@@ -129,11 +122,8 @@ export function AttackLabPage({ elections }: AttackLabPageProps) {
       setRunningPath(path);
       const data = await apiRequest<AttackResponse>(
         `/attack/elections/${electionId}/${path}`,
-        {
-          method: "POST"
-        }
+        { method: "POST" }
       );
-
       setLatestLog(data.log);
       setLogs((currentLogs) => [
         ...currentLogs.filter((log) => log.id !== data.log.id),
@@ -147,14 +137,12 @@ export function AttackLabPage({ elections }: AttackLabPageProps) {
     }
   }
 
-  const orderedLogs = [...logs].reverse();
-
   return (
     <section className="page-section">
       <div className="section-header">
         <div>
           <p className="eyebrow">Attack Lab</p>
-          <h1>攻击演示</h1>
+          <h1>Attack Matrix</h1>
         </div>
       </div>
 
@@ -163,14 +151,13 @@ export function AttackLabPage({ elections }: AttackLabPageProps) {
       <div className="panel attack-warning">
         <strong>Demo only</strong>
         <p>
-          本页所有按钮都是“演示攻击”，会直接修改当前 API 进程中的内存数据。
-          删除或重排正式票会导致 receipt chain 验证失败。
+          These actions mutate the current API process data. Disable /attack/* before production deployment.
         </p>
       </div>
 
       <div className="panel form">
         <label>
-          投票
+          Election
           <ElectionSelect
             elections={elections}
             value={electionId}
@@ -182,6 +169,32 @@ export function AttackLabPage({ elections }: AttackLabPageProps) {
         </label>
       </div>
 
+      <div className="panel">
+        <h2>verification routes</h2>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>attack</th>
+                <th>artifact</th>
+                <th>expected failure</th>
+                <th>next view</th>
+              </tr>
+            </thead>
+            <tbody>
+              {demoAttackMatrix.map((row) => (
+                <tr key={row.action}>
+                  <td>{row.label}</td>
+                  <td>{row.artifact}</td>
+                  <td>{row.expected}</td>
+                  <td>{row.nextView}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <div className="attack-grid">
         {attackActions.map((action) => (
           <article key={action.path} className="panel attack-card">
@@ -190,7 +203,7 @@ export function AttackLabPage({ elections }: AttackLabPageProps) {
               onClick={() => void handleAttack(action.path)}
               disabled={!electionId || runningPath !== null}
             >
-              {runningPath === action.path ? "执行中..." : action.label}
+              {runningPath === action.path ? "Running..." : action.label}
             </button>
             <p>{action.tip}</p>
           </article>
@@ -199,15 +212,15 @@ export function AttackLabPage({ elections }: AttackLabPageProps) {
 
       {latestLog ? (
         <div className="panel">
-          <h2>最新攻击结果</h2>
+          <h2>latest attack result</h2>
           <AttackLogCard log={latestLog} />
         </div>
       ) : null}
 
       <div className="panel">
-        <h2>AttackLog 列表</h2>
+        <h2>attack logs</h2>
         {orderedLogs.length === 0 ? (
-          <p className="empty">暂无攻击日志</p>
+          <p className="empty">No attack logs.</p>
         ) : (
           <div className="attack-log-list">
             {orderedLogs.map((log) => (

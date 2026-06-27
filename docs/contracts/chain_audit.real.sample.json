@@ -1,0 +1,18 @@
+{
+  "auditMode": "hardhat",
+  "verifierMode": "real-hardhat",
+  "contractAddress": "0x1111111111111111111111111111111111111111",
+  "transactionHash": "0x2222222222222222222222222222222222222222222222222222222222222222",
+  "zkVerified": true,
+  "gasUsed": 284901,
+  "status": "submitted",
+  "electionId": "demo-election-v2",
+  "electionIdHash": "a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8",
+  "merkleRoot": "m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1",
+  "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
+  "receiptRoot": "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
+  "auditHash": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
+  "tallyHash": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
+  "createdAt": "2026-06-18T08:03:00.000Z",
+  "submitter": "demo-submit-service"
+}

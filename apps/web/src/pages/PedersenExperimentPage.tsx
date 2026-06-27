@@ -10,6 +10,7 @@ import {
   NoticeMessage,
   type Notice
 } from "../common";
+import { demoPedersenAggregateAuditSample } from "../data/demo-fixtures";
 
 interface PedersenBatchEntry {
   voteVector: string;
@@ -44,6 +45,7 @@ export function PedersenExperimentPage() {
   const [batch, setBatch] = useState<PedersenBatchEntry[]>([]);
   const [aggregateResult, setAggregateResult] =
     useState<PedersenAggregateResponse | null>(null);
+  const [sampleAuditLoaded, setSampleAuditLoaded] = useState(false);
   const [notice, setNotice] = useState<Notice | null>(null);
 
   async function handleCommit(event: FormEvent<HTMLFormElement>) {
@@ -124,6 +126,7 @@ export function PedersenExperimentPage() {
   async function handleAggregateVerify() {
     setNotice(null);
     setAggregateResult(null);
+    setSampleAuditLoaded(false);
     try {
       if (batch.length === 0) {
         throw new Error("batch 不能为空");
@@ -149,6 +152,30 @@ export function PedersenExperimentPage() {
     } catch (error) {
       setNotice({ type: "error", text: getErrorMessage(error) });
     }
+  }
+
+  function handleLoadAggregateSample() {
+    setAggregateResult({
+      context: {
+        electionId,
+        contextLabel: "verivote.pedersen.experiment.v1",
+        contextHash: demoPedersenAggregateAuditSample.contextHash,
+        p: "sample",
+        q: "sample",
+        g: "sample",
+        h: []
+      },
+      aggregatedCommitment: demoPedersenAggregateAuditSample.aggregatedCommitment,
+      expectedCommitment: demoPedersenAggregateAuditSample.expectedCommitment,
+      aggregatedRandomness: "sample-redacted",
+      aggregatedRandomnessHash: demoPedersenAggregateAuditSample.aggregatedRandomnessHash,
+      aggregatedVector: demoPedersenAggregateAuditSample.aggregatedVector,
+      pedersenAggregateHash: demoPedersenAggregateAuditSample.pedersenAggregateHash,
+      verified: demoPedersenAggregateAuditSample.verified,
+      message: demoPedersenAggregateAuditSample.message
+    });
+    setSampleAuditLoaded(true);
+    setNotice({ type: "success", text: "Loaded PedersenAggregateAudit v2 sample." });
   }
 
   return (
@@ -292,34 +319,54 @@ export function PedersenExperimentPage() {
             ))}
           </div>
         )}
-        <button type="button" onClick={() => void handleAggregateVerify()}>
-          运行 aggregate-verify
-        </button>
+        <div className="inline-list">
+          <button type="button" onClick={() => void handleAggregateVerify()}>
+            运行 aggregate-verify
+          </button>
+          <button type="button" className="secondary" onClick={handleLoadAggregateSample}>
+            Load aggregate audit sample
+          </button>
+        </div>
         {aggregateResult ? (
-          <div className="hash-list">
-            <div>
-              <span>verified</span>
-              <code className="hash-value">{String(aggregateResult.verified)}</code>
+          <>
+            {sampleAuditLoaded ? (
+              <p className="receipt-note">
+                Fixture mode: this mirrors docs/contracts/pedersen_aggregate_audit.sample.json.
+              </p>
+            ) : null}
+            <div className="hash-list">
+              <div>
+                <span>verified</span>
+                <code className="hash-value">{String(aggregateResult.verified)}</code>
+              </div>
+              <div>
+                <span>pedersenAggregateHash</span>
+                <code className="hash-value">
+                  {aggregateResult.pedersenAggregateHash ?? "pending"}
+                </code>
+              </div>
+              <div>
+                <span>aggregatedCommitment</span>
+                <code className="hash-value">{aggregateResult.aggregatedCommitment}</code>
+              </div>
+              <div>
+                <span>expectedCommitment</span>
+                <code className="hash-value">{aggregateResult.expectedCommitment}</code>
+              </div>
+              <div>
+                <span>aggregatedRandomnessHash</span>
+                <code className="hash-value">
+                  {aggregateResult.aggregatedRandomnessHash ?? "pending"}
+                </code>
+              </div>
+              <div>
+                <span>aggregatedVector</span>
+                <code className="hash-value">
+                  [{aggregateResult.aggregatedVector.join(", ")}]
+                </code>
+              </div>
             </div>
-            <div>
-              <span>aggregatedCommitment</span>
-              <code className="hash-value">{aggregateResult.aggregatedCommitment}</code>
-            </div>
-            <div>
-              <span>expectedCommitment</span>
-              <code className="hash-value">{aggregateResult.expectedCommitment}</code>
-            </div>
-            <div>
-              <span>aggregatedRandomness</span>
-              <code className="hash-value">{aggregateResult.aggregatedRandomness}</code>
-            </div>
-            <div>
-              <span>aggregatedVector</span>
-              <code className="hash-value">
-                [{aggregateResult.aggregatedVector.join(", ")}]
-              </code>
-            </div>
-          </div>
+          </>
         ) : null}
       </div>
     </section>

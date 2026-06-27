@@ -1,5 +1,44 @@
 # VeriVote 电子投票系统 - 大作业/毕业设计
 
+## Demo startup paths
+
+### 1. Quick mock demo
+
+```bash
+corepack pnpm install
+corepack pnpm dev
+corepack pnpm demo:seed
+```
+
+Open the Web URL from Vite, enter Admin & Audit Console, then use Aggregator, Tally ZK, Chain Audit, Attack Lab, and Artifact Export. This path uses `BLOCKCHAIN_AUDIT_MODE=local-mock` by default.
+
+### 2. Hardhat chain demo
+
+Terminal A:
+
+```bash
+corepack pnpm contract:node
+```
+
+Terminal B:
+
+```bash
+corepack pnpm contract:deploy
+```
+
+Copy `AUDIT_CONTRACT_ADDRESS=...` from the deploy output into `.env`, set `BLOCKCHAIN_AUDIT_MODE=hardhat`, restart the API, then use Chain Audit.
+
+### 3. Real verifier demo
+
+```bash
+corepack pnpm zk:setup
+corepack pnpm zk:demo
+corepack pnpm contract:compile
+corepack pnpm contract:test
+```
+
+Use this path only when the generated verifier artifacts are present. If the page is showing sample proof or local-mock data, describe it as fixture/mock evidence, not as a real on-chain verifier result.
+
 这是一个面向低信任场景（比如高校选举、社团投票、企业内部评选等）设计的**隐私保护与可验证电子投票系统**。
 
 这个项目主要是我们小组为了解决电子投票中“选民不相信结果、管理员可能在后台改票”的问题。我们把零知识证明（ZK-SNARKs）、密码学承诺、默克尔树以及智能合约存证都做进去了。项目采用单仓（monorepo）结构，前后端和合约全在一个工程里，方便跑起来演示。
