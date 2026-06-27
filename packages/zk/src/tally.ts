@@ -124,9 +124,6 @@ const projectRoot = resolve(fileURLToPath(new URL("../../..", import.meta.url)))
 const tallyArtifactDirectory =
   process.env.VERIVOTE_ZK_TALLY_ARTIFACT_DIR ??
   join(projectRoot, "zk-artifacts", "tally-correctness");
-const tallyArtifactDirectoryLabel =
-  process.env.VERIVOTE_ZK_TALLY_ARTIFACT_LABEL ??
-  "zk-artifacts/tally-correctness";
 
 function hashText(text: string): string {
   return createHash("sha256").update(text, "utf8").digest("hex");
@@ -444,7 +441,7 @@ function createProofShell(input: {
     publicSignals: input.publicSignals,
     snarkjsProof: input.snarkjsProof ?? null,
     snarkjsPublicSignals: input.snarkjsPublicSignals ?? [],
-    artifactDirectory: tallyArtifactDirectoryLabel,
+    artifactDirectory: tallyArtifactDirectory,
     valid: input.valid,
     error: input.error
   };

@@ -1,0 +1,141 @@
+{
+    "schemaVersion":  "verivote.aggregator-powershell-api-smoke.v1",
+    "generatedBy":  "scripts/aggregator-api-powershell-smoke.ps1",
+    "baseUrl":  "http://127.0.0.1:39646",
+    "normalElectionId":  "election_1",
+    "caseCount":  7,
+    "allIntegrityVerified":  true,
+    "files":  [
+                  "aggregator_report.normal.json",
+                  "aggregator_report.attack-duplicate-token.json",
+                  "aggregator_report.attack-invalid-candidate.json",
+                  "aggregator_report.attack-non-one-hot.json",
+                  "aggregator_report.attack-candidate-vector-mismatch.json",
+                  "aggregator_report.attack-commitment-tamper.json",
+                  "aggregator_report.attack-receipt-chain-delete.json",
+                  "public_inputs.normal.json",
+                  "export_bundle.normal.json"
+              ],
+    "cases":  [
+                  {
+                      "diagnosticReasons":  [
+
+                                            ],
+                      "case":  "normal",
+                      "file":  "aggregator_report.normal.json",
+                      "partitionHash":  "bbb08d1e8649f2323d1105531c6ab02817ef0ee0e60c578896b46714d29af542",
+                      "validVotes":  8,
+                      "duplicateVotes":  0,
+                      "auditHash":  "eef508a1f9aadb9c8c3fa63f0f003944ecc4725439e1fdfbbc65b515099e7e61",
+                      "invalidVotes":  0,
+                      "electionId":  "election_1",
+                      "diagnosticsHash":  "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+                      "proofStatus":  "not-generated",
+                      "receiptChainVerified":  true,
+                      "integrityVerified":  true
+                  },
+                  {
+                      "diagnosticReasons":  [
+                                                "duplicate-token"
+                                            ],
+                      "case":  "duplicate-token",
+                      "file":  "aggregator_report.attack-duplicate-token.json",
+                      "partitionHash":  "6bf37fe766153b05e8351c98e22b7dff6d2516ed0ebc7ea27c4a215782247206",
+                      "validVotes":  8,
+                      "duplicateVotes":  1,
+                      "auditHash":  "e7d7692b90984f2a8dc2d3d18d1dec3c325e6ff027573913418e271e44dd52e5",
+                      "invalidVotes":  1,
+                      "electionId":  "election_2",
+                      "diagnosticsHash":  "e614c47e297c8d814cb863f5557dc506cf2511c0b8d4591eb4e499811f0f4e93",
+                      "proofStatus":  "not-generated",
+                      "receiptChainVerified":  true,
+                      "integrityVerified":  true
+                  },
+                  {
+                      "diagnosticReasons":  [
+                                                "invalid-candidate"
+                                            ],
+                      "case":  "invalid-candidate",
+                      "file":  "aggregator_report.attack-invalid-candidate.json",
+                      "partitionHash":  "53a4bf2edac7bd50afdce52d80e6ff1cd26f482da16cbadbf694b27f91750f44",
+                      "validVotes":  8,
+                      "duplicateVotes":  0,
+                      "auditHash":  "b2ad6e3e3fbd2114ea06d42c9c573c48e35ae191cf72e30e2b4370fd5ab4d7d5",
+                      "invalidVotes":  1,
+                      "electionId":  "election_3",
+                      "diagnosticsHash":  "444a8d64f6a7bfe5960ddfc697cb12872894138b98b0672b1fd429aa1566f291",
+                      "proofStatus":  "not-generated",
+                      "receiptChainVerified":  true,
+                      "integrityVerified":  true
+                  },
+                  {
+                      "diagnosticReasons":  [
+                                                "invalid-one-hot"
+                                            ],
+                      "case":  "non-one-hot",
+                      "file":  "aggregator_report.attack-non-one-hot.json",
+                      "partitionHash":  "8e59c75b74633ea5eda7f9ac99d64ae1b16c2914bc7b17a4194a4b6f78701617",
+                      "validVotes":  8,
+                      "duplicateVotes":  0,
+                      "auditHash":  "3936ed47cd8019f32dd57a43f613f99492eba7c962c39bbff00514a0ef5119fc",
+                      "invalidVotes":  1,
+                      "electionId":  "election_4",
+                      "diagnosticsHash":  "995360243f3e27950e82709ae0019fc60d72ebb301233aa34d4fb1a8d7634e12",
+                      "proofStatus":  "not-generated",
+                      "receiptChainVerified":  true,
+                      "integrityVerified":  true
+                  },
+                  {
+                      "diagnosticReasons":  [
+                                                "candidate-vector-mismatch"
+                                            ],
+                      "case":  "candidate-vector-mismatch",
+                      "file":  "aggregator_report.attack-candidate-vector-mismatch.json",
+                      "partitionHash":  "2aab4db5f5330cecb25b9225222ba5aca7cf7251fc1d3bcb0c843beaf2db01cc",
+                      "validVotes":  8,
+                      "duplicateVotes":  0,
+                      "auditHash":  "f81ed7ae614c2ca958a7b7bf5cc6d1ae3b35c4608c9ae469d0f44b5c49f4811f",
+                      "invalidVotes":  1,
+                      "electionId":  "election_5",
+                      "diagnosticsHash":  "5174088c299066bbcfa08fef484c801f126050ba1998b6503eddf6dd88fb16ea",
+                      "proofStatus":  "not-generated",
+                      "receiptChainVerified":  true,
+                      "integrityVerified":  true
+                  },
+                  {
+                      "diagnosticReasons":  [
+                                                "commitment-opening-failed",
+                                                "receipt-chain-break"
+                                            ],
+                      "case":  "commitment-tamper",
+                      "file":  "aggregator_report.attack-commitment-tamper.json",
+                      "partitionHash":  "c6e7807b71df4df4766419c6f4041de329e5e91fa0a55664e666567c81f49452",
+                      "validVotes":  7,
+                      "duplicateVotes":  0,
+                      "auditHash":  "14fb1c0b8341a314017b9b50e928b6718d3c9fa3fbc2d3cbed4b59d790aeb20b",
+                      "invalidVotes":  1,
+                      "electionId":  "election_6",
+                      "diagnosticsHash":  "9a7560e6d8965016611ae1e9395b7af0646a85819f1118ef26c7062949b9c747",
+                      "proofStatus":  "not-generated",
+                      "receiptChainVerified":  false,
+                      "integrityVerified":  true
+                  },
+                  {
+                      "diagnosticReasons":  [
+                                                "receipt-chain-break"
+                                            ],
+                      "case":  "receipt-chain-delete",
+                      "file":  "aggregator_report.attack-receipt-chain-delete.json",
+                      "partitionHash":  "159dfc713dfc6a924d6bf56f6dbe37326f40d064116862a69cdba3adab3d0607",
+                      "validVotes":  0,
+                      "duplicateVotes":  0,
+                      "auditHash":  "3bf2ccd4fafa2ca9658efcf47e5d2969d801727f327f31531a0e914136262f93",
+                      "invalidVotes":  7,
+                      "electionId":  "election_7",
+                      "diagnosticsHash":  "9554021cc14fa5b81fd08fa033bb3359ed9255e9ad8c4c77b03b8066b011ffa2",
+                      "proofStatus":  "not-generated",
+                      "receiptChainVerified":  false,
+                      "integrityVerified":  true
+                  }
+              ]
+}

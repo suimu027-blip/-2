@@ -1,37 +1,170 @@
 {
-  "seedName": "demo-seed-4x8",
+  "schemaVersion": "verivote.demo-seed-fixture.v1",
+  "generatedBy": "pnpm aggregator:audit-cases",
   "election": {
-    "title": "VeriVote Demo Election v2",
-    "description": "4 candidates, 8 users, 8 cast votes, 2 challenge ballots"
+    "title": "VeriVote Aggregator v2 Fixture",
+    "description": "4 candidates, 8 formal votes, deterministic A-track audit fixture."
   },
   "candidates": [
-    { "id": "candidate_1", "name": "Ada" },
-    { "id": "candidate_2", "name": "Bert" },
-    { "id": "candidate_3", "name": "Cora" },
-    { "id": "candidate_4", "name": "Drew" }
+    {
+      "id": "candidate_1",
+      "name": "Alice"
+    },
+    {
+      "id": "candidate_2",
+      "name": "Bob"
+    },
+    {
+      "id": "candidate_3",
+      "name": "Carol"
+    },
+    {
+      "id": "candidate_4",
+      "name": "Dave"
+    }
   ],
   "users": [
-    { "id": "user_1", "name": "Demo User 1" },
-    { "id": "user_2", "name": "Demo User 2" },
-    { "id": "user_3", "name": "Demo User 3" },
-    { "id": "user_4", "name": "Demo User 4" },
-    { "id": "user_5", "name": "Demo User 5" },
-    { "id": "user_6", "name": "Demo User 6" },
-    { "id": "user_7", "name": "Demo User 7" },
-    { "id": "user_8", "name": "Demo User 8" }
+    {
+      "id": "user_1",
+      "name": "Fixture User 1"
+    },
+    {
+      "id": "user_2",
+      "name": "Fixture User 2"
+    },
+    {
+      "id": "user_3",
+      "name": "Fixture User 3"
+    },
+    {
+      "id": "user_4",
+      "name": "Fixture User 4"
+    },
+    {
+      "id": "user_5",
+      "name": "Fixture User 5"
+    },
+    {
+      "id": "user_6",
+      "name": "Fixture User 6"
+    },
+    {
+      "id": "user_7",
+      "name": "Fixture User 7"
+    },
+    {
+      "id": "user_8",
+      "name": "Fixture User 8"
+    }
   ],
-  "castPlan": [
-    { "voteId": "vote_1", "userId": "user_1", "candidateId": "candidate_1" },
-    { "voteId": "vote_2", "userId": "user_2", "candidateId": "candidate_2" },
-    { "voteId": "vote_3", "userId": "user_3", "candidateId": "candidate_3" },
-    { "voteId": "vote_4", "userId": "user_4", "candidateId": "candidate_4" },
-    { "voteId": "vote_5", "userId": "user_5", "candidateId": "candidate_1" },
-    { "voteId": "vote_6", "userId": "user_6", "candidateId": "candidate_2" },
-    { "voteId": "vote_7", "userId": "user_7", "candidateId": "candidate_3" },
-    { "voteId": "vote_8", "userId": "user_8", "candidateId": "candidate_4" }
+  "votes": [
+    {
+      "userId": "user_1",
+      "candidateId": "candidate_1",
+      "voteVector": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "userId": "user_2",
+      "candidateId": "candidate_2",
+      "voteVector": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "userId": "user_3",
+      "candidateId": "candidate_3",
+      "voteVector": [
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "userId": "user_4",
+      "candidateId": "candidate_4",
+      "voteVector": [
+        0,
+        0,
+        0,
+        1
+      ]
+    },
+    {
+      "userId": "user_5",
+      "candidateId": "candidate_1",
+      "voteVector": [
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "userId": "user_6",
+      "candidateId": "candidate_2",
+      "voteVector": [
+        0,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "userId": "user_7",
+      "candidateId": "candidate_3",
+      "voteVector": [
+        0,
+        0,
+        1,
+        0
+      ]
+    },
+    {
+      "userId": "user_8",
+      "candidateId": "candidate_4",
+      "voteVector": [
+        0,
+        0,
+        0,
+        1
+      ]
+    }
   ],
-  "challengePlan": [
-    { "pendingBallotId": "challenge_1", "userId": "user_1", "candidateId": "candidate_2" },
-    { "pendingBallotId": "challenge_2", "userId": "user_2", "candidateId": "candidate_3" }
-  ]
+  "expected": {
+    "candidateCount": 4,
+    "totalVotes": 8,
+    "validVotes": 8,
+    "invalidVotes": 0,
+    "tally": [
+      {
+        "candidateId": "candidate_1",
+        "candidateName": "Alice",
+        "voteCount": 2
+      },
+      {
+        "candidateId": "candidate_2",
+        "candidateName": "Bob",
+        "voteCount": 2
+      },
+      {
+        "candidateId": "candidate_3",
+        "candidateName": "Carol",
+        "voteCount": 2
+      },
+      {
+        "candidateId": "candidate_4",
+        "candidateName": "Dave",
+        "voteCount": 2
+      }
+    ]
+  }
 }

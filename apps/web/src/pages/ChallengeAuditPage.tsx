@@ -234,8 +234,7 @@ export function ChallengeAuditPage({ elections }: ChallengeAuditPageProps) {
         <strong>挑战审计用于验证系统是否按用户选择正确生成 commitment。</strong>
         <p>
           被 challenge 的选票会公开 opening，因此不计入正式投票；只有 Cast 的 prepared ballot
-          会进入正式 votes、结果、公告板和聚合器。Cast 与 Challenge 是不可逆二选一状态，
-          已 cast 的票不能再 challenge，已 challenge 的票不能再 cast。
+          会进入正式 votes、结果、公告板和聚合器。
         </p>
       </div>
 
@@ -392,7 +391,6 @@ export function ChallengeAuditPage({ elections }: ChallengeAuditPageProps) {
             </div>
           </div>
           <p className="receipt-note">
-            cast 响应只公开 receipt 和 commitment，不公开 voteVector 或 randomness。
             可在回执查询、公告板、聚合器中继续验证这张正式选票。
           </p>
         </div>

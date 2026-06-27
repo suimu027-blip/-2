@@ -173,6 +173,7 @@ router.post<
   pendingBallot.status = "cast";
 
   response.status(201).json({
+    vote,
     voteId: vote.id,
     receiptCode: vote.receiptCode,
     commitment: vote.commitment,
@@ -215,8 +216,7 @@ router.post<
     randomness: pendingBallot.randomness,
     commitment: pendingBallot.commitment,
     openingVerified,
-    createdAt: now(),
-    pedersenContextHash: pendingBallot.pedersenContextHash
+    createdAt: now()
   };
 
   challengeRecords.push(record);

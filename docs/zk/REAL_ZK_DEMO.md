@@ -1,166 +1,105 @@
-# VeriVote Real ZK Proof Demo
+# VeriVote Real ZK Demo
 
-## 1. Goal
+## Goal
 
-This demo connects the real Circom/snarkjs proof path to the existing VeriVote ZK validity module. It keeps the mock adapter, and adds a real Groth16 path for the fixed four-candidate `valid_vote.circom` circuit.
+This demo connects the real Circom/snarkjs proof path to VeriVote while keeping
+mock adapters available for local UI and fallback testing.
 
-The real flow is available in:
+The real paths now cover:
 
-1. `pnpm zk:setup`: compile circuit and generate persistent artifacts.
-2. `pnpm zk:demo`: run CLI proof/verify tests using those artifacts.
-3. `POST /zk/prove-vote-validity` with `proofMode = "real"`.
-4. The frontend `ZK 验证` page with `Real Groth16 ZK Proof` selected.
+- `circuits/valid_vote.circom`: fixed four-candidate single-ballot one-hot proof
+- `circuits/tally_correctness.circom`: fixed 8x4 tally correctness proof
+- `contracts/TallyVerifier.sol`: generated Groth16 verifier for the tally circuit
+- `VeriVoteAudit.submitAuditWithTallyProof`: Hardhat chain submission with verifier call
 
-## 2. Circom Constraints
+## Commands
 
-Circuit:
-
-```text
-circuits/valid_vote.circom
+```bash
+pnpm zk:setup
+pnpm zk:samples
+pnpm zk:demo
+pnpm zk:audit
+pnpm contract:test
 ```
 
-Input:
+`pnpm zk:setup` compiles both circuits, runs the local trusted setup, writes
+`zk-artifacts/`, and exports `contracts/TallyVerifier.sol`.
+
+`pnpm zk:samples` regenerates the contract-facing fixtures in `docs/contracts`:
+
+- `valid_vote_records_8x4.sample.json`
+- `aggregator_report_v2.sample.json`
+- `tally_proof_v2.valid.sample.json`
+- `tally_proof_v2.invalid-tally.sample.json`
+- `calldata.sample.json`
+
+`pnpm --filter @verivote/contracts run sample:chain-audit` writes
+`docs/contracts/chain_audit.real.sample.json`.
+
+## Valid Vote Circuit
+
+`valid_vote.circom` proves:
 
 ```text
-voteVector[4]
-```
-
-Constraints:
-
-```text
+voteVector length = 4
 vi * (vi - 1) = 0
 v0 + v1 + v2 + v3 = 1
 ```
 
-The current circuit marks `voteVector` as public input. This makes the demo easy to inspect, but it is not the final privacy-preserving design. A later circuit should keep the vote private and expose a commitment.
+Current boundary: `voteVector` is public in this teaching/demo circuit. The
+private version should expose a commitment as public signal instead.
 
-## 3. Setup
+## Tally Circuit
 
-Install dependencies:
-
-```bash
-pnpm install
-```
-
-Install Circom 2 and make sure it is on `PATH`:
-
-```bash
-circom --version
-```
-
-Windows/Codex users can build Circom from the official repository with Rust:
-
-```bash
-git clone https://github.com/iden3/circom.git
-cd circom
-cargo build --release
-```
-
-Then add `target/release` to `PATH`.
-
-Prepare persistent artifacts:
-
-```bash
-pnpm zk:setup
-```
-
-The setup script writes:
+`tally_correctness.circom` proves:
 
 ```text
-zk-artifacts/valid-vote/valid_vote.r1cs
-zk-artifacts/valid-vote/valid_vote_js/valid_vote.wasm
-zk-artifacts/valid-vote/valid_vote_js/generate_witness.js
-zk-artifacts/valid-vote/valid_vote_final.zkey
-zk-artifacts/valid-vote/verification_key.json
+N = 8 padded rows
+C = 4 candidates
+public signals = [tally[0], tally[1], tally[2], tally[3], batchSize]
 ```
 
-`zk-artifacts/` is ignored by git because it contains generated proof artifacts.
+Short batches are padded with ghost rows and `realRows=0`. More than eight
+effective votes must be split into batches before proving.
 
-## 4. CLI Demo
+## Chain Verifier
 
-After setup:
+The generated `TallyVerifier.sol` is a real Groth16 verifier for the tally
+circuit. It implements the `ITallyVerifier` shape:
 
-```bash
-pnpm zk:demo
+```solidity
+verifyProof(uint256[2], uint256[2][2], uint256[2], uint256[5])
 ```
 
-Expected legal cases:
+Hardhat tests cover:
 
-```text
-[1,0,0,0] -> verified = true
-[0,1,0,0] -> verified = true
-```
+- valid real calldata accepted
+- tampered public input rejected
+- tampered proof rejected
+- all-zero proof rejected
+- duplicate tally-proof submission rejected
 
-Expected illegal cases:
+## Report Binding
 
-```text
-[1,1,0,0] -> verified = false
-[0,0,0,0] -> verified = false
-[2,0,0,0] -> verified = false
-```
+The circuit's Solidity public inputs stay at five values. The API binds the
+proof to the current AggregatorReport before any chain submission:
 
-If artifacts are missing, `pnpm zk:demo` prints a clear message asking you to run `pnpm zk:setup`.
+- `proofHash`
+- `electionIdHash`
+- `tally`
+- `batchSize`
+- `tallyHash`
+- `commitmentRoot`
+- `partitionHash`
+- `verifierMode`
 
-## 5. API And Frontend Demo
+`MockTallyVerifier` and `local-mock` are demo/fallback paths only. They must not
+be described as real on-chain ZK verification.
 
-Start the stack after running setup:
+## Remaining Boundaries
 
-```bash
-pnpm dev:api
-pnpm dev:web
-```
-
-Open the `ZK 验证` page and choose:
-
-```text
-Real Groth16 ZK Proof
-```
-
-The prove endpoint accepts:
-
-```json
-{
-  "electionId": "election_1",
-  "voteVector": [1, 0, 0, 0],
-  "candidateCount": 4,
-  "proofMode": "real"
-}
-```
-
-The verify endpoint automatically detects real mode from:
-
-```json
-{
-  "proofMode": "real"
-}
-```
-
-inside the proof object.
-
-## 6. Missing Artifact Behavior
-
-The API does not run trusted setup per request. If `zk-artifacts/valid-vote/` is missing or incomplete, real mode returns a clear message:
-
-```text
-Real ZK artifacts are missing. Run pnpm zk:setup first.
-```
-
-The backend should keep running; mock mode remains available.
-
-## 7. Current Boundaries
-
-1. The real circuit is fixed to four candidates.
-2. `voteVector` is public in this minimal demo.
-3. Trusted setup is local and for demonstration only.
-4. This proves ballot validity only, not tally correctness.
-5. It does not generate a Solidity verifier.
-6. It does not replace the mock adapter or normal voting flow.
-
-## 8. Next Integration Steps
-
-1. Add a private-witness circuit that exposes only `voteVectorCommitment`.
-2. Store and version production-grade artifacts.
-3. Add deployment configuration for selecting mock or real mode.
-4. Extend to batch proof generation.
-5. Prove tally correctness.
-6. Generate a Solidity verifier and connect the chain audit path.
+1. The single-ballot valid-vote circuit is not privacy-preserving yet.
+2. The tally circuit is fixed to 8 rows and 4 candidates.
+3. The local trusted setup is for demo evidence, not a production ceremony.
+4. Moving report metadata into Solidity public signals requires a new circuit
+   and a new verifier ABI beyond `uint256[5]`.

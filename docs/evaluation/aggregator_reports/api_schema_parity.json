@@ -1,0 +1,181 @@
+{
+  "schemaVersion": "verivote.api-schema-parity.v1",
+  "generatedBy": "pnpm aggregator:complete",
+  "generatedAt": "2026-06-27T10:33:58.182Z",
+  "passed": true,
+  "inputs": {
+    "tsContract": {
+      "file": "E:/666/-2-main/docs/contracts/aggregator_report_v2.sample.json",
+      "exists": true
+    },
+    "tsRawReport": {
+      "file": "E:/666/-2-main/docs/evaluation/aggregator_reports/api_export_aggregator_report.json",
+      "exists": true
+    },
+    "pythonRawReport": {
+      "file": "E:/666/-2-main/docs/evaluation/aggregator_reports/python_api_aggregator_report.json",
+      "exists": true
+    },
+    "tsRawBundle": {
+      "file": "E:/666/-2-main/docs/evaluation/aggregator_reports/api_export_bundle.json",
+      "exists": true
+    },
+    "pythonRawBundle": {
+      "file": "E:/666/-2-main/docs/evaluation/aggregator_reports/python_api_export_bundle.json",
+      "exists": true
+    }
+  },
+  "checks": {
+    "contractVsTsRawTopLevel": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "contractVsPythonRawTopLevel": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "tsRawVsPythonRawTopLevel": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "publicInputHints": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "partitionAudit": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "partitionBucket": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "invalidVoteDiagnostic": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "tallyProofSummary": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "integrityCheckKeys": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "exportBundleTopLevel": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "chainAudit": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    },
+    "demoMetadata": {
+      "leftOnly": [],
+      "rightOnly": [],
+      "equal": true
+    }
+  },
+  "allowedArtifactExtensions": [
+    "tallyConsistent",
+    "consistencyMessage"
+  ],
+  "reportTopLevelKeys": [
+    "auditHash",
+    "commitmentRoot",
+    "createdAt",
+    "diagnosticsHash",
+    "duplicateTokenHashes",
+    "duplicateVotes",
+    "electionId",
+    "invalidVoteDiagnostics",
+    "invalidVoteIds",
+    "invalidVotes",
+    "partitionAudit",
+    "partitionHash",
+    "pedersenAggregateAudit",
+    "pedersenAggregateHash",
+    "pedersenAggregateStatus",
+    "pedersenContextHash",
+    "pedersenTallyMessage",
+    "pedersenTallyVerified",
+    "proofStatus",
+    "publicInputHints",
+    "receiptChainBreaks",
+    "receiptChainVerified",
+    "receiptRoot",
+    "tallyProofSummary",
+    "tallyResult",
+    "totalVotes",
+    "validVoteIds",
+    "validVotes",
+    "voteTokenHashes"
+  ],
+  "publicInputHintKeys": [
+    "candidateCount",
+    "commitmentRoot",
+    "diagnosticsHash",
+    "electionIdHash",
+    "partitionHash",
+    "pedersenAggregateHash",
+    "receiptRoot",
+    "tallyHash",
+    "validVotes"
+  ],
+  "partitionBucketKeys": [
+    "bucketAuditHash",
+    "candidateId",
+    "candidateName",
+    "commitmentRoot",
+    "receiptRoot",
+    "tokenHashes",
+    "tokenRoot",
+    "voteCount",
+    "voteIds"
+  ],
+  "integrityCheckKeys": [
+    "auditHashMatches",
+    "bucketAuditHashesMatch",
+    "bucketTallyMatches",
+    "bucketTokenRootsMatchTokenHashes",
+    "bucketVoteCountSumMatchesValidVotes",
+    "bucketVoteCountsMatch",
+    "bucketVoteIdsDisjoint",
+    "candidateCountMatchesPartitions",
+    "diagnosticEvidenceHashesMatch",
+    "diagnosticsHashMatches",
+    "duplicateTokenHashesMatchDiagnostics",
+    "duplicateVoteCountMatchesDiagnostics",
+    "fieldShapeValid",
+    "invalidVoteCountMatchesDiagnostics",
+    "invalidVoteIdsExcludedFromBuckets",
+    "invalidVoteIdsMatchDiagnostics",
+    "nestedPartitionHashMatches",
+    "noDuplicateValidTokenHashesAsserted",
+    "noDuplicateValidTokenHashesVerified",
+    "partitionFlagsMatchStructure",
+    "partitionHashMatches",
+    "pedersenAggregateHashMatches",
+    "pedersenAggregateStatusMatches",
+    "publicInputHintsMatch",
+    "receiptChainStatusMatchesBreaks",
+    "tallySumMatchesValidVotes",
+    "tallyTotalMatchesValidVotes",
+    "totalVoteCountMatchesValidAndInvalid",
+    "validAndInvalidVoteIdsDisjoint",
+    "validVoteIdsMatchBuckets",
+    "voteIdAccountingMatchesTotalVotes",
+    "voteTokenHashCountMatchesTotalVotes"
+  ]
+}

@@ -1,0 +1,524 @@
+{
+  "schemaVersion": "verivote.aggregator-completeness-matrix.v1",
+  "generatedBy": "pnpm aggregator:complete",
+  "generatedAt": "2026-06-27T10:33:58.193Z",
+  "passed": true,
+  "itemCount": 27,
+  "items": [
+    {
+      "id": "A-contract",
+      "description": "Frozen parallel interface contract exists",
+      "evidence": "E:/666/-2-main/docs/contracts/VERIVOTE_PARALLEL_INTERFACE_CONTRACT.md",
+      "passed": true
+    },
+    {
+      "id": "A-handoff",
+      "description": "A handoff has failure copy and screenshot checklist",
+      "evidence": "E:/666/-2-main/docs/evaluation/AGGREGATOR_AUDIT_HANDOFF.md",
+      "passed": true
+    },
+    {
+      "id": "A-full-acceptance-script",
+      "description": "One-command Task A full acceptance script exists",
+      "evidence": "E:/666/-2-main/scripts/aggregator-task-a-full.ts",
+      "passed": true
+    },
+    {
+      "id": "A-cases-md",
+      "description": "A acceptance markdown exists",
+      "evidence": "E:/666/-2-main/docs/evaluation/AGGREGATOR_AUDIT_CASES.md",
+      "passed": true
+    },
+    {
+      "id": "A-demo-seed",
+      "description": "Demo seed fixture exists and describes 4 candidates / 8 votes",
+      "evidence": "E:/666/-2-main/docs/contracts/demo_seed_fixture.json",
+      "passed": true,
+      "details": {
+        "candidateCount": 4,
+        "totalVotes": 8,
+        "validVotes": 8,
+        "invalidVotes": 0,
+        "tally": [
+          {
+            "candidateId": "candidate_1",
+            "candidateName": "Alice",
+            "voteCount": 2
+          },
+          {
+            "candidateId": "candidate_2",
+            "candidateName": "Bob",
+            "voteCount": 2
+          },
+          {
+            "candidateId": "candidate_3",
+            "candidateName": "Carol",
+            "voteCount": 2
+          },
+          {
+            "candidateId": "candidate_4",
+            "candidateName": "Dave",
+            "voteCount": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "A-contract-sample",
+      "description": "AggregatorReport v2 contract sample has explicit id and token evidence",
+      "evidence": "E:/666/-2-main/docs/contracts/aggregator_report_v2.sample.json",
+      "passed": true,
+      "details": {
+        "validVoteIds": 8,
+        "invalidVoteIds": 0,
+        "proofStatus": "not-generated",
+        "bucketCount": 4,
+        "integrityVerified": true
+      }
+    },
+    {
+      "id": "A-contract-sample-alias",
+      "description": "Day-0 aggregator_report.sample.json alias points to the v2 sample shape",
+      "evidence": "E:/666/-2-main/docs/contracts/aggregator_report.sample.json",
+      "passed": true,
+      "details": {
+        "sampleAliasFor": "docs/contracts/aggregator_report_v2.sample.json",
+        "proofStatus": "not-generated",
+        "integrityVerified": true
+      }
+    },
+    {
+      "id": "A-pedersen-null-sample",
+      "description": "AggregatorReport v2 sample supports C-track-not-ready Pedersen null state",
+      "evidence": "E:/666/-2-main/docs/contracts/aggregator_report_pedersen_null.sample.json",
+      "passed": true,
+      "details": {
+        "pedersenAggregateAudit": null,
+        "pedersenAggregateStatus": "pending",
+        "pedersenAggregateHash": null,
+        "publicHint": null,
+        "integrityVerified": true
+      }
+    },
+    {
+      "id": "A-export-bundle",
+      "description": "ExportBundleV2 sample carries report, proof placeholder, chain audit, and demo metadata",
+      "evidence": "E:/666/-2-main/docs/contracts/export_bundle_v2.sample.json",
+      "passed": true,
+      "details": {
+        "schemaVersion": "verivote.artifact.v2",
+        "aggregatorIntegrity": true,
+        "proofStatus": "not-generated",
+        "chainAuditStatus": "not_submitted",
+        "demoSeedFile": "docs/contracts/demo_seed_fixture.json"
+      }
+    },
+    {
+      "id": "A-public-inputs",
+      "description": "Public inputs v2 sample binds partition and diagnostics hashes",
+      "evidence": "E:/666/-2-main/docs/contracts/public_inputs_v2.sample.json",
+      "passed": true,
+      "details": {
+        "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+        "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+        "auditHash": "8c9148ac4430f41febfe7bae1777f1ed07760c4a4c9fd76767284a41536a73af"
+      }
+    },
+    {
+      "id": "A-summary",
+      "description": "Summary covers all normal/attack cases",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/summary.json",
+      "passed": true,
+      "details": {
+        "caseCount": 7,
+        "cases": [
+          "normal",
+          "duplicate-token",
+          "invalid-candidate",
+          "non-one-hot",
+          "candidate-vector-mismatch",
+          "commitment-tamper",
+          "receipt-chain-delete"
+        ],
+        "attackAliases": [
+          "aggregator_report.attack-duplicate-token.json",
+          "aggregator_report.attack-invalid-candidate.json",
+          "aggregator_report.attack-non-one-hot.json",
+          "aggregator_report.attack-candidate-vector-mismatch.json",
+          "aggregator_report.attack-commitment-tamper.json",
+          "aggregator_report.attack-receipt-chain-delete.json"
+        ]
+      }
+    },
+    {
+      "id": "A-full-acceptance-manifest",
+      "description": "One-command Task A full acceptance manifest records regenerated samples, API smokes, local export, verification, typecheck, build, and completeness gate",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/task_a_full_acceptance.json",
+      "passed": true,
+      "details": {
+        "passed": true,
+        "stepCount": 9,
+        "commands": [
+          "pnpm aggregator:audit-cases",
+          "pnpm aggregator:local-export",
+          "pnpm aggregator:api-smoke",
+          "python scripts/api_smoke_test.py",
+          "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/aggregator-api-powershell-smoke.ps1 -BaseUrl http://127.0.0.1:39646",
+          "pnpm aggregator:verify",
+          "pnpm typecheck",
+          "pnpm build",
+          "pnpm aggregator:complete"
+        ]
+      }
+    },
+    {
+      "id": "A-offline",
+      "description": "Offline verifier covers positive files, constructed tamper rejection, and saved API tamper report rejection",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/offline_verification.json",
+      "passed": true,
+      "details": {
+        "verifiedFiles": [
+          "aggregator_report.normal.json",
+          "aggregator_report.duplicate-token.json",
+          "aggregator_report.invalid-candidate.json",
+          "aggregator_report.non-one-hot.json",
+          "aggregator_report.candidate-vector-mismatch.json",
+          "aggregator_report.commitment-tamper.json",
+          "aggregator_report.receipt-chain-delete.json"
+        ],
+        "tamperCases": [
+          "fieldShapeValid",
+          "auditHashMatches",
+          "bucketVoteCountsMatch",
+          "bucketTokenRootsMatchTokenHashes",
+          "validVoteIdsMatchBuckets",
+          "duplicateTokenHashesMatchDiagnostics",
+          "diagnosticsHashMatches",
+          "publicInputHintsMatch",
+          "pedersenAggregateHashMatches",
+          "pedersenAggregateStatusMatches",
+          "auditHashMatches"
+        ],
+        "savedApiTamperReport": {
+          "name": "api-tamper-tally",
+          "file": "docs/evaluation/aggregator_reports/api_aggregator_report.attack-tamper-tally.json",
+          "endpoint": "/attack/elections/election_9/tamper-tally",
+          "reportEndpoint": "/aggregator/elections/election_9/report",
+          "storedIntegrityVerified": false,
+          "offlineIntegrityVerified": false,
+          "storedFailures": [
+            "bucketTallyMatches",
+            "publicInputHintsMatch",
+            "tallyTotalMatchesValidVotes",
+            "tallySumMatchesValidVotes"
+          ],
+          "offlineFailures": [
+            "bucketTallyMatches",
+            "publicInputHintsMatch",
+            "tallyTotalMatchesValidVotes",
+            "tallySumMatchesValidVotes"
+          ],
+          "auditHashMatches": true,
+          "expectedFailures": [
+            "bucketTallyMatches",
+            "tallyTotalMatchesValidVotes",
+            "tallySumMatchesValidVotes"
+          ],
+          "tallyConsistent": false
+        },
+        "pedersenNullContractSample": {
+          "file": "docs/contracts/aggregator_report_pedersen_null.sample.json",
+          "integrityVerified": true,
+          "failures": [],
+          "auditHash": "0d1ab470405379c93bc90ad9ac1d49d7b5cfd9b73c47f62faf6477624c7e6d5b",
+          "pedersenAggregateAudit": null,
+          "pedersenAggregateStatus": "pending",
+          "pedersenAggregateHash": null
+        }
+      }
+    },
+    {
+      "id": "A-api-smoke",
+      "description": "API smoke covers run/report/export/attack and SQLite persistence",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/api_smoke.json",
+      "passed": true,
+      "details": {
+        "caseCount": 7,
+        "endpoints": [
+          "/aggregator/elections/:id/run",
+          "/attack/elections/:id/inject-duplicate-vote",
+          "/attack/elections/:id/inject-invalid-vote",
+          "/attack/elections/:id/inject-non-one-hot-vote",
+          "/attack/elections/:id/inject-candidate-vector-mismatch",
+          "/attack/elections/:id/tamper-commitment",
+          "/attack/elections/:id/delete-vote"
+        ],
+        "bundleEndpoint": "/elections/:id/export-bundle",
+        "bundleProofStatus": "not-generated",
+        "rawExportFiles": {
+          "aggregatorReport": "docs/evaluation/aggregator_reports/api_export_aggregator_report.json",
+          "publicInputs": "docs/evaluation/aggregator_reports/api_export_public_inputs.json",
+          "exportBundle": "docs/evaluation/aggregator_reports/api_export_bundle.json"
+        },
+        "reportTamperSmoke": {
+          "name": "tamper-tally",
+          "endpoint": "/attack/elections/:id/tamper-tally",
+          "status": 200,
+          "reportStatus": 200,
+          "integrityVerified": false,
+          "expectedIntegrityFailures": [
+            "bucketTallyMatches",
+            "tallyTotalMatchesValidVotes",
+            "tallySumMatchesValidVotes"
+          ],
+          "observedFailures": [
+            "bucketTallyMatches",
+            "publicInputHintsMatch",
+            "tallyTotalMatchesValidVotes",
+            "tallySumMatchesValidVotes"
+          ],
+          "tallyConsistent": false,
+          "consistencyMessage": "tallyResult 与当前 votes 重新聚合结果不一致，疑似 tally 被篡改。",
+          "auditHash": "d2ce48cb4bc37bfd38083b25b45f1efa6a447a7999910349d74f5ea20fb59a5b",
+          "file": "docs/evaluation/aggregator_reports/api_aggregator_report.attack-tamper-tally.json"
+        },
+        "apiReportFiles": [
+          "api_aggregator_report.normal.json",
+          "api_aggregator_report.duplicate-token.json",
+          "api_aggregator_report.invalid-candidate.json",
+          "api_aggregator_report.non-one-hot.json",
+          "api_aggregator_report.candidate-vector-mismatch.json",
+          "api_aggregator_report.commitment-tamper.json",
+          "api_aggregator_report.receipt-chain-delete.json"
+        ],
+        "apiAttackAliases": [
+          "api_aggregator_report.attack-duplicate-token.json",
+          "api_aggregator_report.attack-invalid-candidate.json",
+          "api_aggregator_report.attack-non-one-hot.json",
+          "api_aggregator_report.attack-candidate-vector-mismatch.json",
+          "api_aggregator_report.attack-commitment-tamper.json",
+          "api_aggregator_report.attack-receipt-chain-delete.json"
+        ],
+        "persistenceIntegrity": true,
+        "persistedFields": 29
+      }
+    },
+    {
+      "id": "A-api-raw-aggregator",
+      "description": "Raw HTTP aggregator export contains AggregatorReport v2 and integrityCheck",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/api_export_aggregator_report.json",
+      "passed": true,
+      "details": {
+        "proofStatus": "not-generated",
+        "integrityVerified": true,
+        "bucketCount": 4
+      }
+    },
+    {
+      "id": "A-api-raw-public-inputs",
+      "description": "Raw HTTP public inputs export binds partition, diagnostics, and audit hashes",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/api_export_public_inputs.json",
+      "passed": true,
+      "details": {
+        "partitionHash": "4f7be70bbd83b8d1b5a5e7a21cddc2b1dc2e4a47dd52d2b75f4279994f562239",
+        "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+        "auditHash": "419020148075d7741d3f47cb89fbf15f42490ac87f036b0c9a7a6fcdc2d5e440"
+      }
+    },
+    {
+      "id": "A-api-raw-bundle",
+      "description": "Raw HTTP export bundle contains A report, proof placeholder, chain audit, and demo metadata",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/api_export_bundle.json",
+      "passed": true,
+      "details": {
+        "aggregatorIntegrity": true,
+        "proofStatus": "not-generated",
+        "chainAuditStatus": "not_submitted",
+        "demoSeedFile": "docs/contracts/demo_seed_fixture.json"
+      }
+    },
+    {
+      "id": "A-local-standalone-export",
+      "description": "Local standalone script outputs AggregatorReport v2, public inputs, and ExportBundleV2 without starting the API server",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/local_standalone/manifest.json",
+      "passed": true,
+      "details": {
+        "serverRequired": false,
+        "fixture": {
+          "electionId": "election_local_export_8x4",
+          "candidateCount": 4,
+          "userCount": 8,
+          "voteCount": 8
+        },
+        "report": {
+          "file": "aggregator_report.local-normal.json",
+          "auditHash": "e8bf2966385dd363c296d156119bc37d1c543793fd3ea0fa9c10853c8c3366fc",
+          "partitionHash": "379bf0ffdc3af583163f40142592378eb3e5c46fea3c3eb5f12642657f701a3f",
+          "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+          "proofStatus": "not-generated",
+          "integrityVerified": true
+        },
+        "publicInputs": {
+          "file": "public_inputs.local-normal.json",
+          "auditHash": "e8bf2966385dd363c296d156119bc37d1c543793fd3ea0fa9c10853c8c3366fc",
+          "partitionHash": "379bf0ffdc3af583163f40142592378eb3e5c46fea3c3eb5f12642657f701a3f",
+          "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6"
+        },
+        "exportBundle": {
+          "file": "export_bundle.local-normal.json",
+          "schemaVersion": "verivote.artifact.v2",
+          "proofStatus": "not-generated",
+          "chainAuditStatus": "not_submitted"
+        }
+      }
+    },
+    {
+      "id": "A-local-standalone-report",
+      "description": "Local standalone AggregatorReport v2 carries integrityCheck, partition audit, vote-id accounting, proof placeholder, and token evidence",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/local_standalone/aggregator_report.local-normal.json",
+      "passed": true,
+      "details": {
+        "integrityVerified": true,
+        "proofStatus": "not-generated",
+        "validVoteIds": 8,
+        "invalidVoteIds": 0,
+        "bucketCount": 4
+      }
+    },
+    {
+      "id": "A-powershell-smoke-script",
+      "description": "PowerShell Invoke-RestMethod smoke script exists for A.5 no-frontend API acceptance",
+      "evidence": "E:/666/-2-main/scripts/aggregator-api-powershell-smoke.ps1",
+      "passed": true
+    },
+    {
+      "id": "A-powershell-api-smoke",
+      "description": "PowerShell API smoke saves normal/attack AggregatorReport v2 files plus public inputs and bundle",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/powershell_api/manifest.json",
+      "passed": true,
+      "details": {
+        "caseCount": 7,
+        "cases": [
+          "normal",
+          "duplicate-token",
+          "invalid-candidate",
+          "non-one-hot",
+          "candidate-vector-mismatch",
+          "commitment-tamper",
+          "receipt-chain-delete"
+        ],
+        "files": [
+          "aggregator_report.normal.json",
+          "aggregator_report.attack-duplicate-token.json",
+          "aggregator_report.attack-invalid-candidate.json",
+          "aggregator_report.attack-non-one-hot.json",
+          "aggregator_report.attack-candidate-vector-mismatch.json",
+          "aggregator_report.attack-commitment-tamper.json",
+          "aggregator_report.attack-receipt-chain-delete.json",
+          "public_inputs.normal.json",
+          "export_bundle.normal.json"
+        ]
+      }
+    },
+    {
+      "id": "A-powershell-normal-report",
+      "description": "PowerShell-saved normal AggregatorReport v2 has partition audit, proof placeholder, and vote-id/token evidence",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/powershell_api/aggregator_report.normal.json",
+      "passed": true,
+      "details": {
+        "proofStatus": "not-generated",
+        "validVotes": 8,
+        "invalidVotes": 0,
+        "bucketCount": 4
+      }
+    },
+    {
+      "id": "A-python-api-smoke",
+      "description": "Python API smoke emits AggregatorReport v2, public inputs v2, and ExportBundleV2",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/python_api_smoke.json",
+      "passed": true,
+      "details": {
+        "passed": true,
+        "bundleSchemaVersion": "verivote.artifact.v2",
+        "preTamperDiagnosticReasons": [
+          "candidate-vector-mismatch",
+          "duplicate-token",
+          "invalid-candidate",
+          "invalid-one-hot"
+        ],
+        "diagnosticReasons": [
+          "candidate-vector-mismatch",
+          "invalid-candidate",
+          "invalid-one-hot",
+          "receipt-chain-break"
+        ],
+        "rawFiles": {
+          "aggregatorReport": "docs/evaluation/aggregator_reports/python_api_aggregator_report.json",
+          "publicInputs": "docs/evaluation/aggregator_reports/python_api_public_inputs.json",
+          "exportBundle": "docs/evaluation/aggregator_reports/python_api_export_bundle.json",
+          "attackReport": "docs/evaluation/aggregator_reports/python_api_attack_report.json"
+        }
+      }
+    },
+    {
+      "id": "A-python-api-raw-report",
+      "description": "Python raw AggregatorReport response contains v2 fields and integrityCheck",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/python_api_aggregator_report.json",
+      "passed": true,
+      "details": {
+        "integrityVerified": true,
+        "proofStatus": "not-generated",
+        "pedersenAggregateStatus": "verified",
+        "bucketCount": 4
+      }
+    },
+    {
+      "id": "A-frontend-v2-evidence",
+      "description": "Frontend report views expose AggregatorReport v2 proof, Pedersen, public input, vote id, and bucket token evidence",
+      "evidence": "E:/666/-2-main/apps/web/src/components/AuditComponents.tsx, E:/666/-2-main/apps/web/src/pages/AggregatorPage.tsx, E:/666/-2-main/apps/web/src/pages/AuditReportPage.tsx",
+      "passed": true,
+      "details": {
+        "missingFiles": [],
+        "requiredTokens": [
+          "ReportProofAndPedersenPanel",
+          "PublicInputHintsPanel",
+          "VoteIdAccountingPanel",
+          "proofStatus",
+          "tallyProofSummary.proofStatus",
+          "tallyProofSummary.proofId",
+          "pedersenAggregateStatus",
+          "pedersenAggregateAudit.contextHash",
+          "publicInputHints.electionIdHash",
+          "publicInputHints.partitionHash",
+          "publicInputHints.diagnosticsHash",
+          "validVoteIds",
+          "invalidVoteIds",
+          "tokenHashes"
+        ],
+        "missingTokens": []
+      }
+    },
+    {
+      "id": "A-api-schema-parity",
+      "description": "TypeScript and Python APIs expose matching AggregatorReport v2, public input, bucket, and bundle schemas",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/api_schema_parity.json",
+      "passed": true,
+      "details": {
+        "reportTopLevelKeyCount": 29,
+        "publicInputHintKeyCount": 9,
+        "partitionBucketKeyCount": 9,
+        "integrityCheckKeyCount": 32
+      }
+    },
+    {
+      "id": "A-traceability",
+      "description": "A-01..A-20 traceability matrix has source, evidence, command, and API links",
+      "evidence": "E:/666/-2-main/docs/evaluation/aggregator_reports/task_a_traceability.json",
+      "passed": true,
+      "details": {
+        "itemCount": 21,
+        "failed": []
+      }
+    }
+  ]
+}

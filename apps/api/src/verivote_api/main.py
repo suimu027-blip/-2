@@ -525,74 +525,279 @@ def save_aggregator_report(report: dict[str, Any]) -> None:
     persistence and persistence.save_aggregator_report(report)
 
 
+def create_tally_election_id_hash(election_id: str) -> str:
+    return hash_text(f"verivote.zk.tally.election-id.v1:{election_id}")
+
+
+def is_one_hot_vector(vector: Any, candidate_count: int) -> bool:
+    return (
+        isinstance(vector, list)
+        and len(vector) == candidate_count
+        and all(isinstance(entry, int) and not isinstance(entry, bool) and entry in {0, 1} for entry in vector)
+        and sum(vector) == 1
+    )
+
+
+def one_hot_detail(vector: Any, candidate_count: int) -> str:
+    if not isinstance(vector, list):
+        return "voteVector must be an array."
+    if len(vector) != candidate_count:
+        return f"voteVector length {len(vector)} does not match candidateCount {candidate_count}."
+    if not all(isinstance(entry, int) and not isinstance(entry, bool) for entry in vector):
+        return "voteVector entries must be integers."
+    if not all(entry in {0, 1} for entry in vector):
+        return "voteVector entries must be binary 0/1 values."
+    return f"voteVector must contain exactly one selected candidate; got sum={sum(vector)}."
+
+
+def create_invalid_vote_diagnostic(
+    vote: dict[str, Any],
+    token_hash: str,
+    reason: str,
+    detail: str,
+) -> dict[str, Any]:
+    evidence_hash = create_audit_hash(
+        {
+            "domain": "verivote.invalid-vote-diagnostic.v1",
+            "voteId": vote["id"],
+            "tokenHash": token_hash,
+            "reason": reason,
+            "detail": detail,
+        }
+    )
+    return {
+        "voteId": vote["id"],
+        "userIdHash": hash_text(vote["userId"]),
+        "tokenHash": token_hash,
+        "reason": reason,
+        "detail": detail,
+        "evidenceHash": evidence_hash,
+    }
+
+
+def create_partition_audit(
+    election_id: str,
+    valid_vote_records: list[dict[str, Any]],
+    token_hashes_by_vote_id: dict[str, str],
+) -> dict[str, Any]:
+    buckets: list[dict[str, Any]] = []
+    for candidate in get_candidates_for_election(election_id):
+        bucket_votes = [vote for vote in valid_vote_records if vote["candidateId"] == candidate["id"]]
+        vote_ids = [vote["id"] for vote in bucket_votes]
+        token_hashes = [token_hashes_by_vote_id[vote["id"]] for vote in bucket_votes]
+        commitment_root = get_merkle_root([vote["commitment"] for vote in bucket_votes])
+        receipt_root = get_merkle_root([vote["receiptCode"] for vote in bucket_votes])
+        token_root = get_merkle_root(token_hashes)
+        bucket_audit_hash = create_audit_hash(
+            {
+                "domain": "verivote.partition-bucket.v2",
+                "candidateId": candidate["id"],
+                "tokenRoot": token_root,
+                "commitmentRoot": commitment_root,
+                "receiptRoot": receipt_root,
+                "voteCount": len(bucket_votes),
+                "voteIdsHash": hash_text(js_json_dumps(vote_ids)),
+            }
+        )
+        buckets.append(
+            {
+                "candidateId": candidate["id"],
+                "candidateName": candidate["name"],
+                "voteCount": len(bucket_votes),
+                "voteIds": vote_ids,
+                "tokenHashes": token_hashes,
+                "tokenRoot": token_root,
+                "commitmentRoot": commitment_root,
+                "receiptRoot": receipt_root,
+                "bucketAuditHash": bucket_audit_hash,
+            }
+        )
+
+    bucket_vote_ids = [vote_id for bucket in buckets for vote_id in bucket["voteIds"]]
+    bucket_token_hashes = [token_hash for bucket in buckets for token_hash in bucket["tokenHashes"]]
+    cover_complete = len(bucket_vote_ids) == len(valid_vote_records)
+    disjoint = len(bucket_vote_ids) == len(set(bucket_vote_ids))
+    no_duplicate_valid_token_hashes = len(bucket_token_hashes) == len(set(bucket_token_hashes))
+    all_valid_votes_bucketed = cover_complete and disjoint
+    partition_hash = create_audit_hash(
+        {
+            "domain": "verivote.partition-audit.v2",
+            "electionId": election_id,
+            "bucketAuditHashes": [bucket["bucketAuditHash"] for bucket in buckets],
+            "coverComplete": cover_complete,
+            "disjoint": disjoint,
+            "noDuplicateValidTokenHashes": no_duplicate_valid_token_hashes,
+            "allValidVotesBucketed": all_valid_votes_bucketed,
+        }
+    )
+    return {
+        "buckets": buckets,
+        "coverComplete": cover_complete,
+        "disjoint": disjoint,
+        "noDuplicateValidTokenHashes": no_duplicate_valid_token_hashes,
+        "allValidVotesBucketed": all_valid_votes_bucketed,
+        "partitionHash": partition_hash,
+    }
+
+
+def create_pedersen_aggregate_audit(election_id: str, candidate_count: int, valid_vote_records: list[dict[str, Any]]) -> dict[str, Any] | None:
+    if candidate_count <= 0 or not valid_vote_records:
+        return None
+    try:
+        pedersen_context = create_pedersen_context(election_id, candidate_count)
+        verification = verify_aggregate_opening(
+            pedersen_context,
+            [
+                {
+                    "voteVector": vote["voteVector"],
+                    "randomness": vote["randomness"],
+                    "commitment": vote["commitment"],
+                }
+                for vote in valid_vote_records
+            ],
+        )
+        aggregated_randomness_hash = hash_text(verification["aggregatedRandomness"])
+        pedersen_aggregate_hash = create_audit_hash(
+            {
+                "domain": "verivote.pedersen-aggregate-audit.v1",
+                "contextHash": pedersen_context.context_hash,
+                "aggregatedCommitment": verification["aggregatedCommitment"],
+                "expectedCommitment": verification["expectedCommitment"],
+                "aggregatedVector": verification["aggregatedVector"],
+                "aggregatedRandomnessHash": aggregated_randomness_hash,
+                "castVoteCount": len(valid_vote_records),
+                "verified": verification["verified"],
+            }
+        )
+        return {
+            "contextHash": pedersen_context.context_hash,
+            "aggregatedCommitment": verification["aggregatedCommitment"],
+            "expectedCommitment": verification["expectedCommitment"],
+            "aggregatedVector": verification["aggregatedVector"],
+            "aggregatedRandomnessHash": aggregated_randomness_hash,
+            "castVoteCount": len(valid_vote_records),
+            "verified": verification["verified"],
+            "message": (
+                "Pedersen aggregate audit passed: product(C_i) matches commit(sum v_i, sum r_i)."
+                if verification["verified"]
+                else "Pedersen aggregate audit failed: aggregate commitment does not match the opening."
+            ),
+            "pedersenAggregateHash": pedersen_aggregate_hash,
+        }
+    except Exception:
+        return None
+
+
+def pedersen_aggregate_status(audit: dict[str, Any] | None) -> str:
+    if audit is None:
+        return "pending"
+    return "verified" if audit.get("verified") is True else "failed"
+
+
+def create_not_generated_tally_proof_summary() -> dict[str, Any]:
+    return {
+        "proofStatus": "not-generated",
+        "proofId": None,
+        "proofMode": None,
+        "verifierMode": None,
+        "circuitId": "tally-correctness-v2",
+        "proofHash": None,
+        "publicSignals": None,
+        "message": "Tally proof has not been generated by B-track yet; A-track exports report-binding metadata only.",
+    }
+
+
 def create_aggregator_report(election_id: str) -> dict[str, Any]:
     election_votes = [vote for vote in votes if vote["electionId"] == election_id]
-    valid_candidate_ids = {candidate["id"] for candidate in get_candidates_for_election(election_id)}
+    election_candidates = get_candidates_for_election(election_id)
+    valid_candidate_ids = {candidate["id"] for candidate in election_candidates}
+    candidate_index_map = {candidate["id"]: index for index, candidate in enumerate(election_candidates)}
+    candidate_count = len(election_candidates)
+    receipt_chain_verification = verify_receipt_chain(election_votes)
+    receipt_break_reasons: dict[str, list[str]] = {}
+    for chain_break in receipt_chain_verification["breaks"]:
+        vote_id = chain_break.get("voteId")
+        if vote_id:
+            receipt_break_reasons.setdefault(vote_id, []).append(str(chain_break.get("reason", "receipt-chain-break")))
+
     seen_token_hashes: set[str] = set()
     duplicate_token_hashes: list[str] = []
     duplicate_token_hashes_seen: set[str] = set()
     vote_token_hashes: list[str] = []
+    token_hashes_by_vote_id: dict[str, str] = {}
     valid_vote_records: list[dict[str, Any]] = []
-    invalid_votes = 0
-    duplicate_votes = 0
+    invalid_vote_diagnostics: list[dict[str, Any]] = []
 
     for vote in election_votes:
         vote_token_hash = create_vote_token_hash(election_id, vote["userId"])
+        token_hashes_by_vote_id[vote["id"]] = vote_token_hash
         vote_token_hashes.append(vote_token_hash)
+        diagnostics: list[dict[str, Any]] = []
         is_duplicate = vote_token_hash in seen_token_hashes
         if is_duplicate:
-            duplicate_votes += 1
             if vote_token_hash not in duplicate_token_hashes_seen:
                 duplicate_token_hashes.append(vote_token_hash)
                 duplicate_token_hashes_seen.add(vote_token_hash)
+            diagnostics.append(create_invalid_vote_diagnostic(vote, vote_token_hash, "duplicate-token", "The voter token hash has already appeared in this election."))
         else:
             seen_token_hashes.add(vote_token_hash)
 
-        has_valid_candidate = vote["candidateId"] in valid_candidate_ids
-        if not has_valid_candidate:
-            invalid_votes += 1
-        if not is_duplicate and has_valid_candidate:
+        if vote["candidateId"] not in valid_candidate_ids:
+            diagnostics.append(create_invalid_vote_diagnostic(vote, vote_token_hash, "invalid-candidate", f"candidateId {vote['candidateId']} is not registered for election {election_id}."))
+        if not is_one_hot_vector(vote.get("voteVector"), candidate_count):
+            diagnostics.append(create_invalid_vote_diagnostic(vote, vote_token_hash, "invalid-one-hot", one_hot_detail(vote.get("voteVector"), candidate_count)))
+        elif vote["candidateId"] in candidate_index_map and vote["voteVector"][candidate_index_map[vote["candidateId"]]] != 1:
+            diagnostics.append(create_invalid_vote_diagnostic(vote, vote_token_hash, "candidate-vector-mismatch", "candidateId does not match the selected index in voteVector."))
+        if not verify_commitment_opening(election_id, vote.get("voteVector", []), vote.get("randomness", ""), vote.get("commitment", "")):
+            diagnostics.append(create_invalid_vote_diagnostic(vote, vote_token_hash, "commitment-opening-failed", "Commitment does not match electionId, voteVector, and randomness."))
+        for reason in receipt_break_reasons.get(vote["id"], []):
+            diagnostics.append(create_invalid_vote_diagnostic(vote, vote_token_hash, "receipt-chain-break", reason))
+
+        if diagnostics:
+            invalid_vote_diagnostics.extend(diagnostics)
+        else:
             valid_vote_records.append(vote)
 
+    invalid_vote_diagnostics.sort(key=lambda item: f"{item['voteId']}:{item['reason']}:{item['evidenceHash']}")
+    valid_vote_ids = [vote["id"] for vote in valid_vote_records]
+    invalid_vote_ids = sorted({diagnostic["voteId"] for diagnostic in invalid_vote_diagnostics})
+    duplicate_votes = len([diagnostic for diagnostic in invalid_vote_diagnostics if diagnostic["reason"] == "duplicate-token"])
     tally_result = create_election_result_from_votes(election_id, valid_vote_records)
     commitment_root = get_merkle_root([vote["commitment"] for vote in valid_vote_records])
     receipt_root = get_merkle_root([vote["receiptCode"] for vote in valid_vote_records])
-    receipt_chain_verification = verify_receipt_chain(election_votes)
-
-    pedersen_tally_verified: bool | None = None
-    pedersen_tally_message: str | None = None
-    pedersen_context_hash: str | None = None
-    try:
-        candidate_count = len(get_candidates_for_election(election_id))
-        if candidate_count > 0 and valid_vote_records:
-            pedersen_context = create_pedersen_context(election_id, candidate_count)
-            pedersen_context_hash = pedersen_context.context_hash
-            verification = verify_aggregate_opening(
-                pedersen_context,
-                [
-                    {
-                        "voteVector": vote["voteVector"],
-                        "randomness": vote["randomness"],
-                        "commitment": vote["commitment"],
-                    }
-                    for vote in valid_vote_records
-                ],
-            )
-            pedersen_tally_verified = verification["verified"]
-            pedersen_tally_message = (
-                "Pedersen homomorphic tally verification passed."
-                if verification["verified"]
-                else "Pedersen homomorphic tally verification failed; aggregate data may have been tampered."
-            )
-    except Exception:
-        pedersen_tally_message = "Pedersen homomorphic tally verification threw an exception."
+    tally_hash = create_audit_hash(tally_result)
+    partition_audit = create_partition_audit(election_id, valid_vote_records, token_hashes_by_vote_id)
+    diagnostics_hash = create_audit_hash(
+        {
+            "domain": "verivote.invalid-vote-diagnostics.v2",
+            "diagnostics": invalid_vote_diagnostics,
+        }
+    )
+    pedersen_aggregate_audit = create_pedersen_aggregate_audit(election_id, candidate_count, valid_vote_records)
+    pedersen_aggregate_hash = pedersen_aggregate_audit["pedersenAggregateHash"] if pedersen_aggregate_audit else None
+    tally_proof_summary = create_not_generated_tally_proof_summary()
+    public_input_hints = {
+        "electionIdHash": create_tally_election_id_hash(election_id),
+        "candidateCount": candidate_count,
+        "validVotes": len(valid_vote_records),
+        "tallyHash": tally_hash,
+        "commitmentRoot": commitment_root,
+        "receiptRoot": receipt_root,
+        "partitionHash": partition_audit["partitionHash"],
+        "diagnosticsHash": diagnostics_hash,
+        "pedersenAggregateHash": pedersen_aggregate_hash,
+    }
 
     core_fields: dict[str, Any] = {
         "electionId": election_id,
         "totalVotes": len(election_votes),
         "validVotes": len(valid_vote_records),
-        "invalidVotes": invalid_votes,
+        "validVoteIds": valid_vote_ids,
+        "invalidVotes": len(invalid_vote_ids),
+        "invalidVoteIds": invalid_vote_ids,
         "duplicateVotes": duplicate_votes,
+        "proofStatus": tally_proof_summary["proofStatus"],
+        "tallyProofSummary": tally_proof_summary,
         "receiptChainVerified": receipt_chain_verification["verified"],
         "receiptChainBreaks": receipt_chain_verification["breaks"],
         "voteTokenHashes": vote_token_hashes,
@@ -600,13 +805,19 @@ def create_aggregator_report(election_id: str) -> dict[str, Any]:
         "tallyResult": tally_result,
         "commitmentRoot": commitment_root,
         "receiptRoot": receipt_root,
+        "partitionAudit": partition_audit,
+        "partitionHash": partition_audit["partitionHash"],
+        "invalidVoteDiagnostics": invalid_vote_diagnostics,
+        "diagnosticsHash": diagnostics_hash,
+        "publicInputHints": public_input_hints,
+        "pedersenAggregateAudit": pedersen_aggregate_audit,
+        "pedersenAggregateStatus": pedersen_aggregate_status(pedersen_aggregate_audit),
+        "pedersenAggregateHash": pedersen_aggregate_hash,
     }
-    if pedersen_tally_verified is not None:
-        core_fields["pedersenTallyVerified"] = pedersen_tally_verified
-    if pedersen_tally_message is not None:
-        core_fields["pedersenTallyMessage"] = pedersen_tally_message
-    if pedersen_context_hash is not None:
-        core_fields["pedersenContextHash"] = pedersen_context_hash
+    if pedersen_aggregate_audit is not None:
+        core_fields["pedersenTallyVerified"] = pedersen_aggregate_audit["verified"]
+        core_fields["pedersenTallyMessage"] = pedersen_aggregate_audit["message"]
+        core_fields["pedersenContextHash"] = pedersen_aggregate_audit["contextHash"]
 
     return {**core_fields, "auditHash": create_audit_hash(core_fields), "createdAt": now()}
 
@@ -614,6 +825,326 @@ def create_aggregator_report(election_id: str) -> dict[str, Any]:
 def create_audit_hash_for_aggregator_report(report: dict[str, Any]) -> str:
     core_fields = {key: value for key, value in report.items() if key not in {"auditHash", "createdAt"}}
     return create_audit_hash(core_fields)
+
+
+def unique_strings(values: list[str]) -> list[str]:
+    return sorted(set(values))
+
+
+def same_string_set(left: list[str], right: list[str]) -> bool:
+    left_unique = unique_strings(left)
+    right_unique = unique_strings(right)
+    return (
+        len(left) == len(left_unique)
+        and len(right) == len(right_unique)
+        and left_unique == right_unique
+    )
+
+
+def recompute_bucket_audit_hash(bucket: dict[str, Any]) -> str:
+    return create_audit_hash(
+        {
+            "domain": "verivote.partition-bucket.v2",
+            "candidateId": bucket["candidateId"],
+            "tokenRoot": bucket["tokenRoot"],
+            "commitmentRoot": bucket["commitmentRoot"],
+            "receiptRoot": bucket["receiptRoot"],
+            "voteCount": bucket["voteCount"],
+            "voteIdsHash": hash_text(js_json_dumps(bucket["voteIds"])),
+        }
+    )
+
+
+def recompute_diagnostic_evidence_hash(diagnostic: dict[str, Any]) -> str:
+    return create_audit_hash(
+        {
+            "domain": "verivote.invalid-vote-diagnostic.v1",
+            "voteId": diagnostic["voteId"],
+            "tokenHash": diagnostic["tokenHash"],
+            "reason": diagnostic["reason"],
+            "detail": diagnostic["detail"],
+        }
+    )
+
+
+def recompute_pedersen_aggregate_hash(audit: dict[str, Any] | None) -> str | None:
+    if audit is None:
+        return None
+    return create_audit_hash(
+        {
+            "domain": "verivote.pedersen-aggregate-audit.v1",
+            "contextHash": audit["contextHash"],
+            "aggregatedCommitment": audit["aggregatedCommitment"],
+            "expectedCommitment": audit["expectedCommitment"],
+            "aggregatedVector": audit["aggregatedVector"],
+            "aggregatedRandomnessHash": audit["aggregatedRandomnessHash"],
+            "castVoteCount": audit["castVoteCount"],
+            "verified": audit["verified"],
+        }
+    )
+
+
+def create_public_input_hints_from_report(
+    report: dict[str, Any],
+    partition_hash: str,
+    diagnostics_hash: str,
+    pedersen_aggregate_hash: str | None,
+) -> dict[str, Any]:
+    return {
+        "electionIdHash": create_tally_election_id_hash(report["electionId"]),
+        "candidateCount": len(report["tallyResult"]["results"]),
+        "validVotes": report["validVotes"],
+        "tallyHash": create_audit_hash(report["tallyResult"]),
+        "commitmentRoot": report["commitmentRoot"],
+        "receiptRoot": report["receiptRoot"],
+        "partitionHash": partition_hash,
+        "diagnosticsHash": diagnostics_hash,
+        "pedersenAggregateHash": pedersen_aggregate_hash,
+    }
+
+
+def verify_aggregator_report_integrity(report: dict[str, Any]) -> dict[str, Any]:
+    try:
+        buckets = report["partitionAudit"]["buckets"]
+        recomputed_bucket_audit_hashes = [
+            recompute_bucket_audit_hash(bucket) for bucket in buckets
+        ]
+        bucket_audit_hashes_match = all(
+            bucket["bucketAuditHash"] == recomputed_bucket_audit_hashes[index]
+            for index, bucket in enumerate(buckets)
+        )
+        bucket_vote_ids = [
+            vote_id for bucket in buckets for vote_id in bucket["voteIds"]
+        ]
+        bucket_token_hashes = [
+            token_hash for bucket in buckets for token_hash in bucket["tokenHashes"]
+        ]
+        bucket_vote_id_set = set(bucket_vote_ids)
+        bucket_vote_count_sum = sum(bucket["voteCount"] for bucket in buckets)
+        bucket_vote_ids_disjoint = len(bucket_vote_ids) == len(bucket_vote_id_set)
+        bucket_vote_count_sum_matches_valid_votes = (
+            bucket_vote_count_sum == report["validVotes"]
+        )
+        valid_vote_ids_match_buckets = same_string_set(
+            report["validVoteIds"], bucket_vote_ids
+        )
+        structural_cover_complete = (
+            bucket_vote_ids_disjoint
+            and bucket_vote_count_sum_matches_valid_votes
+            and valid_vote_ids_match_buckets
+        )
+        bucket_counts_by_candidate_id = {
+            bucket["candidateId"]: bucket["voteCount"] for bucket in buckets
+        }
+        tally_sum = sum(item["voteCount"] for item in report["tallyResult"]["results"])
+        diagnostic_vote_ids = {
+            diagnostic["voteId"] for diagnostic in report["invalidVoteDiagnostics"]
+        }
+        diagnostic_vote_id_list = unique_strings(
+            [diagnostic["voteId"] for diagnostic in report["invalidVoteDiagnostics"]]
+        )
+        duplicate_diagnostics = [
+            diagnostic
+            for diagnostic in report["invalidVoteDiagnostics"]
+            if diagnostic["reason"] == "duplicate-token"
+        ]
+        duplicate_diagnostic_token_hashes = unique_strings(
+            [diagnostic["tokenHash"] for diagnostic in duplicate_diagnostics]
+        )
+        invalid_vote_id_set = set(report["invalidVoteIds"])
+        valid_and_invalid_vote_ids_disjoint = all(
+            vote_id not in invalid_vote_id_set for vote_id in report["validVoteIds"]
+        )
+        vote_id_accounting_set = set(
+            [*report["validVoteIds"], *report["invalidVoteIds"]]
+        )
+        no_duplicate_valid_token_hashes_verified = all(
+            len(token_hash) > 0 for token_hash in bucket_token_hashes
+        ) and len(bucket_token_hashes) == len(set(bucket_token_hashes))
+        bucket_token_roots_match = all(
+            bucket.get("tokenRoot") == get_merkle_root(bucket.get("tokenHashes", []))
+            for bucket in buckets
+        )
+        partition_hash = create_audit_hash(
+            {
+                "domain": "verivote.partition-audit.v2",
+                "electionId": report["electionId"],
+                "bucketAuditHashes": [bucket["bucketAuditHash"] for bucket in buckets],
+                "coverComplete": report["partitionAudit"]["coverComplete"],
+                "disjoint": report["partitionAudit"]["disjoint"],
+                "noDuplicateValidTokenHashes": report["partitionAudit"]["noDuplicateValidTokenHashes"],
+                "allValidVotesBucketed": report["partitionAudit"]["allValidVotesBucketed"],
+            }
+        )
+        diagnostics_hash = create_audit_hash(
+            {
+                "domain": "verivote.invalid-vote-diagnostics.v2",
+                "diagnostics": report["invalidVoteDiagnostics"],
+            }
+        )
+        pedersen_aggregate_hash = recompute_pedersen_aggregate_hash(
+            report.get("pedersenAggregateAudit")
+        )
+        public_input_hints = create_public_input_hints_from_report(
+            report,
+            partition_hash,
+            diagnostics_hash,
+            pedersen_aggregate_hash,
+        )
+        expected_pedersen_status = pedersen_aggregate_status(
+            report.get("pedersenAggregateAudit")
+        )
+        pedersen_audit = report.get("pedersenAggregateAudit")
+        checks = {
+            "fieldShapeValid": True,
+            "auditHashMatches": report["auditHash"] == create_audit_hash_for_aggregator_report(report),
+            "partitionHashMatches": report["partitionHash"] == partition_hash,
+            "nestedPartitionHashMatches": (
+                report["partitionAudit"]["partitionHash"] == partition_hash
+                and report["partitionHash"] == report["partitionAudit"]["partitionHash"]
+            ),
+            "diagnosticsHashMatches": report["diagnosticsHash"] == diagnostics_hash,
+            "diagnosticEvidenceHashesMatch": all(
+                diagnostic["evidenceHash"] == recompute_diagnostic_evidence_hash(diagnostic)
+                for diagnostic in report["invalidVoteDiagnostics"]
+            ),
+            "bucketAuditHashesMatch": bucket_audit_hashes_match,
+            "bucketVoteCountsMatch": all(
+                bucket["voteCount"] == len(bucket["voteIds"])
+                and bucket["voteCount"] == len(bucket["tokenHashes"])
+                for bucket in buckets
+            ),
+            "bucketTokenRootsMatchTokenHashes": bucket_token_roots_match,
+            "bucketTallyMatches": (
+                all(
+                    bucket_counts_by_candidate_id.get(item["candidateId"]) == item["voteCount"]
+                    for item in report["tallyResult"]["results"]
+                )
+                and all(
+                    any(
+                        item["candidateId"] == bucket["candidateId"]
+                        and item["voteCount"] == bucket["voteCount"]
+                        for item in report["tallyResult"]["results"]
+                    )
+                    for bucket in buckets
+                )
+            ),
+            "bucketVoteIdsDisjoint": bucket_vote_ids_disjoint,
+            "bucketVoteCountSumMatchesValidVotes": bucket_vote_count_sum_matches_valid_votes,
+            "validVoteIdsMatchBuckets": valid_vote_ids_match_buckets,
+            "invalidVoteIdsMatchDiagnostics": same_string_set(
+                report["invalidVoteIds"], diagnostic_vote_id_list
+            ),
+            "validAndInvalidVoteIdsDisjoint": valid_and_invalid_vote_ids_disjoint,
+            "invalidVoteIdsExcludedFromBuckets": all(
+                vote_id not in bucket_vote_id_set for vote_id in report["invalidVoteIds"]
+            ),
+            "voteIdAccountingMatchesTotalVotes": (
+                len(report["validVoteIds"]) + len(report["invalidVoteIds"]) == report["totalVotes"]
+                and len(vote_id_accounting_set) == report["totalVotes"]
+            ),
+            "partitionFlagsMatchStructure": (
+                report["partitionAudit"]["coverComplete"] == structural_cover_complete
+                and report["partitionAudit"]["disjoint"] == bucket_vote_ids_disjoint
+                and report["partitionAudit"]["noDuplicateValidTokenHashes"]
+                == no_duplicate_valid_token_hashes_verified
+                and report["partitionAudit"]["allValidVotesBucketed"]
+                == structural_cover_complete
+            ),
+            "noDuplicateValidTokenHashesAsserted": (
+                report["partitionAudit"]["noDuplicateValidTokenHashes"] is True
+            ),
+            "noDuplicateValidTokenHashesVerified": no_duplicate_valid_token_hashes_verified,
+            "publicInputHintsMatch": report["publicInputHints"] == public_input_hints,
+            "voteTokenHashCountMatchesTotalVotes": (
+                len(report["voteTokenHashes"]) == report["totalVotes"]
+            ),
+            "duplicateTokenHashesMatchDiagnostics": same_string_set(
+                report["duplicateTokenHashes"], duplicate_diagnostic_token_hashes
+            ),
+            "receiptChainStatusMatchesBreaks": (
+                report["receiptChainVerified"] == (len(report["receiptChainBreaks"]) == 0)
+            ),
+            "candidateCountMatchesPartitions": (
+                report["publicInputHints"]["candidateCount"] == len(buckets)
+                and report["publicInputHints"]["candidateCount"]
+                == len(report["tallyResult"]["results"])
+            ),
+            "totalVoteCountMatchesValidAndInvalid": (
+                report["totalVotes"] == report["validVotes"] + report["invalidVotes"]
+            ),
+            "tallyTotalMatchesValidVotes": (
+                report["tallyResult"]["totalVotes"] == report["validVotes"]
+            ),
+            "tallySumMatchesValidVotes": tally_sum == report["validVotes"],
+            "invalidVoteCountMatchesDiagnostics": (
+                len(diagnostic_vote_ids) == report["invalidVotes"]
+            ),
+            "duplicateVoteCountMatchesDiagnostics": (
+                len(duplicate_diagnostics) == report["duplicateVotes"]
+                and report["duplicateVotes"] <= report["invalidVotes"]
+            ),
+            "pedersenAggregateHashMatches": (
+                report.get("pedersenAggregateHash") == pedersen_aggregate_hash
+                and (pedersen_audit or {}).get("pedersenAggregateHash") == pedersen_aggregate_hash
+                and (
+                    pedersen_aggregate_hash is None
+                    or (pedersen_audit or {}).get("verified") == report.get("pedersenTallyVerified")
+                )
+                and (
+                    pedersen_aggregate_hash is None
+                    or (pedersen_audit or {}).get("message") == report.get("pedersenTallyMessage")
+                )
+                and (
+                    pedersen_aggregate_hash is None
+                    or (pedersen_audit or {}).get("contextHash") == report.get("pedersenContextHash")
+                )
+            ),
+            "pedersenAggregateStatusMatches": (
+                report["pedersenAggregateStatus"] == expected_pedersen_status
+                and (
+                    report["pedersenAggregateStatus"] == "pending"
+                    or report.get("pedersenAggregateAudit") is not None
+                )
+                and (
+                    report["pedersenAggregateStatus"] != "verified"
+                    or (pedersen_audit or {}).get("verified") is True
+                )
+                and (
+                    report["pedersenAggregateStatus"] != "failed"
+                    or (pedersen_audit or {}).get("verified") is False
+                )
+            ),
+        }
+        failures = [name for name, ok in checks.items() if not ok]
+        return {
+            "verified": not failures,
+            "checks": checks,
+            "failures": failures,
+            "recomputed": {
+                "auditHash": create_audit_hash_for_aggregator_report(report),
+                "partitionHash": partition_hash,
+                "diagnosticsHash": diagnostics_hash,
+                "pedersenAggregateHash": pedersen_aggregate_hash,
+                "bucketAuditHashes": recomputed_bucket_audit_hashes,
+                "publicInputHints": public_input_hints,
+            },
+        }
+    except Exception as error:
+        return {
+            "verified": False,
+            "checks": {"fieldShapeValid": False},
+            "failures": ["fieldShapeValid"],
+            "error": get_unknown_error_message(error),
+            "recomputed": {
+                "auditHash": "",
+                "partitionHash": "",
+                "diagnosticsHash": "",
+                "pedersenAggregateHash": None,
+                "bucketAuditHashes": [],
+                "publicInputHints": {},
+            },
+        }
 
 
 def get_tally_consistency(election_id: str, report: dict[str, Any]) -> dict[str, Any]:
@@ -663,7 +1194,7 @@ def get_attack_target(election_id: str) -> dict[str, Any]:
 def build_public_inputs_artifact(election_detail: dict[str, Any], bulletin: dict[str, Any], report: dict[str, Any] | None) -> dict[str, Any]:
     return {
         "electionId": election_detail["id"],
-        "electionIdHash": to_bytes32_hex(election_detail["id"]),
+        "electionIdHash": create_tally_election_id_hash(election_detail["id"]),
         "candidateCount": len(election_detail["candidates"]),
         "totalVotes": bulletin["totalVotes"],
         "validVotes": report["validVotes"] if report else bulletin["totalVotes"],
@@ -671,7 +1202,10 @@ def build_public_inputs_artifact(election_detail: dict[str, Any], bulletin: dict
         "commitmentRoot": report["commitmentRoot"] if report else "",
         "receiptRoot": report["receiptRoot"] if report else "",
         "tallyHash": create_tally_hash(report) if report else "",
+        "partitionHash": report["partitionHash"] if report else "",
+        "diagnosticsHash": report["diagnosticsHash"] if report else "",
         "auditHash": report["auditHash"] if report else "",
+        "pedersenAggregateHash": report.get("pedersenAggregateHash") if report else None,
         "zkCircuitId": "valid-vote-4",
     }
 
@@ -691,7 +1225,7 @@ def build_artifact_context(election: dict[str, Any]) -> dict[str, Any]:
     audit_mode = get_blockchain_audit_mode()
     public_inputs = build_public_inputs_artifact(detail, bulletin, report)
     aggregator_report_artifact = (
-        {**report, **tally_consistency}
+        {**report, **tally_consistency, "integrityCheck": verify_aggregator_report_integrity(report)}
         if report
         else None
     )
@@ -722,17 +1256,38 @@ def build_export_bundle(context: dict[str, Any]) -> dict[str, Any]:
             "publicSignals": None,
             "message": "No ZK proof is embedded in this export bundle; generate one separately and merge it if needed.",
         },
+        "tallyProofSummary": (
+            context["report"].get("tallyProofSummary")
+            if context["report"]
+            else create_not_generated_tally_proof_summary()
+        ),
         "chainAudit": {
             "auditMode": context["auditMode"],
+            "verifierMode": "real-hardhat" if context["auditRecord"] and context["auditRecord"].get("zkVerified") else None,
             "contractAddress": get_displayed_contract_address(context["auditMode"]),
             "hasAudit": context["auditRecord"] is not None,
             "audit": context["auditRecord"],
+            "transactionHash": context["auditRecord"].get("transactionHash") if context["auditRecord"] else None,
+            "zkVerified": bool(context["auditRecord"].get("zkVerified")) if context["auditRecord"] else False,
+            "gasUsed": None,
+            "status": context["auditRecord"].get("status") if context["auditRecord"] else "not_submitted",
+        },
+        "demoMetadata": {
+            "demoSeedFile": "docs/contracts/demo_seed_fixture.json",
+            "aggregatorCasesFile": "docs/evaluation/AGGREGATOR_AUDIT_CASES.md",
+            "apiSmokeFile": "docs/evaluation/aggregator_reports/python_api_smoke.json",
+            "completenessMatrixFile": "docs/evaluation/aggregator_reports/completeness_matrix.json",
+            "generatedBy": "python build_export_bundle",
+            "notes": [
+                "Python API emits the same A-track export surface as the TypeScript API.",
+                "tallyProofSummary.proofStatus=not-generated means no B-track tally proof is embedded.",
+            ],
         },
         "challengeRecords": context["challenges"],
     }
     return {
         "envelope": {
-            "schemaVersion": "verivote.artifact.v1",
+            "schemaVersion": "verivote.artifact.v2",
             "generatedAt": now(),
             "electionId": context["election"]["id"],
             "bundleHash": hash_text(js_json_dumps(bundle_payload)),
@@ -922,7 +1477,14 @@ def run_aggregator(election_id: str) -> JSONResponse:
     had_existing_report = find_aggregator_report(election["id"]) is not None
     report = create_aggregator_report(election["id"])
     save_aggregator_report(report)
-    return json_response({"election": election, "report": report}, 200 if had_existing_report else 201)
+    return json_response(
+        {
+            "election": election,
+            "report": report,
+            "integrityCheck": verify_aggregator_report_integrity(report),
+        },
+        200 if had_existing_report else 201,
+    )
 
 
 @app.get("/aggregator/elections/{election_id}/report")
@@ -933,7 +1495,14 @@ def get_aggregator_report(election_id: str) -> JSONResponse:
     report = find_aggregator_report(election["id"])
     if not report:
         return json_response({"error": "Aggregator report has not been generated"}, 404)
-    return json_response({"election": election, "report": report, **get_tally_consistency(election["id"], report)})
+    return json_response(
+        {
+            "election": election,
+            "report": report,
+            "integrityCheck": verify_aggregator_report_integrity(report),
+            **get_tally_consistency(election["id"], report),
+        }
+    )
 
 
 @app.post("/challenge/elections/{election_id}/prepare")
@@ -1433,6 +2002,93 @@ def attack_inject_invalid_vote(election_id: str) -> JSONResponse:
     attack_type = "inject-invalid-vote"
     log = create_attack_log(target["election"]["id"], attack_type, "Injected a vote whose candidateId is not in the election.", before, after)
     return json_response({"ok": True, "attackType": attack_type, "message": "Invalid vote injected.", "log": log})
+
+
+@app.post("/attack/elections/{election_id}/inject-non-one-hot-vote")
+def attack_inject_non_one_hot_vote(election_id: str) -> JSONResponse:
+    target = get_attack_target(election_id)
+    if "error" in target:
+        return json_response({"error": target["error"]}, target["status"])
+    election_candidates = get_candidates_for_election(target["election"]["id"])
+    if len(election_candidates) < 2:
+        return json_response({"error": "Need at least two candidates for non-one-hot attack"}, 409)
+    vote_vector = [1 if index < 2 else 0 for index, _candidate in enumerate(election_candidates)]
+    user_id = "attacker_non_one_hot"
+    randomness = random_hex()
+    created_at = now()
+    commitment = create_commitment(target["election"]["id"], vote_vector, randomness)
+    receipt_code = create_receipt_code(target["election"]["id"], commitment, user_id, created_at)
+    attack_vote = append_vote_with_receipt_chain(
+        {
+            "id": create_id("vote"),
+            "electionId": target["election"]["id"],
+            "userId": user_id,
+            "candidateId": election_candidates[0]["id"],
+            "voteVector": vote_vector,
+            "randomness": randomness,
+            "commitment": commitment,
+            "receiptCode": receipt_code,
+            "createdAt": created_at,
+        }
+    )
+    attack_type = "inject-non-one-hot-vote"
+    log = create_attack_log(
+        target["election"]["id"],
+        attack_type,
+        "Injected a vote whose vector selects multiple candidates.",
+        {"candidateIds": [candidate["id"] for candidate in election_candidates]},
+        {
+            "voteId": attack_vote["id"],
+            "candidateId": attack_vote["candidateId"],
+            "voteVector": attack_vote["voteVector"],
+        },
+    )
+    return json_response({"ok": True, "attackType": attack_type, "message": "Non-one-hot vote injected.", "log": log})
+
+
+@app.post("/attack/elections/{election_id}/inject-candidate-vector-mismatch")
+def attack_inject_candidate_vector_mismatch(election_id: str) -> JSONResponse:
+    target = get_attack_target(election_id)
+    if "error" in target:
+        return json_response({"error": target["error"]}, target["status"])
+    election_candidates = get_candidates_for_election(target["election"]["id"])
+    if len(election_candidates) < 2:
+        return json_response({"error": "Need at least two candidates for candidate-vector mismatch attack"}, 409)
+    vote_vector = [1 if index == 0 else 0 for index, _candidate in enumerate(election_candidates)]
+    user_id = "attacker_candidate_vector_mismatch"
+    randomness = random_hex()
+    created_at = now()
+    commitment = create_commitment(target["election"]["id"], vote_vector, randomness)
+    receipt_code = create_receipt_code(target["election"]["id"], commitment, user_id, created_at)
+    attack_vote = append_vote_with_receipt_chain(
+        {
+            "id": create_id("vote"),
+            "electionId": target["election"]["id"],
+            "userId": user_id,
+            "candidateId": election_candidates[1]["id"],
+            "voteVector": vote_vector,
+            "randomness": randomness,
+            "commitment": commitment,
+            "receiptCode": receipt_code,
+            "createdAt": created_at,
+        }
+    )
+    attack_type = "inject-candidate-vector-mismatch"
+    log = create_attack_log(
+        target["election"]["id"],
+        attack_type,
+        "Injected a vote whose candidateId and one-hot vector select different candidates.",
+        {
+            "vectorCandidateId": election_candidates[0]["id"],
+            "declaredCandidateId": election_candidates[1]["id"],
+        },
+        {
+            "voteId": attack_vote["id"],
+            "candidateId": attack_vote["candidateId"],
+            "voteVector": attack_vote["voteVector"],
+        },
+    )
+    return json_response({"ok": True, "attackType": attack_type, "message": "Candidate-vector mismatch vote injected.", "log": log})
 
 
 @app.post("/attack/elections/{election_id}/tamper-tally")

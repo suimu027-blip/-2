@@ -7,9 +7,9 @@ import { network } from "hardhat";
 const projectRoot = fileURLToPath(new URL("../..", import.meta.url));
 const verifierSource = join(projectRoot, "contracts", "TallyVerifier.sol");
 const calldataPath = join(projectRoot, "docs", "contracts", "calldata.sample.json");
-const reportPath = join(projectRoot, "docs", "contracts", "task_b_aggregator_report_8x4.sample.json");
+const reportPath = join(projectRoot, "docs", "contracts", "aggregator_report_v2.sample.json");
 const voteRecordsPath = join(projectRoot, "docs", "contracts", "valid_vote_records_8x4.sample.json");
-const outputPath = join(projectRoot, "docs", "contracts", "task_b_chain_audit.real.sample.json");
+const outputPath = join(projectRoot, "docs", "contracts", "chain_audit.real.sample.json");
 
 if (!existsSync(verifierSource)) {
   throw new Error(
@@ -25,7 +25,7 @@ if (!existsSync(calldataPath)) {
 
 if (!existsSync(reportPath)) {
   throw new Error(
-    "docs/contracts/task_b_aggregator_report_8x4.sample.json was not found. Generate the B report fixture first."
+    "docs/contracts/aggregator_report_v2.sample.json was not found. Generate the report fixture first."
   );
 }
 
@@ -183,8 +183,7 @@ const sample = {
     zkVerified: record.zkVerified,
     exists: record.exists
   },
-  calldataSource: "docs/contracts/calldata.sample.json",
-  reportSource: "docs/contracts/task_b_aggregator_report_8x4.sample.json"
+  calldataSource: "docs/contracts/calldata.sample.json"
 };
 
 writeFileSync(outputPath, `${JSON.stringify(sample, null, 2)}\n`, "utf8");

@@ -1,476 +1,469 @@
 {
   "envelope": {
     "schemaVersion": "verivote.artifact.v2",
-    "generatedAt": "2026-06-18T08:04:00.000Z",
-    "electionId": "demo-election-v2",
-    "bundleHash": "b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1"
+    "generatedAt": "2026-06-27T10:33:23.869Z",
+    "electionId": "election_fixture_8x4",
+    "bundleHash": "f7bd55f7e6d7080be8a7337d4ca14c0fe87d5d88ab54a56fff5518893cf3901f"
   },
   "election": {
-    "id": "demo-election-v2",
-    "title": "VeriVote Demo Election v2",
-    "description": "4 candidates, 8 users, 8 cast votes, 2 challenge ballots",
+    "id": "election_fixture_8x4",
+    "title": "VeriVote Aggregator v2 Fixture",
+    "description": "4 candidates, 8 formal votes, deterministic A-track audit fixture.",
     "status": "active",
-    "createdAt": "2026-06-18T08:00:00.000Z",
+    "createdAt": "2026-06-26T00:00:00.000Z",
     "candidates": [
       {
         "id": "candidate_1",
-        "name": "Ada",
-        "electionId": "demo-election-v2"
+        "electionId": "election_fixture_8x4",
+        "name": "Alice"
       },
       {
         "id": "candidate_2",
-        "name": "Bert",
-        "electionId": "demo-election-v2"
+        "electionId": "election_fixture_8x4",
+        "name": "Bob"
       },
       {
         "id": "candidate_3",
-        "name": "Cora",
-        "electionId": "demo-election-v2"
+        "electionId": "election_fixture_8x4",
+        "name": "Carol"
       },
       {
         "id": "candidate_4",
-        "name": "Drew",
-        "electionId": "demo-election-v2"
+        "electionId": "election_fixture_8x4",
+        "name": "Dave"
       }
     ]
   },
   "publicInputs": {
-    "electionId": "demo-election-v2",
-    "electionIdHash": "a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8",
+    "electionId": "election_fixture_8x4",
+    "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
     "candidateCount": 4,
     "totalVotes": 8,
     "validVotes": 8,
-    "merkleRoot": "m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1",
-    "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
-    "receiptRoot": "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
-    "tallyHash": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
-    "auditHash": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
-    "partitionHash": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1",
-    "diagnosticsHash": "d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2",
-    "pedersenAggregateHash": "a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
-    "zkCircuitId": "tally-correctness-8x4-v2"
+    "merkleRoot": "79b557ac0633ead59201a391e8174923373e11b4d820297cb562647e0caa174d",
+    "commitmentRoot": "7d52dd9b91bbcfddb6d5a1520d27c93f011c32ef45dc0120d0df8794cf87d68a",
+    "receiptRoot": "bc24032feed14911d4a5e368ccd9beb975591f98170a45df132c87dda9822b30",
+    "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+    "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+    "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+    "auditHash": "8c9148ac4430f41febfe7bae1777f1ed07760c4a4c9fd76767284a41536a73af",
+    "zkCircuitId": "valid-vote-4"
   },
   "bulletinBoard": {
-    "electionId": "demo-election-v2",
+    "electionId": "election_fixture_8x4",
     "commitments": [
-      "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1",
-      "c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2",
-      "c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3",
-      "c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4",
-      "c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5",
-      "c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6",
-      "c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7",
-      "c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8"
+      "7c531fbcaf60bdda3284d0c34ceaeb921c67a6f29f8e5877eb240011611a4bb6ba3804b3ad4d441ce75bc2238222cfc1ec07590ec81d08122d4f96e088df0e6e42f08b3c555ecc794dffa3ce0f60eaa0a6855a6991ac04d41f78a731ea18ad87f5e66604a65e4db86f213b8a0370a0bc4a9c35a3797791280ca48c5b25c01a6437ef997b6748009685dae795285f5a5ff8563e1d604a2b63ed26e4159d8d42dd1456486acf865c619dc950b0c9e2f25897b87a8a2eaf1a0244c7c8bb2117130f8bd7f8939b57c80b6206c44fe57061af40b4348de7793b911c8952dd04643b9e9cbc240df5aac1e2472fdde6d45a8da528cd264855465fc63136f36c80c91644",
+      "7ba42767bfebe766a8148881b364dd0af82d80d127b942f550d64413c6fefde7db46a575792464db8eca0dceafcad5919d412e4d69c2fc1cb2fdb91ee43925f8b76a38d31e6265e490a9ea372389d620586854cc52cb8371b0af5731447e8ac585f6f7fc2683d86f33138942138ef36c2450c819bce089991ce1923b990e0687364e8067b2d6b48cad077ce19b4b35095d094e05f5b2784c827f17e7de4e8931177cdb3c8652c6dd7294deb3bfaf0b55aed6f9b852c8b38a617cf1a4a3a9d947eb83a7df0875b69f2592699ec4f053aab2f8c320dea186f5bffdb7d3d12588b2933a0810d50aa3f10dff26199e4dbfe91d3719481af5f4a2e98b19825aa51e54",
+      "3e2e0dfaa28ec2442233543a80454291d1f9cd1151cb4d88db38441316680d9c907c4a7f5bdab5b5bbc43ae01a67986af6b1f37724ad54624ed95a4cf1e62e84bd2530cb7acd0e07f68ddff135e4aaa384e4c0c47fe4f83809f675855cedf0193a49d10c953a05cb7a4b65818ccea006e5f26ee752f6aabe2428ee4a0fdedba0e871ec6a0a9700e1a02e9e3e7c7f5def1af3eb9c08bfc1c0d50fd20963711082ec11b66751e418e5b4119056d0bdc54a3ff9cd143cab6f5d2b94cab44906dfd618c16ceb55ea529226cc4503a05252baf28407e35f9c282056f02693bbb2b49b742387720687e864bc08ce3e0de6610db22ee0bb426ff32fe67f145814c37ee7",
+      "fa8f09ef6549885b51c469edf0fb733707574a3b147724b3b29979f507ab25dd5a907b184a2e19ee1b7fe130b72b8a35368f37c58c7a2fe30847534af59a210ad77667bc6bd3dd815bbcf6866ae0b7646cc086c06f1b9774d5460592b7f24f28052be41c9be334515ef17a3ed0f720bf4bb0266bf273d25b7924df7fdea60aceb7d54bfe633e0526e95f73878efeb3a298f63da68bea130392739fa858c38279a82d72e8d5e2089020b99ed0e76685a71c19af34c7d1ec8139677c0ace7d8d0ea22da9ff7a352782dca2fe9718f36df4bb3a7fd4cef796b9645c80473733919331b59ff754a3ae9dc97197768efb6fb7b92f9df52251b69e0adf9f20bfb4978b",
+      "11c9a2438c4b80a5d48f35f0c1b9578f516de66a3d91cf9fa047fd184a4fb78c98023bffd0da8a84dbde4633ff348a8a4150cfa32d8b5a0e8d5d1203606f081af8dd3bd4a424bebaae01f74f38cabd8b0bb36658dd8c7ce5c8683a3c735d308fd867869a8bcb0c9af667427b0bb407d86b5cc806ae40ad7185e70ca14b46fc82db0016c5aa3df733c51af46a6362f3e7779d042bcae60e209af0dafd3039600fb8b15a17e15b19ef74d0469a2dc338848aca4fcc8202d5adaf606ddfc5cb5a009deb7cd3194a16ea590ee14f841300df8c860eec12248b4c99aef3af8ae39246a740b43464165402703d1e650e8d780ad8c7fa5150f7b22e64a391ac1311db76",
+      "60004a79dfa1f4bc1ee3806dc1e0165f45dfbc9f59e3a78af61c802b4779fdc840c4956c9f301a1efae4d51205b4af2b3c3120a6172f62fcc6cfaeffaeaa804b224d86bd056645a51b43fdc9210f852716429dda6a7119edab307b7e2d8cc6428a929e01c8ed5f6aecfbb17f7e26469d32ebfc19c94cd15e06c6274c73596c5c27bd7cbdb20c9f246a5ab90df68952dd1275db00e646cc92243390a41cc773d222fcfd4c07b2ba16bc0af869745016c5e6a7eb4ddaa0c5ef9772aa3da5c6c18d92ee4130b59b78d48edea93f303c0056d6e495da02b895bc87018d9aaa0dff156effea38a0a65385b277205c15bb2718b211a3fce2866a8c08e3efbf35b1b527",
+      "2b694844d806cd1971d083183429854dcb31e42d1fd2877a01612c39586d0a8c15e655eb55e06b60bbc5508aa1b9f7a55705c4ba9ffc06d4655d35e93366b92a22a13fdc13f2aaa834b13368c5fb62ca56864a8681432bd63eb68dd5d56feaac37c70ac59811078ffd333968587b0baa6dc051e5a12372853776a0f6631318055e7cf305690b7ff0ef2a2b802dea0a65b38499d4c0227eaf5edfa86936122e4e2517d83f17300683092b6746f2d3e9e9b96215edcdc32bb49877c03be932b06c6295d884e9eecf6d2f765d01f8990411f07d24c952b7c7f23eb2e8defeaf3e24e1a59f19b90404721b72a34abb3da6a8b279c261155ecf8c9c6a47ddee6ab32c",
+      "d54d885a6600fdf05e368a14501210247755c47798b6e68be89082ad0455b41840499db6ae703bbd94790a54bb82b1cb5d27f16fd8283aef89105f4fa34d938d000e434f687df8481cc88e754fa57bb1f37344bf34a67e05978bd934dfa0dc1bb30845483df399808050bb74bb169c0c9694aae3d702741981e87cf1563304fe5731994f7ce004eecd1014d6601524852ffb00bb23614c6293186a62ed0e403fc38bf6564e9faa00b66d4c51c92a3254b5da371ffb3655c2cbcfc8f6914d629f0ae57735a9a37857435cc56d45928c4fe8bd61dee9d7d9b1e89d0cf7fe669a9a8aec19d03b9ff4e351bff7e9e0d8851383ae3462d6646e8574252fa271ce79f8"
     ],
     "receiptCodeHashes": [
-      "s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1",
-      "s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2",
-      "s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3",
-      "s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4",
-      "s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5",
-      "s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6",
-      "s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7",
-      "s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8"
+      "ecd6b234c646c175536ab817a546d19a57231c1623314b8f56a1b7ccd350cda9",
+      "9eeb0168e63720838acf5063154a3b64dc7fc3808360704ddd5b2ef52f142b33",
+      "55d18e3ff4583af98dcafe86dbe9a35853223732a08dbaaecbe799e7333adf5c",
+      "9961bb81d9fc64f9eb73be0a1a84cb8913df87b7da2386bd3e42c56e7f290f4e",
+      "1c564b19769a8b47a7d04a5e847ee92815bf3f6e6c0f3a1f7a28e9ab70c525dd",
+      "84d61aa83446e63d92ddad2952b4ec9bc64b9068ecad1549ee206b0de413290a",
+      "0155dd4c01319da0caf596184a70f30c35f220595080146ebb7d718266ee30aa",
+      "f3ab6718dda80d8f252291c7e4d5068b55dd875215e7cb6bd2813158f8dd9202"
     ],
     "receiptChain": [
       {
         "voteId": "vote_1",
-        "receiptCodeHash": "s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1s1",
-        "commitment": "c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1c1",
+        "receiptCodeHash": "ecd6b234c646c175536ab817a546d19a57231c1623314b8f56a1b7ccd350cda9",
+        "commitment": "7c531fbcaf60bdda3284d0c34ceaeb921c67a6f29f8e5877eb240011611a4bb6ba3804b3ad4d441ce75bc2238222cfc1ec07590ec81d08122d4f96e088df0e6e42f08b3c555ecc794dffa3ce0f60eaa0a6855a6991ac04d41f78a731ea18ad87f5e66604a65e4db86f213b8a0370a0bc4a9c35a3797791280ca48c5b25c01a6437ef997b6748009685dae795285f5a5ff8563e1d604a2b63ed26e4159d8d42dd1456486acf865c619dc950b0c9e2f25897b87a8a2eaf1a0244c7c8bb2117130f8bd7f8939b57c80b6206c44fe57061af40b4348de7793b911c8952dd04643b9e9cbc240df5aac1e2472fdde6d45a8da528cd264855465fc63136f36c80c91644",
         "receiptChainIndex": 0,
         "previousReceiptCodeHash": null,
-        "receiptChainHash": "t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1t1"
+        "receiptChainHash": "5536a45cd4ca07c21d0f1383ee77d2036674a88d4cba9d06f3670ebe7d717534"
       },
       {
         "voteId": "vote_2",
-        "receiptCodeHash": "s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2s2",
-        "commitment": "c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2c2",
+        "receiptCodeHash": "9eeb0168e63720838acf5063154a3b64dc7fc3808360704ddd5b2ef52f142b33",
+        "commitment": "7ba42767bfebe766a8148881b364dd0af82d80d127b942f550d64413c6fefde7db46a575792464db8eca0dceafcad5919d412e4d69c2fc1cb2fdb91ee43925f8b76a38d31e6265e490a9ea372389d620586854cc52cb8371b0af5731447e8ac585f6f7fc2683d86f33138942138ef36c2450c819bce089991ce1923b990e0687364e8067b2d6b48cad077ce19b4b35095d094e05f5b2784c827f17e7de4e8931177cdb3c8652c6dd7294deb3bfaf0b55aed6f9b852c8b38a617cf1a4a3a9d947eb83a7df0875b69f2592699ec4f053aab2f8c320dea186f5bffdb7d3d12588b2933a0810d50aa3f10dff26199e4dbfe91d3719481af5f4a2e98b19825aa51e54",
         "receiptChainIndex": 1,
-        "previousReceiptCodeHash": "u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1u1",
-        "receiptChainHash": "t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2t2"
+        "previousReceiptCodeHash": "ecd6b234c646c175536ab817a546d19a57231c1623314b8f56a1b7ccd350cda9",
+        "receiptChainHash": "13db09979069c73be06472ca0ff90025e220450e57421cb818b65ae828f4c020"
       },
       {
         "voteId": "vote_3",
-        "receiptCodeHash": "s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3s3",
-        "commitment": "c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3",
+        "receiptCodeHash": "55d18e3ff4583af98dcafe86dbe9a35853223732a08dbaaecbe799e7333adf5c",
+        "commitment": "3e2e0dfaa28ec2442233543a80454291d1f9cd1151cb4d88db38441316680d9c907c4a7f5bdab5b5bbc43ae01a67986af6b1f37724ad54624ed95a4cf1e62e84bd2530cb7acd0e07f68ddff135e4aaa384e4c0c47fe4f83809f675855cedf0193a49d10c953a05cb7a4b65818ccea006e5f26ee752f6aabe2428ee4a0fdedba0e871ec6a0a9700e1a02e9e3e7c7f5def1af3eb9c08bfc1c0d50fd20963711082ec11b66751e418e5b4119056d0bdc54a3ff9cd143cab6f5d2b94cab44906dfd618c16ceb55ea529226cc4503a05252baf28407e35f9c282056f02693bbb2b49b742387720687e864bc08ce3e0de6610db22ee0bb426ff32fe67f145814c37ee7",
         "receiptChainIndex": 2,
-        "previousReceiptCodeHash": "u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2u2",
-        "receiptChainHash": "t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3t3"
+        "previousReceiptCodeHash": "9eeb0168e63720838acf5063154a3b64dc7fc3808360704ddd5b2ef52f142b33",
+        "receiptChainHash": "1ed98d8991070c1088f56fd0099d8c7952d81a979434f25e6aa1cc95d5940639"
       },
       {
         "voteId": "vote_4",
-        "receiptCodeHash": "s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4s4",
-        "commitment": "c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4c4",
+        "receiptCodeHash": "9961bb81d9fc64f9eb73be0a1a84cb8913df87b7da2386bd3e42c56e7f290f4e",
+        "commitment": "fa8f09ef6549885b51c469edf0fb733707574a3b147724b3b29979f507ab25dd5a907b184a2e19ee1b7fe130b72b8a35368f37c58c7a2fe30847534af59a210ad77667bc6bd3dd815bbcf6866ae0b7646cc086c06f1b9774d5460592b7f24f28052be41c9be334515ef17a3ed0f720bf4bb0266bf273d25b7924df7fdea60aceb7d54bfe633e0526e95f73878efeb3a298f63da68bea130392739fa858c38279a82d72e8d5e2089020b99ed0e76685a71c19af34c7d1ec8139677c0ace7d8d0ea22da9ff7a352782dca2fe9718f36df4bb3a7fd4cef796b9645c80473733919331b59ff754a3ae9dc97197768efb6fb7b92f9df52251b69e0adf9f20bfb4978b",
         "receiptChainIndex": 3,
-        "previousReceiptCodeHash": "u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3u3",
-        "receiptChainHash": "t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4t4"
+        "previousReceiptCodeHash": "55d18e3ff4583af98dcafe86dbe9a35853223732a08dbaaecbe799e7333adf5c",
+        "receiptChainHash": "9225095f6335c45f35444f131a50379063fcd133ca685413c83381c7aa130a84"
       },
       {
         "voteId": "vote_5",
-        "receiptCodeHash": "s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5s5",
-        "commitment": "c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5c5",
+        "receiptCodeHash": "1c564b19769a8b47a7d04a5e847ee92815bf3f6e6c0f3a1f7a28e9ab70c525dd",
+        "commitment": "11c9a2438c4b80a5d48f35f0c1b9578f516de66a3d91cf9fa047fd184a4fb78c98023bffd0da8a84dbde4633ff348a8a4150cfa32d8b5a0e8d5d1203606f081af8dd3bd4a424bebaae01f74f38cabd8b0bb36658dd8c7ce5c8683a3c735d308fd867869a8bcb0c9af667427b0bb407d86b5cc806ae40ad7185e70ca14b46fc82db0016c5aa3df733c51af46a6362f3e7779d042bcae60e209af0dafd3039600fb8b15a17e15b19ef74d0469a2dc338848aca4fcc8202d5adaf606ddfc5cb5a009deb7cd3194a16ea590ee14f841300df8c860eec12248b4c99aef3af8ae39246a740b43464165402703d1e650e8d780ad8c7fa5150f7b22e64a391ac1311db76",
         "receiptChainIndex": 4,
-        "previousReceiptCodeHash": "u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4u4",
-        "receiptChainHash": "t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5t5"
+        "previousReceiptCodeHash": "9961bb81d9fc64f9eb73be0a1a84cb8913df87b7da2386bd3e42c56e7f290f4e",
+        "receiptChainHash": "0031883d31b3133f8ba4ce9e8262f33bd3e89c799015f04c05c6e7fe2a12b54e"
       },
       {
         "voteId": "vote_6",
-        "receiptCodeHash": "s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6s6",
-        "commitment": "c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6c6",
+        "receiptCodeHash": "84d61aa83446e63d92ddad2952b4ec9bc64b9068ecad1549ee206b0de413290a",
+        "commitment": "60004a79dfa1f4bc1ee3806dc1e0165f45dfbc9f59e3a78af61c802b4779fdc840c4956c9f301a1efae4d51205b4af2b3c3120a6172f62fcc6cfaeffaeaa804b224d86bd056645a51b43fdc9210f852716429dda6a7119edab307b7e2d8cc6428a929e01c8ed5f6aecfbb17f7e26469d32ebfc19c94cd15e06c6274c73596c5c27bd7cbdb20c9f246a5ab90df68952dd1275db00e646cc92243390a41cc773d222fcfd4c07b2ba16bc0af869745016c5e6a7eb4ddaa0c5ef9772aa3da5c6c18d92ee4130b59b78d48edea93f303c0056d6e495da02b895bc87018d9aaa0dff156effea38a0a65385b277205c15bb2718b211a3fce2866a8c08e3efbf35b1b527",
         "receiptChainIndex": 5,
-        "previousReceiptCodeHash": "u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5u5",
-        "receiptChainHash": "t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6t6"
+        "previousReceiptCodeHash": "1c564b19769a8b47a7d04a5e847ee92815bf3f6e6c0f3a1f7a28e9ab70c525dd",
+        "receiptChainHash": "8f8f3dafaeb14845d6084f7430fccd4590db7a48c7cd10aa202201e4417a3aa1"
       },
       {
         "voteId": "vote_7",
-        "receiptCodeHash": "s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7s7",
-        "commitment": "c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7c7",
+        "receiptCodeHash": "0155dd4c01319da0caf596184a70f30c35f220595080146ebb7d718266ee30aa",
+        "commitment": "2b694844d806cd1971d083183429854dcb31e42d1fd2877a01612c39586d0a8c15e655eb55e06b60bbc5508aa1b9f7a55705c4ba9ffc06d4655d35e93366b92a22a13fdc13f2aaa834b13368c5fb62ca56864a8681432bd63eb68dd5d56feaac37c70ac59811078ffd333968587b0baa6dc051e5a12372853776a0f6631318055e7cf305690b7ff0ef2a2b802dea0a65b38499d4c0227eaf5edfa86936122e4e2517d83f17300683092b6746f2d3e9e9b96215edcdc32bb49877c03be932b06c6295d884e9eecf6d2f765d01f8990411f07d24c952b7c7f23eb2e8defeaf3e24e1a59f19b90404721b72a34abb3da6a8b279c261155ecf8c9c6a47ddee6ab32c",
         "receiptChainIndex": 6,
-        "previousReceiptCodeHash": "u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6u6",
-        "receiptChainHash": "t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7t7"
+        "previousReceiptCodeHash": "84d61aa83446e63d92ddad2952b4ec9bc64b9068ecad1549ee206b0de413290a",
+        "receiptChainHash": "20028dc456a9a7f358116630c508c6a57d30727332d79242ad25ad8315cf8b5d"
       },
       {
         "voteId": "vote_8",
-        "receiptCodeHash": "s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8s8",
-        "commitment": "c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8c8",
+        "receiptCodeHash": "f3ab6718dda80d8f252291c7e4d5068b55dd875215e7cb6bd2813158f8dd9202",
+        "commitment": "d54d885a6600fdf05e368a14501210247755c47798b6e68be89082ad0455b41840499db6ae703bbd94790a54bb82b1cb5d27f16fd8283aef89105f4fa34d938d000e434f687df8481cc88e754fa57bb1f37344bf34a67e05978bd934dfa0dc1bb30845483df399808050bb74bb169c0c9694aae3d702741981e87cf1563304fe5731994f7ce004eecd1014d6601524852ffb00bb23614c6293186a62ed0e403fc38bf6564e9faa00b66d4c51c92a3254b5da371ffb3655c2cbcfc8f6914d629f0ae57735a9a37857435cc56d45928c4fe8bd61dee9d7d9b1e89d0cf7fe669a9a8aec19d03b9ff4e351bff7e9e0d8851383ae3462d6646e8574252fa271ce79f8",
         "receiptChainIndex": 7,
-        "previousReceiptCodeHash": "u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7",
-        "receiptChainHash": "t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8t8"
+        "previousReceiptCodeHash": "0155dd4c01319da0caf596184a70f30c35f220595080146ebb7d718266ee30aa",
+        "receiptChainHash": "30b38c66a8e020302eaab479cb1b41ee5c20094914868586da774346d7b57179"
       }
     ],
     "receiptChainVerified": true,
     "receiptChainBreaks": [],
     "leaves": [
-      "l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1l1",
-      "l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2l2",
-      "l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3l3",
-      "l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4l4",
-      "l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5l5",
-      "l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6l6",
-      "l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7l7",
-      "l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8l8"
+      "ba00561cbe9a7151e147296fc5a5b03635f697ff020dc5ed91cc3ba683dc1995",
+      "97c5794f7e6d78334e169805cce2c33d8b314605628e72dd785d78fd58f73927",
+      "f520ad8af524ba02a0bc9bc43fcdf30d6d953e0ee2bc02a91f102f3c27ce2770",
+      "ab247e3021316a3684264f2eb9555783aa5181df8297e70c8db3d6c17a6fa67b",
+      "e593f518230bcd494c4af8be54ec69826984ddede8bdefbd6abeea27cfe20c29",
+      "946cbb403a3ebd46cdacbf27f333fab363223fd6e4b4bdea59140b36820615f3",
+      "097407e4388d03ce1777c76c0b1847da9b3a35a590ff28648bc1714b6e8801d2",
+      "46c31a7a2f6570887248e0cc2fee44cf1865c892e4b983b8d80f24a0b96829ee"
     ],
-    "merkleRoot": "m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1",
+    "merkleRoot": "79b557ac0633ead59201a391e8174923373e11b4d820297cb562647e0caa174d",
     "tallyResult": {
-      "electionId": "demo-election-v2",
+      "electionId": "election_fixture_8x4",
       "totalVotes": 8,
       "results": [
         {
           "candidateId": "candidate_1",
-          "candidateName": "Ada",
+          "candidateName": "Alice",
           "voteCount": 2
         },
         {
           "candidateId": "candidate_2",
-          "candidateName": "Bert",
+          "candidateName": "Bob",
           "voteCount": 2
         },
         {
           "candidateId": "candidate_3",
-          "candidateName": "Cora",
+          "candidateName": "Carol",
           "voteCount": 2
         },
         {
           "candidateId": "candidate_4",
-          "candidateName": "Drew",
+          "candidateName": "Dave",
           "voteCount": 2
         }
       ]
     },
     "totalVotes": 8,
-    "createdAt": "2026-06-18T08:00:00.000Z"
+    "createdAt": "2026-06-27T10:33:23.760Z"
   },
   "aggregatorReport": {
-    "electionId": "demo-election-v2",
+    "electionId": "election_fixture_8x4",
     "totalVotes": 8,
     "validVotes": 8,
+    "validVoteIds": [
+      "vote_1",
+      "vote_2",
+      "vote_3",
+      "vote_4",
+      "vote_5",
+      "vote_6",
+      "vote_7",
+      "vote_8"
+    ],
     "invalidVotes": 0,
+    "invalidVoteIds": [],
     "duplicateVotes": 0,
+    "proofStatus": "not-generated",
+    "tallyProofSummary": {
+      "proofStatus": "not-generated",
+      "proofId": null,
+      "proofMode": null,
+      "verifierMode": null,
+      "circuitId": "tally-correctness-v2",
+      "proofHash": null,
+      "publicSignals": null,
+      "message": "Tally proof has not been generated by B-track yet; A-track exports report-binding metadata only."
+    },
     "receiptChainVerified": true,
     "receiptChainBreaks": [],
     "voteTokenHashes": [
-      "v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1v1",
-      "v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2v2",
-      "v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3v3",
-      "v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4v4",
-      "v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5v5",
-      "v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6v6",
-      "v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7v7",
-      "v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8v8"
+      "fad480e48ef1fa966bf509c0db5c17768c1876fc227acaa9131782cd249b0f54",
+      "befee1129a0061547945a3f9730a56e267b70fcf2ddd0bb6386b16f363475839",
+      "d3c880b083ef8962e5bbb3662d3e3d43b28242d65a0f5304e5a5d2a63a498b44",
+      "a4321056a9b103d753542221868d30cf68678b9c90cf532d1d425f5560d3ac85",
+      "5b8f3df3b03d7a2e8aa2c81009204132f362150fe77faefb74c0fdf4bef5df11",
+      "0c9c0d7dbda2927a214ba48af466d454c7019fd83376b69e19075553dd39bd09",
+      "b3257008ee69df7148ecab51f5f3312097502248c0a804c6cea019db6e02ae80",
+      "11df3181f2ea2737a24bb20b95757597a96ec14a900eef9630b5e19a438d3534"
     ],
     "duplicateTokenHashes": [],
     "tallyResult": {
-      "electionId": "demo-election-v2",
+      "electionId": "election_fixture_8x4",
       "totalVotes": 8,
       "results": [
         {
           "candidateId": "candidate_1",
-          "candidateName": "Ada",
+          "candidateName": "Alice",
           "voteCount": 2
         },
         {
           "candidateId": "candidate_2",
-          "candidateName": "Bert",
+          "candidateName": "Bob",
           "voteCount": 2
         },
         {
           "candidateId": "candidate_3",
-          "candidateName": "Cora",
+          "candidateName": "Carol",
           "voteCount": 2
         },
         {
           "candidateId": "candidate_4",
-          "candidateName": "Drew",
+          "candidateName": "Dave",
           "voteCount": 2
         }
       ]
     },
-    "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
-    "receiptRoot": "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
-    "auditHash": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
-    "createdAt": "2026-06-18T08:01:00.000Z",
-    "pedersenTallyVerified": true,
-    "pedersenTallyMessage": "Pedersen tally verified in demo sample.",
-    "pedersenContextHash": "a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2",
+    "commitmentRoot": "7d52dd9b91bbcfddb6d5a1520d27c93f011c32ef45dc0120d0df8794cf87d68a",
+    "receiptRoot": "bc24032feed14911d4a5e368ccd9beb975591f98170a45df132c87dda9822b30",
     "partitionAudit": {
       "buckets": [
         {
           "candidateId": "candidate_1",
-          "candidateName": "Ada",
+          "candidateName": "Alice",
           "voteCount": 2,
           "voteIds": [
             "vote_1",
             "vote_5"
           ],
-          "tokenRoot": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1",
-          "commitmentRoot": "q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1q1",
-          "receiptRoot": "r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1r1",
-          "bucketAuditHash": "b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1"
+          "tokenHashes": [
+            "fad480e48ef1fa966bf509c0db5c17768c1876fc227acaa9131782cd249b0f54",
+            "5b8f3df3b03d7a2e8aa2c81009204132f362150fe77faefb74c0fdf4bef5df11"
+          ],
+          "tokenRoot": "e56301dd1fa2f5fc495843f8b115b003a85cd20a9f6e966efb61838c004981f9",
+          "commitmentRoot": "a76b16b6550501d3f6392129716f62da3d9477689dd5897beb695b238109c71f",
+          "receiptRoot": "472261a7842696bcdcce82abdcd0ad1f75f381d920e0cacee2b94a9db3d30806",
+          "bucketAuditHash": "8821c6333c71c9515f1be87ed4411230ded6cbf741a8f9d1c49a2df16e815f63"
         },
         {
           "candidateId": "candidate_2",
-          "candidateName": "Bert",
+          "candidateName": "Bob",
           "voteCount": 2,
           "voteIds": [
             "vote_2",
             "vote_6"
           ],
-          "tokenRoot": "p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2p2",
-          "commitmentRoot": "q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2q2",
-          "receiptRoot": "r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2r2",
-          "bucketAuditHash": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+          "tokenHashes": [
+            "befee1129a0061547945a3f9730a56e267b70fcf2ddd0bb6386b16f363475839",
+            "0c9c0d7dbda2927a214ba48af466d454c7019fd83376b69e19075553dd39bd09"
+          ],
+          "tokenRoot": "d1c08a4ed3347c7678cfc97af85283d1ed703243020e8f5794fef5b004d0d076",
+          "commitmentRoot": "1102ed73ba5c34b5aa8a4d19a519410c95ef286974cd058f875f41e270a72bc1",
+          "receiptRoot": "7f81c2ab2c1d25874cd3347484a5ca41d23c68be5bab5ccf9369bcb441ee5832",
+          "bucketAuditHash": "a1a9050d10ce03bc30e2caa151cecf9570e3f4f13b17b09adfe18d0aeb85cd60"
         },
         {
           "candidateId": "candidate_3",
-          "candidateName": "Cora",
+          "candidateName": "Carol",
           "voteCount": 2,
           "voteIds": [
             "vote_3",
             "vote_7"
           ],
-          "tokenRoot": "p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3p3",
-          "commitmentRoot": "q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3q3",
-          "receiptRoot": "r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3r3",
-          "bucketAuditHash": "b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3b3"
+          "tokenHashes": [
+            "d3c880b083ef8962e5bbb3662d3e3d43b28242d65a0f5304e5a5d2a63a498b44",
+            "b3257008ee69df7148ecab51f5f3312097502248c0a804c6cea019db6e02ae80"
+          ],
+          "tokenRoot": "a75adc6742cd8eb167de82b3f0ec3b03a46c793a726c9bd3690106493f6d562b",
+          "commitmentRoot": "c81fe4e19d38a96ca08cedd75c8b6350432341d323605399e55251e49986e1fb",
+          "receiptRoot": "39c352e3876381a39c55115f803b0b3c0b3f275bb3c3a09b824b6bd0ca580580",
+          "bucketAuditHash": "47c554e6fcc016c6af6ba3d1fe32e622ca4e18c7b09ca8a446e422e2ef91cb6a"
         },
         {
           "candidateId": "candidate_4",
-          "candidateName": "Drew",
+          "candidateName": "Dave",
           "voteCount": 2,
           "voteIds": [
             "vote_4",
             "vote_8"
           ],
-          "tokenRoot": "p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4p4",
-          "commitmentRoot": "q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4q4",
-          "receiptRoot": "r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4r4",
-          "bucketAuditHash": "b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4b4"
+          "tokenHashes": [
+            "a4321056a9b103d753542221868d30cf68678b9c90cf532d1d425f5560d3ac85",
+            "11df3181f2ea2737a24bb20b95757597a96ec14a900eef9630b5e19a438d3534"
+          ],
+          "tokenRoot": "da87286b567e32f9204c4ba3f708d61176377cf68d1c4446114db26739f13787",
+          "commitmentRoot": "ad5915c1cccfd2bdef6d2161d26d39ceba6dd7210207a8a104cea156930429e4",
+          "receiptRoot": "63d107cd1849a556fa0b2f5786bc796df5f9e4244d0655dc6a6e1d00489d694f",
+          "bucketAuditHash": "790e1961eb59fb3508de7c5800c0defe333453372dca2ebae92ea3233b0f772c"
         }
       ],
       "coverComplete": true,
       "disjoint": true,
       "noDuplicateValidTokenHashes": true,
       "allValidVotesBucketed": true,
-      "partitionHash": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1"
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959"
     },
+    "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
     "invalidVoteDiagnostics": [],
-    "diagnosticsHash": "d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2",
+    "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+    "publicInputHints": {
+      "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
+      "candidateCount": 4,
+      "validVotes": 8,
+      "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+      "commitmentRoot": "7d52dd9b91bbcfddb6d5a1520d27c93f011c32ef45dc0120d0df8794cf87d68a",
+      "receiptRoot": "bc24032feed14911d4a5e368ccd9beb975591f98170a45df132c87dda9822b30",
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+      "pedersenAggregateHash": "adb916ac86526ccbdfd94b8124a22123900971191e7250ea404bfc8f993e8587"
+    },
     "pedersenAggregateAudit": {
-      "contextHash": "a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3a3",
-      "aggregatedCommitment": "a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4a4",
-      "expectedCommitment": "a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5a5",
+      "contextHash": "262b9ff164bb32e0200613bad2905489a175f0457b1dad912b57c6e490158cc1",
+      "aggregatedCommitment": "f2131655f7284e1f923f2180f7fe5e4ecd3f75a5993e3461241388c894ceeb745a307f465eb7711373cede71c44d011840a4ff880b68f3591f9050a72f1dea59c60a8de78dd85af586e0fc523bc7835ee8a4f34ee6558dde47cf3d6b834ebc3409ba5f3994bf09d5c35350a854974b601128bbd6628f6d2066313ab1e61fbcdb4c32dc28fcc059a7e25c985baf5713ff80cdea46c172bba13baac28597e588f453f459beb93844bc0cd1537ced5dd7c5f70184d6b3084d6d3928d6d2fe57b31d8c9dccaf3e73a1a14b3897c5324979f13e2305162c16d99ba991e2a6fb1d39b104dc874235c96f39a0cb36e7e4b3fdcf92134b63644f185c8d5b279b9402ebaf",
+      "expectedCommitment": "f2131655f7284e1f923f2180f7fe5e4ecd3f75a5993e3461241388c894ceeb745a307f465eb7711373cede71c44d011840a4ff880b68f3591f9050a72f1dea59c60a8de78dd85af586e0fc523bc7835ee8a4f34ee6558dde47cf3d6b834ebc3409ba5f3994bf09d5c35350a854974b601128bbd6628f6d2066313ab1e61fbcdb4c32dc28fcc059a7e25c985baf5713ff80cdea46c172bba13baac28597e588f453f459beb93844bc0cd1537ced5dd7c5f70184d6b3084d6d3928d6d2fe57b31d8c9dccaf3e73a1a14b3897c5324979f13e2305162c16d99ba991e2a6fb1d39b104dc874235c96f39a0cb36e7e4b3fdcf92134b63644f185c8d5b279b9402ebaf",
       "aggregatedVector": [
         2,
         2,
         2,
         2
       ],
-      "aggregatedRandomnessHash": "a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6",
+      "aggregatedRandomnessHash": "c2356069e9d1e79ca924378153cfbbfb4d4416b1f99d41a2940bfdb66c5319db",
       "castVoteCount": 8,
       "verified": true,
-      "message": "Pedersen aggregate verified in demo sample.",
-      "pedersenAggregateHash": "a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+      "message": "Pedersen aggregate audit passed: product(C_i) matches commit(sum v_i, sum r_i).",
+      "pedersenAggregateHash": "adb916ac86526ccbdfd94b8124a22123900971191e7250ea404bfc8f993e8587"
     },
-    "pedersenAggregateHash": "a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
-    "publicInputHints": {
-      "electionIdHash": "a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8",
-      "candidateCount": 4,
-      "validVotes": 8,
-      "tallyHash": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
-      "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
-      "receiptRoot": "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
-      "partitionHash": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1",
-      "pedersenAggregateHash": "a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
-    },
+    "pedersenAggregateStatus": "verified",
+    "pedersenAggregateHash": "adb916ac86526ccbdfd94b8124a22123900971191e7250ea404bfc8f993e8587",
+    "pedersenTallyVerified": true,
+    "pedersenTallyMessage": "Pedersen aggregate audit passed: product(C_i) matches commit(sum v_i, sum r_i).",
+    "pedersenContextHash": "262b9ff164bb32e0200613bad2905489a175f0457b1dad912b57c6e490158cc1",
+    "auditHash": "8c9148ac4430f41febfe7bae1777f1ed07760c4a4c9fd76767284a41536a73af",
+    "createdAt": "2026-06-27T10:33:23.757Z",
     "tallyConsistent": true,
-    "consistencyMessage": "tallyResult matches the sample vote set."
+    "consistencyMessage": "tallyResult 与当前 votes 重新聚合结果一致。",
+    "integrityCheck": {
+      "verified": true,
+      "checks": {
+        "fieldShapeValid": true,
+        "auditHashMatches": true,
+        "partitionHashMatches": true,
+        "nestedPartitionHashMatches": true,
+        "diagnosticsHashMatches": true,
+        "diagnosticEvidenceHashesMatch": true,
+        "bucketAuditHashesMatch": true,
+        "bucketVoteCountsMatch": true,
+        "bucketTokenRootsMatchTokenHashes": true,
+        "bucketTallyMatches": true,
+        "bucketVoteIdsDisjoint": true,
+        "bucketVoteCountSumMatchesValidVotes": true,
+        "validVoteIdsMatchBuckets": true,
+        "invalidVoteIdsMatchDiagnostics": true,
+        "validAndInvalidVoteIdsDisjoint": true,
+        "invalidVoteIdsExcludedFromBuckets": true,
+        "voteIdAccountingMatchesTotalVotes": true,
+        "partitionFlagsMatchStructure": true,
+        "noDuplicateValidTokenHashesAsserted": true,
+        "noDuplicateValidTokenHashesVerified": true,
+        "publicInputHintsMatch": true,
+        "voteTokenHashCountMatchesTotalVotes": true,
+        "duplicateTokenHashesMatchDiagnostics": true,
+        "receiptChainStatusMatchesBreaks": true,
+        "candidateCountMatchesPartitions": true,
+        "totalVoteCountMatchesValidAndInvalid": true,
+        "tallyTotalMatchesValidVotes": true,
+        "tallySumMatchesValidVotes": true,
+        "invalidVoteCountMatchesDiagnostics": true,
+        "duplicateVoteCountMatchesDiagnostics": true,
+        "pedersenAggregateHashMatches": true,
+        "pedersenAggregateStatusMatches": true
+      },
+      "failures": [],
+      "recomputed": {
+        "auditHash": "8c9148ac4430f41febfe7bae1777f1ed07760c4a4c9fd76767284a41536a73af",
+        "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+        "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+        "pedersenAggregateHash": "adb916ac86526ccbdfd94b8124a22123900971191e7250ea404bfc8f993e8587",
+        "bucketAuditHashes": [
+          "8821c6333c71c9515f1be87ed4411230ded6cbf741a8f9d1c49a2df16e815f63",
+          "a1a9050d10ce03bc30e2caa151cecf9570e3f4f13b17b09adfe18d0aeb85cd60",
+          "47c554e6fcc016c6af6ba3d1fe32e622ca4e18c7b09ca8a446e422e2ef91cb6a",
+          "790e1961eb59fb3508de7c5800c0defe333453372dca2ebae92ea3233b0f772c"
+        ],
+        "publicInputHints": {
+          "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
+          "candidateCount": 4,
+          "validVotes": 8,
+          "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+          "commitmentRoot": "7d52dd9b91bbcfddb6d5a1520d27c93f011c32ef45dc0120d0df8794cf87d68a",
+          "receiptRoot": "bc24032feed14911d4a5e368ccd9beb975591f98170a45df132c87dda9822b30",
+          "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+          "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+          "pedersenAggregateHash": "adb916ac86526ccbdfd94b8124a22123900971191e7250ea404bfc8f993e8587"
+        }
+      }
+    }
   },
   "zkSummary": {
-    "proofMode": "mock",
-    "verifierMode": "local-mock",
-    "circuitId": "tally-correctness-8x4-v2",
-    "proofGenerated": true,
-    "proofHash": "h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1",
-    "publicSignals": {
-      "electionIdHash": "a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8",
-      "batchId": "batch_demo_001",
-      "tally": [
-        2,
-        2,
-        2,
-        2
-      ],
-      "batchSize": 8,
-      "validVoteCount": 8,
-      "tallyHash": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
-      "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
-      "partitionHash": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1",
-      "circuitId": "tally-correctness-8x4-v2"
-    },
-    "message": "Demo tally summary loaded from fixtures."
+    "proofMode": null,
+    "circuitId": "valid-vote-4",
+    "proofGenerated": false,
+    "publicSignals": null,
+    "message": "ZK validity proof is not embedded in this export. Generate it separately and merge it into the bundle when available."
   },
   "tallyProofSummary": {
-    "proofId": "proof_tally_demo_001",
-    "proofMode": "mock",
-    "verifierMode": "local-mock",
-    "circuitId": "tally-correctness-8x4-v2",
-    "publicSignals": {
-      "electionIdHash": "a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8",
-      "batchId": "batch_demo_001",
-      "tally": [
-        2,
-        2,
-        2,
-        2
-      ],
-      "batchSize": 8,
-      "validVoteCount": 8,
-      "tallyHash": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
-      "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
-      "partitionHash": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1",
-      "circuitId": "tally-correctness-8x4-v2"
-    },
-    "proof": {
-      "pi_a": [
-        "1",
-        "2"
-      ],
-      "pi_b": [
-        [
-          "3",
-          "4"
-        ],
-        [
-          "5",
-          "6"
-        ]
-      ],
-      "pi_c": [
-        "7",
-        "8"
-      ]
-    },
-    "proofHash": "h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1h1",
-    "valid": true,
-    "message": "Demo tally proof matches the sample report."
+    "proofStatus": "not-generated",
+    "proofId": null,
+    "proofMode": null,
+    "verifierMode": null,
+    "circuitId": "tally-correctness-v2",
+    "proofHash": null,
+    "publicSignals": null,
+    "message": "Tally proof has not been generated by B-track yet; A-track exports report-binding metadata only."
   },
   "chainAudit": {
-    "auditMode": "hardhat",
-    "verifierMode": "real-hardhat",
-    "contractAddress": "0x1111111111111111111111111111111111111111",
-    "transactionHash": "0x2222222222222222222222222222222222222222222222222222222222222222",
-    "zkVerified": true,
-    "gasUsed": 284901,
-    "status": "submitted",
-    "hasAudit": true,
-    "audit": {
-      "auditMode": "hardhat",
-      "verifierMode": "real-hardhat",
-      "contractAddress": "0x1111111111111111111111111111111111111111",
-      "transactionHash": "0x2222222222222222222222222222222222222222222222222222222222222222",
-      "zkVerified": true,
-      "gasUsed": 284901,
-      "status": "submitted",
-      "electionId": "demo-election-v2",
-      "electionIdHash": "a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8",
-      "merkleRoot": "m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1",
-      "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
-      "receiptRoot": "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
-      "auditHash": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
-      "tallyHash": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
-      "createdAt": "2026-06-18T08:03:00.000Z",
-      "submitter": "demo-submit-service"
-    }
+    "auditMode": "local-mock",
+    "verifierMode": null,
+    "contractAddress": "local-mock:VeriVoteAudit",
+    "hasAudit": false,
+    "audit": null,
+    "transactionHash": null,
+    "zkVerified": false,
+    "gasUsed": null,
+    "status": "not_submitted"
   },
-  "challengeRecords": [
-    {
-      "id": "challenge_record_1",
-      "electionId": "demo-election-v2",
-      "pendingBallotId": "challenge_1",
-      "voteVector": [
-        0,
-        1,
-        0,
-        0
-      ],
-      "randomness": "k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1k1",
-      "commitment": "k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2k2",
-      "openingVerified": true,
-      "createdAt": "2026-06-18T08:02:00.000Z"
-    },
-    {
-      "id": "challenge_record_2",
-      "electionId": "demo-election-v2",
-      "pendingBallotId": "challenge_2",
-      "voteVector": [
-        0,
-        0,
-        1,
-        0
-      ],
-      "randomness": "k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3k3",
-      "commitment": "k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4k4",
-      "openingVerified": true,
-      "createdAt": "2026-06-18T08:02:30.000Z"
-    }
-  ],
   "demoMetadata": {
-    "seedName": "demo-seed-4x8",
-    "seedVersion": "v2",
-    "fixtureMode": "fixture",
-    "generatedAt": "2026-06-18T08:04:00.000Z",
-    "electionId": "demo-election-v2",
-    "candidateCount": 4,
-    "userCount": 8,
-    "castVotes": 8,
-    "challengeBallots": 2,
-    "normalFlow": "create election -> register users -> cast 8 votes -> run aggregator -> export bundle",
-    "attackMatrix": [
-      "tamper commitment",
-      "delete vote",
-      "inject duplicate vote",
-      "inject invalid vote",
-      "tamper tally"
+    "demoSeedFile": "docs/contracts/demo_seed_fixture.json",
+    "aggregatorCasesFile": "docs/evaluation/AGGREGATOR_AUDIT_CASES.md",
+    "apiSmokeFile": "docs/evaluation/aggregator_reports/api_smoke.json",
+    "completenessMatrixFile": "docs/evaluation/aggregator_reports/completeness_matrix.json",
+    "generatedBy": "buildExportBundle",
+    "notes": [
+      "A-track can export this bundle before B-track proof generation.",
+      "tallyProofSummary.proofStatus=not-generated means proof metadata is reserved but no tally proof is embedded."
     ]
-  }
+  },
+  "challengeRecords": []
 }

@@ -1,0 +1,372 @@
+{
+  "schemaVersion": "verivote.aggregator-offline-verification.v1",
+  "generatedBy": "pnpm aggregator:verify",
+  "verifiedFiles": [
+    {
+      "name": "normal",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.normal.json",
+      "integrityVerified": true,
+      "failures": [],
+      "validVotes": 8,
+      "validVoteIds": [
+        "vote_1",
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVotes": 0,
+      "invalidVoteIds": [],
+      "proofStatus": "not-generated",
+      "diagnosticReasons": [],
+      "auditHash": "8c9148ac4430f41febfe7bae1777f1ed07760c4a4c9fd76767284a41536a73af",
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6"
+    },
+    {
+      "name": "duplicate-token",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.duplicate-token.json",
+      "integrityVerified": true,
+      "failures": [],
+      "validVotes": 8,
+      "validVoteIds": [
+        "vote_1",
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVotes": 1,
+      "invalidVoteIds": [
+        "vote_9"
+      ],
+      "proofStatus": "not-generated",
+      "diagnosticReasons": [
+        "duplicate-token"
+      ],
+      "auditHash": "14223d101898bf7a3b3c503186dea9d2687a765015303f9555edc66565220499",
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "8612021b786d22ad732ff37deb3e10d69c97acec7fcbf1c69e2da950a2976d36"
+    },
+    {
+      "name": "invalid-candidate",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.invalid-candidate.json",
+      "integrityVerified": true,
+      "failures": [],
+      "validVotes": 8,
+      "validVoteIds": [
+        "vote_1",
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVotes": 1,
+      "invalidVoteIds": [
+        "vote_9"
+      ],
+      "proofStatus": "not-generated",
+      "diagnosticReasons": [
+        "invalid-candidate"
+      ],
+      "auditHash": "14c5c57077c61571c415442fde6269c358887209b92b1f38062964797c061944",
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "76ba136a09fe4a7887eb83fa3eefcb35697a997997d553bd2eeb4f84d1e27ada"
+    },
+    {
+      "name": "non-one-hot",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.non-one-hot.json",
+      "integrityVerified": true,
+      "failures": [],
+      "validVotes": 8,
+      "validVoteIds": [
+        "vote_1",
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVotes": 1,
+      "invalidVoteIds": [
+        "vote_9"
+      ],
+      "proofStatus": "not-generated",
+      "diagnosticReasons": [
+        "invalid-one-hot"
+      ],
+      "auditHash": "b5083c6463d0040401ac250f17d101c1796584bfc47c31bfd167a1f9bbd78901",
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "82f605c50d215387590f7944cc7aa2973dbf89e527bc86e1166e23c4fdc15756"
+    },
+    {
+      "name": "candidate-vector-mismatch",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.candidate-vector-mismatch.json",
+      "integrityVerified": true,
+      "failures": [],
+      "validVotes": 8,
+      "validVoteIds": [
+        "vote_1",
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVotes": 1,
+      "invalidVoteIds": [
+        "vote_9"
+      ],
+      "proofStatus": "not-generated",
+      "diagnosticReasons": [
+        "candidate-vector-mismatch"
+      ],
+      "auditHash": "49369d2b5fbd32eba56c7f9935d5b4f930e182f1e90017f8a590b366dd7b3fde",
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "146c77c81c8fc0d4de7a8f9eb28711332720b98ea029142ca76549790576f7a2"
+    },
+    {
+      "name": "commitment-tamper",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.commitment-tamper.json",
+      "integrityVerified": true,
+      "failures": [],
+      "validVotes": 7,
+      "validVoteIds": [
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVotes": 1,
+      "invalidVoteIds": [
+        "vote_1"
+      ],
+      "proofStatus": "not-generated",
+      "diagnosticReasons": [
+        "commitment-opening-failed",
+        "receipt-chain-break"
+      ],
+      "auditHash": "b7c538dc7a2b22f6ba5e1db3c09a1c7dd72e58c1bf3de27458432f3d033a86cd",
+      "partitionHash": "d48430ae14f25d6f1567dec54e1c48deaf5b7381b61c64e92945ab91e0ed9608",
+      "diagnosticsHash": "a5644a84c49474be0c2520406673289c50c9822ed9c1cb4e95aea8438711135a"
+    },
+    {
+      "name": "receipt-chain-delete",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.receipt-chain-delete.json",
+      "integrityVerified": true,
+      "failures": [],
+      "validVotes": 0,
+      "validVoteIds": [],
+      "invalidVotes": 7,
+      "invalidVoteIds": [
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "proofStatus": "not-generated",
+      "diagnosticReasons": [
+        "receipt-chain-break"
+      ],
+      "auditHash": "840cb831fcf943ddc7858b0232fac79a71ba39dd34487a6845e4d206a72d21b4",
+      "partitionHash": "390998c888ce1056c49c197c347f0f96e7ef3ad76f6ae22271508239dc9b604b",
+      "diagnosticsHash": "9631e887560fb299fdec192d71e5b45ca21b8ae37cecdb83f4e178628848a043"
+    }
+  ],
+  "contractSample": {
+    "file": "docs/contracts/aggregator_report_v2.sample.json",
+    "integrityVerified": true,
+    "failures": [],
+    "auditHash": "8c9148ac4430f41febfe7bae1777f1ed07760c4a4c9fd76767284a41536a73af",
+    "proofStatus": "not-generated"
+  },
+  "pedersenNullContractSample": {
+    "file": "docs/contracts/aggregator_report_pedersen_null.sample.json",
+    "integrityVerified": true,
+    "failures": [],
+    "auditHash": "0d1ab470405379c93bc90ad9ac1d49d7b5cfd9b73c47f62faf6477624c7e6d5b",
+    "pedersenAggregateAudit": null,
+    "pedersenAggregateStatus": "pending",
+    "pedersenAggregateHash": null
+  },
+  "tamperCases": [
+    {
+      "name": "malformed missing partitionAudit",
+      "expectedFailure": "fieldShapeValid",
+      "verified": false,
+      "failures": [
+        "fieldShapeValid",
+        "auditHashMatches",
+        "partitionHashMatches",
+        "nestedPartitionHashMatches",
+        "diagnosticsHashMatches",
+        "diagnosticEvidenceHashesMatch",
+        "bucketAuditHashesMatch",
+        "bucketVoteCountsMatch",
+        "bucketTokenRootsMatchTokenHashes",
+        "bucketTallyMatches",
+        "bucketVoteIdsDisjoint",
+        "bucketVoteCountSumMatchesValidVotes",
+        "validVoteIdsMatchBuckets",
+        "invalidVoteIdsMatchDiagnostics",
+        "validAndInvalidVoteIdsDisjoint",
+        "invalidVoteIdsExcludedFromBuckets",
+        "voteIdAccountingMatchesTotalVotes",
+        "partitionFlagsMatchStructure",
+        "noDuplicateValidTokenHashesAsserted",
+        "noDuplicateValidTokenHashesVerified",
+        "publicInputHintsMatch",
+        "voteTokenHashCountMatchesTotalVotes",
+        "duplicateTokenHashesMatchDiagnostics",
+        "receiptChainStatusMatchesBreaks",
+        "candidateCountMatchesPartitions",
+        "totalVoteCountMatchesValidAndInvalid",
+        "tallyTotalMatchesValidVotes",
+        "tallySumMatchesValidVotes",
+        "invalidVoteCountMatchesDiagnostics",
+        "duplicateVoteCountMatchesDiagnostics",
+        "pedersenAggregateHashMatches",
+        "pedersenAggregateStatusMatches"
+      ]
+    },
+    {
+      "name": "tamper auditHash",
+      "expectedFailure": "auditHashMatches",
+      "verified": false,
+      "failures": [
+        "auditHashMatches"
+      ]
+    },
+    {
+      "name": "tamper bucket voteCount",
+      "expectedFailure": "bucketVoteCountsMatch",
+      "verified": false,
+      "failures": [
+        "auditHashMatches",
+        "bucketAuditHashesMatch",
+        "bucketVoteCountsMatch",
+        "bucketTallyMatches",
+        "bucketVoteCountSumMatchesValidVotes",
+        "partitionFlagsMatchStructure"
+      ]
+    },
+    {
+      "name": "tamper bucket tokenHashes",
+      "expectedFailure": "bucketTokenRootsMatchTokenHashes",
+      "verified": false,
+      "failures": [
+        "auditHashMatches",
+        "bucketTokenRootsMatchTokenHashes"
+      ]
+    },
+    {
+      "name": "tamper validVoteIds",
+      "expectedFailure": "validVoteIdsMatchBuckets",
+      "verified": false,
+      "failures": [
+        "auditHashMatches",
+        "validVoteIdsMatchBuckets",
+        "partitionFlagsMatchStructure"
+      ]
+    },
+    {
+      "name": "tamper duplicateTokenHashes",
+      "expectedFailure": "duplicateTokenHashesMatchDiagnostics",
+      "verified": false,
+      "failures": [
+        "auditHashMatches",
+        "duplicateTokenHashesMatchDiagnostics"
+      ]
+    },
+    {
+      "name": "tamper diagnosticsHash",
+      "expectedFailure": "diagnosticsHashMatches",
+      "verified": false,
+      "failures": [
+        "auditHashMatches",
+        "diagnosticsHashMatches"
+      ]
+    },
+    {
+      "name": "tamper publicInputHints.validVotes",
+      "expectedFailure": "publicInputHintsMatch",
+      "verified": false,
+      "failures": [
+        "auditHashMatches",
+        "publicInputHintsMatch"
+      ]
+    },
+    {
+      "name": "tamper pedersenAggregateHash",
+      "expectedFailure": "pedersenAggregateHashMatches",
+      "verified": false,
+      "failures": [
+        "auditHashMatches",
+        "pedersenAggregateHashMatches"
+      ]
+    },
+    {
+      "name": "tamper pedersenAggregateStatus",
+      "expectedFailure": "pedersenAggregateStatusMatches",
+      "verified": false,
+      "failures": [
+        "auditHashMatches",
+        "pedersenAggregateStatusMatches"
+      ]
+    },
+    {
+      "name": "tamper tallyProofSummary",
+      "expectedFailure": "auditHashMatches",
+      "verified": false,
+      "failures": [
+        "auditHashMatches"
+      ]
+    }
+  ],
+  "savedApiTamperReport": {
+    "name": "api-tamper-tally",
+    "file": "docs/evaluation/aggregator_reports/api_aggregator_report.attack-tamper-tally.json",
+    "endpoint": "/attack/elections/election_9/tamper-tally",
+    "reportEndpoint": "/aggregator/elections/election_9/report",
+    "storedIntegrityVerified": false,
+    "offlineIntegrityVerified": false,
+    "storedFailures": [
+      "bucketTallyMatches",
+      "publicInputHintsMatch",
+      "tallyTotalMatchesValidVotes",
+      "tallySumMatchesValidVotes"
+    ],
+    "offlineFailures": [
+      "bucketTallyMatches",
+      "publicInputHintsMatch",
+      "tallyTotalMatchesValidVotes",
+      "tallySumMatchesValidVotes"
+    ],
+    "auditHashMatches": true,
+    "expectedFailures": [
+      "bucketTallyMatches",
+      "tallyTotalMatchesValidVotes",
+      "tallySumMatchesValidVotes"
+    ],
+    "tallyConsistent": false
+  }
+}

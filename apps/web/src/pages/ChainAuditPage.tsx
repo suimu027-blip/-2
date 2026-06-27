@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type {
-  BlockchainAuditRecord,
   Election,
-  GetBlockchainAuditResponse,
-  SubmitBlockchainAuditResponse
+  BlockchainAuditRecord,
+  SubmitBlockchainAuditResponse,
+  GetBlockchainAuditResponse
 } from "@verivote/shared";
 import {
   apiRequest,
@@ -13,23 +13,15 @@ import {
   ElectionSelect,
   type Notice
 } from "../common";
-import { demoChainAuditV2Sample } from "../data/demo-fixtures";
 
 function getAuditModeLabel(auditMode: BlockchainAuditRecord["auditMode"]): string {
-  return auditMode === "hardhat" ? "Hardhat" : "local-mock";
+  return auditMode === "hardhat" ? "Hardhat Audit" : "Local Mock Chain Audit";
 }
 
 function ChainAuditDetails({ audit }: { audit: BlockchainAuditRecord }) {
-  const verifierMode =
-    audit.verifierMode ?? (audit.zkVerified ? "real-hardhat" : "pending");
+  const submitter = audit.submitter ?? audit.mockSubmitter ?? "未记录";
+  const transactionHash = audit.transactionHash || "查询模式未返回交易哈希";
   const rows = [
-    ["auditMode", getAuditModeLabel(audit.auditMode)],
-    ["verifierMode", verifierMode],
-    ["contractAddress", audit.contractAddress],
-    ["transactionHash", audit.transactionHash || "pending"],
-    ["zkVerified", String(Boolean(audit.zkVerified))],
-    ["gasUsed", audit.gasUsed === undefined ? "pending" : String(audit.gasUsed)],
-    ["status", audit.status],
     ["electionId", audit.electionId],
     ["electionIdHash", audit.electionIdHash],
     ["merkleRoot", audit.merkleRoot],
@@ -37,14 +29,18 @@ function ChainAuditDetails({ audit }: { audit: BlockchainAuditRecord }) {
     ["receiptRoot", audit.receiptRoot],
     ["auditHash", audit.auditHash],
     ["tallyHash", audit.tallyHash],
-    ["submitter", audit.submitter ?? audit.mockSubmitter ?? "pending"],
-    ["createdAt", formatTime(audit.createdAt)]
+    ["transactionHash", transactionHash],
+    ["contractAddress", audit.contractAddress],
+    ["auditMode", getAuditModeLabel(audit.auditMode)],
+    ["createdAt", formatTime(audit.createdAt)],
+    ["submitter / mockSubmitter", submitter],
+    ["status", audit.status]
   ];
 
   return (
     <div className="panel receipt-panel">
       <div className="verification-heading">
-        <h2>chain audit result</h2>
+        <h2>链上审计结果</h2>
         <span className={audit.status === "submitted" ? "status-pill ok" : "status-pill bad"}>
           {audit.status}
         </span>
@@ -66,8 +62,9 @@ export function ChainAuditPage({ elections }: { elections: Election[] }) {
   const [electionId, setElectionId] = useState("");
   const [audit, setAudit] = useState<BlockchainAuditRecord | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
-  const [loadingAction, setLoadingAction] = useState<"submit" | "query" | null>(null);
-  const [sampleMode, setSampleMode] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<"submit" | "query" | null>(
+    null
+  );
 
   useEffect(() => {
     if (!electionId && elections.length > 0) {
@@ -75,17 +72,11 @@ export function ChainAuditPage({ elections }: { elections: Election[] }) {
     }
   }, [electionId, elections]);
 
-  const displayedAudit = useMemo(
-    () => audit ?? (sampleMode ? (demoChainAuditV2Sample as BlockchainAuditRecord) : null),
-    [audit, sampleMode]
-  );
-
   async function handleSubmit() {
     setNotice(null);
-    setSampleMode(false);
 
     if (!electionId) {
-      setNotice({ type: "error", text: "Select an election first." });
+      setNotice({ type: "error", text: "请先选择投票" });
       return;
     }
 
@@ -93,8 +84,11 @@ export function ChainAuditPage({ elections }: { elections: Election[] }) {
       setLoadingAction("submit");
       const data = await apiRequest<SubmitBlockchainAuditResponse>(
         `/blockchain/elections/${electionId}/submit-audit`,
-        { method: "POST" }
+        {
+          method: "POST"
+        }
       );
+
       setAudit(data.audit);
       setNotice({ type: "success", text: data.message });
     } catch (error) {
@@ -107,10 +101,9 @@ export function ChainAuditPage({ elections }: { elections: Election[] }) {
 
   async function handleQuery() {
     setNotice(null);
-    setSampleMode(false);
 
     if (!electionId) {
-      setNotice({ type: "error", text: "Select an election first." });
+      setNotice({ type: "error", text: "请先选择投票" });
       return;
     }
 
@@ -119,12 +112,13 @@ export function ChainAuditPage({ elections }: { elections: Election[] }) {
       const data = await apiRequest<GetBlockchainAuditResponse>(
         `/blockchain/elections/${electionId}/audit`
       );
+
       setAudit(data.audit);
       setNotice({
         type: data.hasAudit ? "success" : "error",
         text: data.hasAudit
-          ? `${getAuditModeLabel(data.auditMode)} audit found.`
-          : `${getAuditModeLabel(data.auditMode)} audit not found.`
+          ? `${getAuditModeLabel(data.auditMode)} 已找到审计摘要`
+          : `${getAuditModeLabel(data.auditMode)} 尚未提交审计摘要`
       });
     } catch (error) {
       setAudit(null);
@@ -134,43 +128,31 @@ export function ChainAuditPage({ elections }: { elections: Election[] }) {
     }
   }
 
-  function handleLoadSample() {
-    setAudit(null);
-    setSampleMode(true);
-    setNotice({ type: "success", text: "Loaded chain audit v2 sample." });
-  }
-
   return (
     <section className="page-section">
       <div className="section-header">
         <div>
           <p className="eyebrow">Blockchain Audit</p>
-          <h1>Chain Audit</h1>
+          <h1>链上审计</h1>
         </div>
-        <button type="button" className="secondary" onClick={handleLoadSample}>
-          Load real-hardhat sample
-        </button>
       </div>
 
       <NoticeMessage notice={notice} />
 
       <div className="panel attack-warning">
-        <strong>Summary anchoring</strong>
-        <p>
-          Only public audit hashes are submitted. Ballot plaintexts and challenge openings are not sent to the chain.
-        </p>
+        <strong>摘要上链</strong>
+        <p>本阶段仅提交审计摘要，不上链明文选票。同一 electionId 已提交后会拒绝重复提交。</p>
       </div>
 
       <div className="panel form">
         <label>
-          Election
+          投票
           <ElectionSelect
             elections={elections}
             value={electionId}
             onChange={(value) => {
               setElectionId(value);
               setAudit(null);
-              setSampleMode(false);
             }}
           />
         </label>
@@ -180,7 +162,7 @@ export function ChainAuditPage({ elections }: { elections: Election[] }) {
             onClick={() => void handleSubmit()}
             disabled={!electionId || loadingAction !== null}
           >
-            {loadingAction === "submit" ? "Submitting..." : "Submit audit"}
+            {loadingAction === "submit" ? "提交中..." : "提交链上审计"}
           </button>
           <button
             type="button"
@@ -188,23 +170,16 @@ export function ChainAuditPage({ elections }: { elections: Election[] }) {
             onClick={() => void handleQuery()}
             disabled={!electionId || loadingAction !== null}
           >
-            {loadingAction === "query" ? "Querying..." : "Query audit"}
+            {loadingAction === "query" ? "查询中..." : "查询链上审计"}
           </button>
         </div>
       </div>
 
-      {displayedAudit ? (
-        <>
-          {sampleMode ? (
-            <p className="receipt-note">
-              Fixture mode: this record mirrors docs/contracts/chain_audit.real.sample.json.
-            </p>
-          ) : null}
-          <ChainAuditDetails audit={displayedAudit} />
-        </>
+      {audit ? (
+        <ChainAuditDetails audit={audit} />
       ) : (
         <div className="panel">
-          <p className="empty">No chain audit record loaded.</p>
+          <p className="empty">尚未加载链上审计记录。</p>
         </div>
       )}
     </section>

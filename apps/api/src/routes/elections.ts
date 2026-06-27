@@ -57,7 +57,8 @@ import {
   appendVoteWithReceiptChain,
   buildArtifactContext,
   buildExportBundle,
-  sendArtifactAsFile
+  sendArtifactAsFile,
+  verifyAggregatorReportIntegrity
 } from "../utils.js";
 
 const router = Router();
@@ -187,7 +188,11 @@ router.post<{ id: string }, RunAggregatorResponse | { error: string }>(
     const report = createAggregatorReport(election.id);
     saveAggregatorReport(report);
 
-    response.status(hadExistingReport ? 200 : 201).json({ election, report });
+    response.status(hadExistingReport ? 200 : 201).json({
+      election,
+      report,
+      integrityCheck: verifyAggregatorReportIntegrity(report)
+    });
   }
 );
 
@@ -211,7 +216,8 @@ router.get<{ id: string }, GetAggregatorReportResponse | { error: string }>(
     response.json({
       election,
       report,
-      ...getTallyConsistency(election.id, report)
+      ...getTallyConsistency(election.id, report),
+      integrityCheck: verifyAggregatorReportIntegrity(report)
     });
   }
 );
@@ -496,10 +502,8 @@ router.get<{ id: string }>("/elections/:id/export/zk_summary.json", (request, re
   const context = buildArtifactContext(election);
   sendArtifactAsFile(response, `zk_summary_${election.id}.json`, {
     proofMode: null,
-    verifierMode: context.auditMode === "hardhat" ? "real-hardhat" : "local-mock",
     circuitId: "valid-vote-4",
     proofGenerated: false,
-    proofHash: null,
     publicSignals: null,
     electionIdHash: context.publicInputs.electionIdHash,
     candidateCount: context.publicInputs.candidateCount,
@@ -517,18 +521,7 @@ router.get<{ id: string }>("/elections/:id/export/chain_audit.json", (request, r
   const context = buildArtifactContext(election);
   sendArtifactAsFile(response, `chain_audit_${election.id}.json`, {
     auditMode: context.auditMode,
-    verifierMode:
-      context.auditRecord?.verifierMode ??
-      (context.auditRecord?.zkVerified
-        ? context.auditMode === "hardhat"
-          ? "real-hardhat"
-          : "local-mock"
-        : undefined),
     contractAddress: context.auditRecord ? context.auditRecord.contractAddress : "",
-    transactionHash: context.auditRecord?.transactionHash ?? null,
-    zkVerified: context.auditRecord?.zkVerified ?? false,
-    gasUsed: context.auditRecord?.gasUsed,
-    status: context.auditRecord?.status ?? "not_found",
     hasAudit: context.auditRecord !== null,
     audit: context.auditRecord
   });

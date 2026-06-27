@@ -1,0 +1,281 @@
+{
+  "schemaVersion": "verivote.aggregator-audit-summary.v2",
+  "generatedBy": "pnpm aggregator:audit-cases",
+  "caseCount": 7,
+  "allIntegrityVerified": true,
+  "cases": [
+    {
+      "name": "normal",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.normal.json",
+      "compatibilityFile": null,
+      "description": "8 valid votes across 4 candidates.",
+      "totalVotes": 8,
+      "validVotes": 8,
+      "invalidVotes": 0,
+      "duplicateVotes": 0,
+      "proofStatus": "not-generated",
+      "receiptChainVerified": true,
+      "diagnosticReasons": [],
+      "validVoteIds": [
+        "vote_1",
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVoteIds": [],
+      "bucketVoteCounts": {
+        "candidate_1": 2,
+        "candidate_2": 2,
+        "candidate_3": 2,
+        "candidate_4": 2
+      },
+      "bucketTokenRootVerified": true,
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+      "auditHash": "8c9148ac4430f41febfe7bae1777f1ed07760c4a4c9fd76767284a41536a73af",
+      "integrityVerified": true,
+      "integrityFailures": []
+    },
+    {
+      "name": "duplicate-token",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.duplicate-token.json",
+      "compatibilityFile": "docs/evaluation/aggregator_reports/aggregator_report.attack-duplicate-token.json",
+      "description": "One extra vote reuses the first voter's token.",
+      "totalVotes": 9,
+      "validVotes": 8,
+      "invalidVotes": 1,
+      "duplicateVotes": 1,
+      "proofStatus": "not-generated",
+      "receiptChainVerified": true,
+      "diagnosticReasons": [
+        "duplicate-token"
+      ],
+      "validVoteIds": [
+        "vote_1",
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVoteIds": [
+        "vote_9"
+      ],
+      "bucketVoteCounts": {
+        "candidate_1": 2,
+        "candidate_2": 2,
+        "candidate_3": 2,
+        "candidate_4": 2
+      },
+      "bucketTokenRootVerified": true,
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "8612021b786d22ad732ff37deb3e10d69c97acec7fcbf1c69e2da950a2976d36",
+      "auditHash": "14223d101898bf7a3b3c503186dea9d2687a765015303f9555edc66565220499",
+      "integrityVerified": true,
+      "integrityFailures": []
+    },
+    {
+      "name": "invalid-candidate",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.invalid-candidate.json",
+      "compatibilityFile": "docs/evaluation/aggregator_reports/aggregator_report.attack-invalid-candidate.json",
+      "description": "One vote has a legal one-hot vector but an unknown candidateId.",
+      "totalVotes": 9,
+      "validVotes": 8,
+      "invalidVotes": 1,
+      "duplicateVotes": 0,
+      "proofStatus": "not-generated",
+      "receiptChainVerified": true,
+      "diagnosticReasons": [
+        "invalid-candidate"
+      ],
+      "validVoteIds": [
+        "vote_1",
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVoteIds": [
+        "vote_9"
+      ],
+      "bucketVoteCounts": {
+        "candidate_1": 2,
+        "candidate_2": 2,
+        "candidate_3": 2,
+        "candidate_4": 2
+      },
+      "bucketTokenRootVerified": true,
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "76ba136a09fe4a7887eb83fa3eefcb35697a997997d553bd2eeb4f84d1e27ada",
+      "auditHash": "14c5c57077c61571c415442fde6269c358887209b92b1f38062964797c061944",
+      "integrityVerified": true,
+      "integrityFailures": []
+    },
+    {
+      "name": "non-one-hot",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.non-one-hot.json",
+      "compatibilityFile": "docs/evaluation/aggregator_reports/aggregator_report.attack-non-one-hot.json",
+      "description": "One vote selects two candidates in the vote vector.",
+      "totalVotes": 9,
+      "validVotes": 8,
+      "invalidVotes": 1,
+      "duplicateVotes": 0,
+      "proofStatus": "not-generated",
+      "receiptChainVerified": true,
+      "diagnosticReasons": [
+        "invalid-one-hot"
+      ],
+      "validVoteIds": [
+        "vote_1",
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVoteIds": [
+        "vote_9"
+      ],
+      "bucketVoteCounts": {
+        "candidate_1": 2,
+        "candidate_2": 2,
+        "candidate_3": 2,
+        "candidate_4": 2
+      },
+      "bucketTokenRootVerified": true,
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "82f605c50d215387590f7944cc7aa2973dbf89e527bc86e1166e23c4fdc15756",
+      "auditHash": "b5083c6463d0040401ac250f17d101c1796584bfc47c31bfd167a1f9bbd78901",
+      "integrityVerified": true,
+      "integrityFailures": []
+    },
+    {
+      "name": "candidate-vector-mismatch",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.candidate-vector-mismatch.json",
+      "compatibilityFile": "docs/evaluation/aggregator_reports/aggregator_report.attack-candidate-vector-mismatch.json",
+      "description": "One vote has a valid candidateId but the one-hot vector points elsewhere.",
+      "totalVotes": 9,
+      "validVotes": 8,
+      "invalidVotes": 1,
+      "duplicateVotes": 0,
+      "proofStatus": "not-generated",
+      "receiptChainVerified": true,
+      "diagnosticReasons": [
+        "candidate-vector-mismatch"
+      ],
+      "validVoteIds": [
+        "vote_1",
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVoteIds": [
+        "vote_9"
+      ],
+      "bucketVoteCounts": {
+        "candidate_1": 2,
+        "candidate_2": 2,
+        "candidate_3": 2,
+        "candidate_4": 2
+      },
+      "bucketTokenRootVerified": true,
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+      "diagnosticsHash": "146c77c81c8fc0d4de7a8f9eb28711332720b98ea029142ca76549790576f7a2",
+      "auditHash": "49369d2b5fbd32eba56c7f9935d5b4f930e182f1e90017f8a590b366dd7b3fde",
+      "integrityVerified": true,
+      "integrityFailures": []
+    },
+    {
+      "name": "commitment-tamper",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.commitment-tamper.json",
+      "compatibilityFile": "docs/evaluation/aggregator_reports/aggregator_report.attack-commitment-tamper.json",
+      "description": "The first vote commitment is modified after casting.",
+      "totalVotes": 8,
+      "validVotes": 7,
+      "invalidVotes": 1,
+      "duplicateVotes": 0,
+      "proofStatus": "not-generated",
+      "receiptChainVerified": false,
+      "diagnosticReasons": [
+        "commitment-opening-failed",
+        "receipt-chain-break"
+      ],
+      "validVoteIds": [
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "invalidVoteIds": [
+        "vote_1"
+      ],
+      "bucketVoteCounts": {
+        "candidate_1": 1,
+        "candidate_2": 2,
+        "candidate_3": 2,
+        "candidate_4": 2
+      },
+      "bucketTokenRootVerified": true,
+      "partitionHash": "d48430ae14f25d6f1567dec54e1c48deaf5b7381b61c64e92945ab91e0ed9608",
+      "diagnosticsHash": "a5644a84c49474be0c2520406673289c50c9822ed9c1cb4e95aea8438711135a",
+      "auditHash": "b7c538dc7a2b22f6ba5e1db3c09a1c7dd72e58c1bf3de27458432f3d033a86cd",
+      "integrityVerified": true,
+      "integrityFailures": []
+    },
+    {
+      "name": "receipt-chain-delete",
+      "file": "docs/evaluation/aggregator_reports/aggregator_report.receipt-chain-delete.json",
+      "compatibilityFile": "docs/evaluation/aggregator_reports/aggregator_report.attack-receipt-chain-delete.json",
+      "description": "The first vote is removed, creating a conservative chain break.",
+      "totalVotes": 7,
+      "validVotes": 0,
+      "invalidVotes": 7,
+      "duplicateVotes": 0,
+      "proofStatus": "not-generated",
+      "receiptChainVerified": false,
+      "diagnosticReasons": [
+        "receipt-chain-break"
+      ],
+      "validVoteIds": [],
+      "invalidVoteIds": [
+        "vote_2",
+        "vote_3",
+        "vote_4",
+        "vote_5",
+        "vote_6",
+        "vote_7",
+        "vote_8"
+      ],
+      "bucketVoteCounts": {
+        "candidate_1": 0,
+        "candidate_2": 0,
+        "candidate_3": 0,
+        "candidate_4": 0
+      },
+      "bucketTokenRootVerified": true,
+      "partitionHash": "390998c888ce1056c49c197c347f0f96e7ef3ad76f6ae22271508239dc9b604b",
+      "diagnosticsHash": "9631e887560fb299fdec192d71e5b45ca21b8ae37cecdb83f4e178628848a043",
+      "auditHash": "840cb831fcf943ddc7858b0232fac79a71ba39dd34487a6845e4d206a72d21b4",
+      "integrityVerified": true,
+      "integrityFailures": []
+    }
+  ]
+}

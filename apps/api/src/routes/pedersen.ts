@@ -4,8 +4,7 @@ import {
   createPedersenCommitment,
   verifyPedersenOpening,
   verifyAggregateOpening,
-  exportPedersenContext,
-  hashText
+  exportPedersenContext
 } from "@verivote/crypto";
 import type {
   PedersenCommitRequest,
@@ -200,39 +199,17 @@ router.post<
         commitment: clean(entry.commitment)
       }))
     );
-    const aggregatedRandomnessHash = hashText(
-      JSON.stringify({
-        domain: "verivote.pedersen.aggregate-randomness.v1",
-        contextHash: context.contextHash,
-        aggregatedRandomness: result.aggregatedRandomness
-      })
-    );
-    const message = result.verified
-      ? "Pedersen 聚合承诺核查通过：prod(C_i) 与 commit(sum v_i, sum r_i) 一致。"
-      : "Pedersen 聚合承诺核查失败：聚合后的 commitment 与开封不一致。";
-    const auditCore = {
-      domain: "verivote.pedersen.aggregate-audit.v1",
-      contextHash: context.contextHash,
-      aggregatedCommitment: result.aggregatedCommitment,
-      expectedCommitment: result.expectedCommitment,
-      aggregatedRandomnessHash,
-      aggregatedVector: result.aggregatedVector,
-      castVoteCount: request.body.batch.length,
-      verified: result.verified
-    };
-    const pedersenAggregateHash = hashText(JSON.stringify(auditCore));
 
     response.json({
       context: exportPedersenContext(context),
-      contextHash: context.contextHash,
       aggregatedCommitment: result.aggregatedCommitment,
       expectedCommitment: result.expectedCommitment,
-      aggregatedRandomnessHash,
+      aggregatedRandomness: result.aggregatedRandomness,
       aggregatedVector: result.aggregatedVector,
-      castVoteCount: request.body.batch.length,
       verified: result.verified,
-      message,
-      pedersenAggregateHash
+      message: result.verified
+        ? "Pedersen 聚合承诺核查通过：prod(C_i) 与 commit(sum v_i, sum r_i) 一致。"
+        : "Pedersen 聚合承诺核查失败：聚合后的 commitment 与开封不一致。"
     });
   } catch (error) {
     response.status(500).json({

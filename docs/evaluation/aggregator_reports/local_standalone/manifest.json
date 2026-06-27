@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "verivote.aggregator-local-export-manifest.v1",
+  "generatedBy": "pnpm aggregator:local-export",
+  "serverRequired": false,
+  "fixture": {
+    "electionId": "election_local_export_8x4",
+    "candidateCount": 4,
+    "userCount": 8,
+    "voteCount": 8
+  },
+  "report": {
+    "file": "aggregator_report.local-normal.json",
+    "auditHash": "e8bf2966385dd363c296d156119bc37d1c543793fd3ea0fa9c10853c8c3366fc",
+    "partitionHash": "379bf0ffdc3af583163f40142592378eb3e5c46fea3c3eb5f12642657f701a3f",
+    "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+    "proofStatus": "not-generated",
+    "integrityVerified": true
+  },
+  "publicInputs": {
+    "file": "public_inputs.local-normal.json",
+    "auditHash": "e8bf2966385dd363c296d156119bc37d1c543793fd3ea0fa9c10853c8c3366fc",
+    "partitionHash": "379bf0ffdc3af583163f40142592378eb3e5c46fea3c3eb5f12642657f701a3f",
+    "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6"
+  },
+  "exportBundle": {
+    "file": "export_bundle.local-normal.json",
+    "schemaVersion": "verivote.artifact.v2",
+    "proofStatus": "not-generated",
+    "chainAuditStatus": "not_submitted"
+  }
+}

@@ -1,0 +1,463 @@
+{
+  "schemaVersion": "verivote.aggregator-api-smoke.v1",
+  "generatedBy": "pnpm aggregator:api-smoke",
+  "baseUrl": "http://127.0.0.1:38375",
+  "caseCount": 7,
+  "allIntegrityVerified": true,
+  "cases": [
+    {
+      "name": "normal",
+      "endpoint": "/aggregator/elections/:id/run",
+      "status": 201,
+      "apiReportFile": "docs/evaluation/aggregator_reports/api_aggregator_report.normal.json",
+      "apiAttackAliasFile": null,
+      "integrityVerified": true,
+      "failures": [],
+      "reportSummary": {
+        "totalVotes": 8,
+        "validVotes": 8,
+        "invalidVotes": 0,
+        "duplicateVotes": 0,
+        "proofStatus": "not-generated",
+        "receiptChainVerified": true,
+        "reasons": [],
+        "validVoteIds": [
+          "vote_1",
+          "vote_2",
+          "vote_3",
+          "vote_4",
+          "vote_5",
+          "vote_6",
+          "vote_7",
+          "vote_8"
+        ],
+        "invalidVoteIds": [],
+        "partitionHash": "ae310d2f4978d66761d6a92ff91d5e7cbf4f55c7046c0fff0b08112939711d2c",
+        "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+        "auditHash": "a6c7f6440fa819e4681728bac9ba5715a17ce61ef36376b49ff3f9cd1d306bf8"
+      }
+    },
+    {
+      "name": "duplicate-token",
+      "endpoint": "/attack/elections/:id/inject-duplicate-vote",
+      "status": 200,
+      "apiReportFile": "docs/evaluation/aggregator_reports/api_aggregator_report.duplicate-token.json",
+      "apiAttackAliasFile": "docs/evaluation/aggregator_reports/api_aggregator_report.attack-duplicate-token.json",
+      "integrityVerified": true,
+      "failures": [],
+      "reportSummary": {
+        "totalVotes": 9,
+        "validVotes": 8,
+        "invalidVotes": 1,
+        "duplicateVotes": 1,
+        "proofStatus": "not-generated",
+        "receiptChainVerified": true,
+        "reasons": [
+          "duplicate-token"
+        ],
+        "validVoteIds": [
+          "vote_9",
+          "vote_10",
+          "vote_11",
+          "vote_12",
+          "vote_13",
+          "vote_14",
+          "vote_15",
+          "vote_16"
+        ],
+        "invalidVoteIds": [
+          "vote_17"
+        ],
+        "partitionHash": "b6b0a3b8aec289619d1280d1e773ad3d2b81d0590c77ea03a374a4ca1b99f69a",
+        "diagnosticsHash": "e614c47e297c8d814cb863f5557dc506cf2511c0b8d4591eb4e499811f0f4e93",
+        "auditHash": "41ffb918a16f174339104f522be9d6fa0ec8588d0035770438634f0302b49b45"
+      }
+    },
+    {
+      "name": "invalid-candidate",
+      "endpoint": "/attack/elections/:id/inject-invalid-vote",
+      "status": 200,
+      "apiReportFile": "docs/evaluation/aggregator_reports/api_aggregator_report.invalid-candidate.json",
+      "apiAttackAliasFile": "docs/evaluation/aggregator_reports/api_aggregator_report.attack-invalid-candidate.json",
+      "integrityVerified": true,
+      "failures": [],
+      "reportSummary": {
+        "totalVotes": 9,
+        "validVotes": 8,
+        "invalidVotes": 1,
+        "duplicateVotes": 0,
+        "proofStatus": "not-generated",
+        "receiptChainVerified": true,
+        "reasons": [
+          "invalid-candidate"
+        ],
+        "validVoteIds": [
+          "vote_18",
+          "vote_19",
+          "vote_20",
+          "vote_21",
+          "vote_22",
+          "vote_23",
+          "vote_24",
+          "vote_25"
+        ],
+        "invalidVoteIds": [
+          "vote_26"
+        ],
+        "partitionHash": "66db1dd1bb5d5567753672d83cca9859f2a37f2d6874754f4beac55e3fc5a1ac",
+        "diagnosticsHash": "444a8d64f6a7bfe5960ddfc697cb12872894138b98b0672b1fd429aa1566f291",
+        "auditHash": "15cd6adb1da4b6268ce1d3dbf3a0dbf5aa3e398524e92b1788c29d3d0d2494a4"
+      }
+    },
+    {
+      "name": "non-one-hot",
+      "endpoint": "/attack/elections/:id/inject-non-one-hot-vote",
+      "status": 200,
+      "apiReportFile": "docs/evaluation/aggregator_reports/api_aggregator_report.non-one-hot.json",
+      "apiAttackAliasFile": "docs/evaluation/aggregator_reports/api_aggregator_report.attack-non-one-hot.json",
+      "integrityVerified": true,
+      "failures": [],
+      "reportSummary": {
+        "totalVotes": 9,
+        "validVotes": 8,
+        "invalidVotes": 1,
+        "duplicateVotes": 0,
+        "proofStatus": "not-generated",
+        "receiptChainVerified": true,
+        "reasons": [
+          "invalid-one-hot"
+        ],
+        "validVoteIds": [
+          "vote_27",
+          "vote_28",
+          "vote_29",
+          "vote_30",
+          "vote_31",
+          "vote_32",
+          "vote_33",
+          "vote_34"
+        ],
+        "invalidVoteIds": [
+          "vote_35"
+        ],
+        "partitionHash": "f429d7a511987a0d2e7f58824bfd0ac128e101794f624e65528124c347121191",
+        "diagnosticsHash": "995360243f3e27950e82709ae0019fc60d72ebb301233aa34d4fb1a8d7634e12",
+        "auditHash": "d7ea08ce89121b020efeb443465baa3f33ef56bcccb2fcfa3ad400444f606c07"
+      }
+    },
+    {
+      "name": "candidate-vector-mismatch",
+      "endpoint": "/attack/elections/:id/inject-candidate-vector-mismatch",
+      "status": 200,
+      "apiReportFile": "docs/evaluation/aggregator_reports/api_aggregator_report.candidate-vector-mismatch.json",
+      "apiAttackAliasFile": "docs/evaluation/aggregator_reports/api_aggregator_report.attack-candidate-vector-mismatch.json",
+      "integrityVerified": true,
+      "failures": [],
+      "reportSummary": {
+        "totalVotes": 9,
+        "validVotes": 8,
+        "invalidVotes": 1,
+        "duplicateVotes": 0,
+        "proofStatus": "not-generated",
+        "receiptChainVerified": true,
+        "reasons": [
+          "candidate-vector-mismatch"
+        ],
+        "validVoteIds": [
+          "vote_36",
+          "vote_37",
+          "vote_38",
+          "vote_39",
+          "vote_40",
+          "vote_41",
+          "vote_42",
+          "vote_43"
+        ],
+        "invalidVoteIds": [
+          "vote_44"
+        ],
+        "partitionHash": "67747f82f3cab9be3523d0abd94f7d4e17a0e1a1c1111c4b84f3a8fb78f6a269",
+        "diagnosticsHash": "5174088c299066bbcfa08fef484c801f126050ba1998b6503eddf6dd88fb16ea",
+        "auditHash": "ce44a4c3732d22bd7efb85048b1b76d3fdba4701376dee2735abded299120377"
+      }
+    },
+    {
+      "name": "commitment-tamper",
+      "endpoint": "/attack/elections/:id/tamper-commitment",
+      "status": 200,
+      "apiReportFile": "docs/evaluation/aggregator_reports/api_aggregator_report.commitment-tamper.json",
+      "apiAttackAliasFile": "docs/evaluation/aggregator_reports/api_aggregator_report.attack-commitment-tamper.json",
+      "integrityVerified": true,
+      "failures": [],
+      "reportSummary": {
+        "totalVotes": 8,
+        "validVotes": 7,
+        "invalidVotes": 1,
+        "duplicateVotes": 0,
+        "proofStatus": "not-generated",
+        "receiptChainVerified": false,
+        "reasons": [
+          "commitment-opening-failed",
+          "receipt-chain-break"
+        ],
+        "validVoteIds": [
+          "vote_46",
+          "vote_47",
+          "vote_48",
+          "vote_49",
+          "vote_50",
+          "vote_51",
+          "vote_52"
+        ],
+        "invalidVoteIds": [
+          "vote_45"
+        ],
+        "partitionHash": "bfc28c6874fd12619824611fa327478ee5d50ed5a597a56e3c0842c6d4353cc6",
+        "diagnosticsHash": "9a7560e6d8965016611ae1e9395b7af0646a85819f1118ef26c7062949b9c747",
+        "auditHash": "bc450bfc5499cba0163b9200dcddd48f2781644e4e6b1be6ffd303f9a1c14d77"
+      }
+    },
+    {
+      "name": "receipt-chain-delete",
+      "endpoint": "/attack/elections/:id/delete-vote",
+      "status": 200,
+      "apiReportFile": "docs/evaluation/aggregator_reports/api_aggregator_report.receipt-chain-delete.json",
+      "apiAttackAliasFile": "docs/evaluation/aggregator_reports/api_aggregator_report.attack-receipt-chain-delete.json",
+      "integrityVerified": true,
+      "failures": [],
+      "reportSummary": {
+        "totalVotes": 7,
+        "validVotes": 0,
+        "invalidVotes": 7,
+        "duplicateVotes": 0,
+        "proofStatus": "not-generated",
+        "receiptChainVerified": false,
+        "reasons": [
+          "receipt-chain-break"
+        ],
+        "validVoteIds": [],
+        "invalidVoteIds": [
+          "vote_54",
+          "vote_55",
+          "vote_56",
+          "vote_57",
+          "vote_58",
+          "vote_59",
+          "vote_60"
+        ],
+        "partitionHash": "159dfc713dfc6a924d6bf56f6dbe37326f40d064116862a69cdba3adab3d0607",
+        "diagnosticsHash": "9554021cc14fa5b81fd08fa033bb3359ed9255e9ad8c4c77b03b8066b011ffa2",
+        "auditHash": "3bf2ccd4fafa2ca9658efcf47e5d2969d801727f327f31531a0e914136262f93"
+      }
+    }
+  ],
+  "exportSmoke": {
+    "electionId": "election_8",
+    "aggregatorReportEndpoint": "/elections/:id/export/aggregator_report.json",
+    "publicInputsEndpoint": "/elections/:id/export/public_inputs.json",
+    "bundleEndpoint": "/elections/:id/export-bundle",
+    "rawExportFiles": {
+      "aggregatorReport": "docs/evaluation/aggregator_reports/api_export_aggregator_report.json",
+      "publicInputs": "docs/evaluation/aggregator_reports/api_export_public_inputs.json",
+      "exportBundle": "docs/evaluation/aggregator_reports/api_export_bundle.json"
+    },
+    "aggregatorIntegrityVerified": true,
+    "publicInputs": {
+      "electionId": "election_8",
+      "electionIdHash": "2878fcc75e2ab3b49f950b02589d73889d1f6198a9f000b25742b5ac622fb3bb",
+      "candidateCount": 4,
+      "totalVotes": 8,
+      "validVotes": 8,
+      "merkleRoot": "022083a3a141eee50460a3040a1d5b167e9f9b0e48715e8e5e8ad039d98ecf47",
+      "commitmentRoot": "e72adaaaf9e53709677d1684b8052e49f2f37d4240463f93bc71cb8443d12133",
+      "receiptRoot": "a093da782466c653b55a1f50e4e15305af4f6d90bf1e4e356b6a08d51a06a073",
+      "tallyHash": "2d654f22dd5166140894cd1d4e13f7054fe1974d233f42c731fbaf874ad309db",
+      "partitionHash": "4f7be70bbd83b8d1b5a5e7a21cddc2b1dc2e4a47dd52d2b75f4279994f562239",
+      "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+      "auditHash": "419020148075d7741d3f47cb89fbf15f42490ac87f036b0c9a7a6fcdc2d5e440",
+      "zkCircuitId": "valid-vote-4"
+    },
+    "bundle": {
+      "proofStatus": "not-generated",
+      "chainAuditStatus": "not_submitted",
+      "demoSeedFile": "docs/contracts/demo_seed_fixture.json",
+      "aggregatorAuditHash": "419020148075d7741d3f47cb89fbf15f42490ac87f036b0c9a7a6fcdc2d5e440"
+    }
+  },
+  "reportTamperSmoke": {
+    "name": "tamper-tally",
+    "endpoint": "/attack/elections/:id/tamper-tally",
+    "status": 200,
+    "reportStatus": 200,
+    "integrityVerified": false,
+    "expectedIntegrityFailures": [
+      "bucketTallyMatches",
+      "tallyTotalMatchesValidVotes",
+      "tallySumMatchesValidVotes"
+    ],
+    "observedFailures": [
+      "bucketTallyMatches",
+      "publicInputHintsMatch",
+      "tallyTotalMatchesValidVotes",
+      "tallySumMatchesValidVotes"
+    ],
+    "tallyConsistent": false,
+    "consistencyMessage": "tallyResult 与当前 votes 重新聚合结果不一致，疑似 tally 被篡改。",
+    "auditHash": "d2ce48cb4bc37bfd38083b25b45f1efa6a447a7999910349d74f5ea20fb59a5b",
+    "file": "docs/evaluation/aggregator_reports/api_aggregator_report.attack-tamper-tally.json"
+  },
+  "persistenceSmoke": {
+    "sqlitePath": "E:\\666\\-2-main\\.codex_tmp\\aggregator-api-smoke-1782556413248.db",
+    "electionId": "election_1",
+    "auditHash": "a8b7b399e214279d2b2cdfdb914bd3f64dfd0ff82e2c60b23666ae020ba915c3",
+    "integrityVerified": true,
+    "fieldRoundTrip": [
+      {
+        "field": "electionId",
+        "equal": true
+      },
+      {
+        "field": "totalVotes",
+        "equal": true
+      },
+      {
+        "field": "validVotes",
+        "equal": true
+      },
+      {
+        "field": "validVoteIds",
+        "equal": true
+      },
+      {
+        "field": "invalidVotes",
+        "equal": true
+      },
+      {
+        "field": "invalidVoteIds",
+        "equal": true
+      },
+      {
+        "field": "duplicateVotes",
+        "equal": true
+      },
+      {
+        "field": "proofStatus",
+        "equal": true
+      },
+      {
+        "field": "tallyProofSummary",
+        "equal": true
+      },
+      {
+        "field": "receiptChainVerified",
+        "equal": true
+      },
+      {
+        "field": "receiptChainBreaks",
+        "equal": true
+      },
+      {
+        "field": "voteTokenHashes",
+        "equal": true
+      },
+      {
+        "field": "duplicateTokenHashes",
+        "equal": true
+      },
+      {
+        "field": "tallyResult",
+        "equal": true
+      },
+      {
+        "field": "commitmentRoot",
+        "equal": true
+      },
+      {
+        "field": "receiptRoot",
+        "equal": true
+      },
+      {
+        "field": "partitionAudit",
+        "equal": true
+      },
+      {
+        "field": "partitionHash",
+        "equal": true
+      },
+      {
+        "field": "invalidVoteDiagnostics",
+        "equal": true
+      },
+      {
+        "field": "diagnosticsHash",
+        "equal": true
+      },
+      {
+        "field": "publicInputHints",
+        "equal": true
+      },
+      {
+        "field": "pedersenAggregateAudit",
+        "equal": true
+      },
+      {
+        "field": "pedersenAggregateStatus",
+        "equal": true
+      },
+      {
+        "field": "pedersenAggregateHash",
+        "equal": true
+      },
+      {
+        "field": "pedersenTallyVerified",
+        "equal": true
+      },
+      {
+        "field": "pedersenTallyMessage",
+        "equal": true
+      },
+      {
+        "field": "pedersenContextHash",
+        "equal": true
+      },
+      {
+        "field": "auditHash",
+        "equal": true
+      },
+      {
+        "field": "createdAt",
+        "equal": true
+      }
+    ],
+    "validVoteIds": [
+      "vote_1",
+      "vote_2",
+      "vote_3",
+      "vote_4",
+      "vote_5",
+      "vote_6",
+      "vote_7",
+      "vote_8"
+    ],
+    "invalidVoteIds": [],
+    "proofStatus": "not-generated",
+    "bucketTokenHashCounts": [
+      {
+        "candidateId": "candidate_1",
+        "tokenHashCount": 2
+      },
+      {
+        "candidateId": "candidate_2",
+        "tokenHashCount": 2
+      },
+      {
+        "candidateId": "candidate_3",
+        "tokenHashCount": 2
+      },
+      {
+        "candidateId": "candidate_4",
+        "tokenHashCount": 2
+      }
+    ]
+  }
+}

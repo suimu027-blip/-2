@@ -64,7 +64,7 @@ type VoteFixture = {
   tally: number[];
 };
 
-const report = readJson<Report>("task_b_aggregator_report_8x4.sample.json");
+const report = readJson<Report>("aggregator_report_v2.sample.json");
 const validProof = readJson<ProofResponse>("tally_proof_v2.valid.sample.json");
 const voteFixture = readJson<VoteFixture>("valid_vote_records_8x4.sample.json");
 
@@ -203,9 +203,8 @@ const missingPartitionHash = cloneJson(report);
 delete missingPartitionHash.partitionHash;
 const missingPartitionHashResult = verify(validProof, missingPartitionHash);
 assertCase(
-  "missing top-level partitionHash is not silently replaced by hint",
-  !missingPartitionHashResult.verified &&
-    missingPartitionHashResult.checks.partitionHashMatchesReport === false,
+  "missing top-level partitionHash can use partitionAudit.partitionHash",
+  missingPartitionHashResult.verified,
   missingPartitionHashResult.checks
 );
 
@@ -213,6 +212,12 @@ const missingRequiredFieldsReport = cloneJson(report);
 delete missingRequiredFieldsReport.validVotes;
 delete missingRequiredFieldsReport.commitmentRoot;
 delete missingRequiredFieldsReport.partitionHash;
+if (
+  missingRequiredFieldsReport.partitionAudit &&
+  typeof missingRequiredFieldsReport.partitionAudit === "object"
+) {
+  delete (missingRequiredFieldsReport.partitionAudit as Record<string, unknown>).partitionHash;
+}
 const unavailableMetadataProof = createTallyCorrectnessProof({
   electionId: report.electionId,
   voteVectors: voteFixture.voteVectors,

@@ -8,16 +8,17 @@ import type {
 } from "@verivote/shared";
 import {
   apiRequest,
+  formatJson,
   getErrorMessage,
   NoticeMessage,
   ElectionSelect,
-  formatJson,
   type Notice
 } from "../common";
-import { demoTallyProofV2Sample } from "../data/demo-fixtures";
 
 const TALLY_BATCH = 8;
 const TALLY_CANDS = 4;
+
+type ProofSource = "election" | "fixture";
 
 function createBalancedBatch(): number[][] {
   return Array.from({ length: TALLY_BATCH }, (_, i) =>
@@ -29,17 +30,39 @@ function columnSums(matrix: number[][]): number[] {
   const sums = new Array(TALLY_CANDS).fill(0);
   for (const row of matrix) {
     for (let j = 0; j < TALLY_CANDS; j += 1) {
-      sums[j] += row[j];
+      sums[j] += row[j] ?? 0;
     }
   }
   return sums;
 }
 
+function AuditSummary({ audit }: { audit: BlockchainAuditRecord }) {
+  const rows = [
+    ["zkVerified", String(Boolean(audit.zkVerified))],
+    ["auditMode", audit.auditMode],
+    ["status", audit.status],
+    ["transactionHash", audit.transactionHash],
+    ["contractAddress", audit.contractAddress],
+    ["tallyHash", audit.tallyHash],
+    ["commitmentRoot", audit.commitmentRoot]
+  ];
+
+  return (
+    <div className="hash-list">
+      {rows.map(([label, value]) => (
+        <div key={label}>
+          <span>{label}</span>
+          <code className="hash-value">{value}</code>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function TallyZkPage({ elections }: { elections: Election[] }) {
   const [electionId, setElectionId] = useState("");
-  const [matrixText, setMatrixText] = useState(
-    JSON.stringify(createBalancedBatch(), null, 2)
-  );
+  const [proofSource, setProofSource] = useState<ProofSource>("election");
+  const [matrixText, setMatrixText] = useState(JSON.stringify(createBalancedBatch()));
   const [tallyText, setTallyText] = useState(
     JSON.stringify(columnSums(createBalancedBatch()))
   );
@@ -47,17 +70,21 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
   const [verifyResult, setVerifyResult] = useState<TallyVerifyResponseShared | null>(null);
   const [audit, setAudit] = useState<BlockchainAuditRecord | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
-  const [loadingProof, setLoadingProof] = useState(false);
-  const [loadingElectionProof, setLoadingElectionProof] = useState(false);
-  const [loadingVerify, setLoadingVerify] = useState(false);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [sampleMode, setSampleMode] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<
+    "election-proof" | "fixture-proof" | "verify" | "submit" | null
+  >(null);
 
   useEffect(() => {
     if (!electionId && elections.length > 0) {
       setElectionId(elections[0].id);
     }
   }, [electionId, elections]);
+
+  function resetResults() {
+    setProofResult(null);
+    setVerifyResult(null);
+    setAudit(null);
+  }
 
   function loadSamplePreset(preset: "valid" | "invalid-tally") {
     const batch = createBalancedBatch();
@@ -66,37 +93,23 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
       sums[0] += 1;
       sums[1] -= 1;
     }
-    setMatrixText(JSON.stringify(batch, null, 2));
+    setMatrixText(JSON.stringify(batch));
     setTallyText(JSON.stringify(sums));
-    setProofResult(null);
-    setVerifyResult(null);
-    setAudit(null);
-    setSampleMode(false);
+    setProofSource("fixture");
+    resetResults();
     setNotice(null);
-  }
-
-  function loadSampleProof() {
-    setProofResult(demoTallyProofV2Sample as TallyProofResponseShared);
-    setVerifyResult(null);
-    setAudit(null);
-    setSampleMode(true);
-    setNotice({ type: "success", text: "Loaded TallyProof v2 sample." });
   }
 
   async function handleGenerateFromElection() {
     setNotice(null);
-    setProofResult(null);
-    setVerifyResult(null);
-    setAudit(null);
-    setSampleMode(false);
-
+    resetResults();
     if (!electionId) {
       setNotice({ type: "error", text: "Select an election first." });
       return;
     }
 
-    setLoadingElectionProof(true);
     try {
+      setLoadingAction("election-proof");
       const data = await apiRequest<TallyProofResponseShared>(
         `/zk/elections/${encodeURIComponent(electionId)}/prove-tally-correctness`,
         {
@@ -104,22 +117,22 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
           body: { proofMode: "real" }
         }
       );
+      setProofSource("election");
       setProofResult(data);
-      setNotice({ type: data.valid ? "success" : "error", text: data.message });
+      setNotice({
+        type: data.valid ? "success" : "error",
+        text: data.message
+      });
     } catch (error) {
       setNotice({ type: "error", text: getErrorMessage(error) });
     } finally {
-      setLoadingElectionProof(false);
+      setLoadingAction(null);
     }
   }
 
-  async function handleGenerate() {
+  async function handleGenerateFixtureProof() {
     setNotice(null);
-    setProofResult(null);
-    setVerifyResult(null);
-    setAudit(null);
-    setSampleMode(false);
-
+    resetResults();
     if (!electionId) {
       setNotice({ type: "error", text: "Select an election first." });
       return;
@@ -131,38 +144,47 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
       voteVectors = JSON.parse(matrixText) as number[][];
       tally = JSON.parse(tallyText) as number[];
     } catch {
-      setNotice({ type: "error", text: "voteVectors and tally must be JSON arrays." });
+      setNotice({ type: "error", text: "voteVectors and tally must be valid JSON arrays." });
       return;
     }
 
-    setLoadingProof(true);
     try {
+      setLoadingAction("fixture-proof");
       const data = await apiRequest<TallyProofResponseShared>(
         "/zk/prove-tally-correctness",
         {
           method: "POST",
-          body: { electionId, voteVectors, tally, proofMode: "real" }
+          body: {
+            electionId,
+            voteVectors,
+            tally,
+            proofMode: "real"
+          }
         }
       );
+      setProofSource("fixture");
       setProofResult(data);
-      setNotice({ type: data.valid ? "success" : "error", text: data.message });
+      setNotice({
+        type: data.valid ? "success" : "error",
+        text: data.message
+      });
     } catch (error) {
       setNotice({ type: "error", text: getErrorMessage(error) });
     } finally {
-      setLoadingProof(false);
+      setLoadingAction(null);
     }
   }
 
   async function handleVerifyProof() {
     if (!proofResult) {
-      setNotice({ type: "error", text: "Generate or load a tally proof first." });
+      setNotice({ type: "error", text: "Generate a tally proof first." });
       return;
     }
 
     setNotice(null);
     setVerifyResult(null);
-    setLoadingVerify(true);
     try {
+      setLoadingAction("verify");
       const data = await apiRequest<TallyVerifyResponseShared>(
         "/zk/verify-tally-correctness",
         {
@@ -174,23 +196,27 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
         }
       );
       setVerifyResult(data);
-      setNotice({ type: data.verified ? "success" : "error", text: data.message });
+      setNotice({
+        type: data.verified ? "success" : "error",
+        text: data.message
+      });
     } catch (error) {
       setNotice({ type: "error", text: getErrorMessage(error) });
     } finally {
-      setLoadingVerify(false);
+      setLoadingAction(null);
     }
   }
 
   async function handleSubmitWithProof() {
     if (!electionId || !proofResult) {
-      setNotice({ type: "error", text: "Generate or load a tally proof first." });
+      setNotice({ type: "error", text: "Generate a tally proof first." });
       return;
     }
 
+    setNotice(null);
     setAudit(null);
-    setLoadingSubmit(true);
     try {
+      setLoadingAction("submit");
       const data = await apiRequest<SubmitBlockchainAuditWithTallyProofResponse>(
         `/blockchain/elections/${encodeURIComponent(electionId)}/submit-audit-with-tally-proof`,
         {
@@ -203,151 +229,158 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
     } catch (error) {
       setNotice({ type: "error", text: getErrorMessage(error) });
     } finally {
-      setLoadingSubmit(false);
+      setLoadingAction(null);
     }
   }
 
   const canSubmit =
+    proofSource === "election" &&
     Boolean(proofResult?.valid) &&
-    !sampleMode &&
-    Boolean(proofResult?.proofHash) &&
-    Boolean(proofResult?.verifierMode) &&
-    !loadingSubmit;
+    loadingAction === null;
 
   return (
     <section className="page-section">
       <div className="section-header">
         <div>
-          <p className="eyebrow">Tally ZK</p>
-          <h1>Tally Correctness</h1>
+          <p className="eyebrow">Task B web flow</p>
+          <h1>Tally ZK + on-chain verifier</h1>
         </div>
       </div>
+
       <p className="page-lead">
-        This page renders the B-line TallyProof v2 contract. Use the election-bound
-        path for the full ZK + report binding + chain verifier flow, or load samples
-        for D-side display checks.
+        Use the selected election to generate a real Groth16 tally proof from the
+        aggregator report, verify it locally, then submit it through
+        submitAuditWithTallyProof. The fixed 8x4 fixture remains available only
+        for B-05/B-06 proof behavior checks.
       </p>
 
       <NoticeMessage notice={notice} />
 
       <div className="panel form">
-        <div className="two-column">
-          <label>
-            Election
-            <ElectionSelect
-              elections={elections}
-              value={electionId}
-              onChange={setElectionId}
-            />
-          </label>
-          <div className="inline-list align-end">
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => loadSamplePreset("valid")}
-            >
-              Valid 8x4 batch
-            </button>
-            <button
-              type="button"
-              className="secondary"
-              onClick={() => loadSamplePreset("invalid-tally")}
-            >
-              Tampered tally
-            </button>
-            <button type="button" className="secondary" onClick={loadSampleProof}>
-              Load v2 sample proof
-            </button>
-          </div>
-        </div>
+        <label>
+          Election
+          <ElectionSelect
+            elections={elections}
+            value={electionId}
+            onChange={(value) => {
+              setElectionId(value);
+              resetResults();
+            }}
+          />
+        </label>
 
-        <div className="inline-list">
+        <div className="button-row">
           <button
             type="button"
             onClick={() => void handleGenerateFromElection()}
-            disabled={!electionId || loadingElectionProof}
+            disabled={!electionId || loadingAction !== null}
           >
-            {loadingElectionProof ? "Generating..." : "Generate proof from election/report"}
+            {loadingAction === "election-proof"
+              ? "Generating..."
+              : "Generate proof from election"}
           </button>
           <button
             type="button"
             className="secondary"
             onClick={() => void handleVerifyProof()}
-            disabled={!proofResult || loadingVerify}
+            disabled={!proofResult || loadingAction !== null}
           >
-            {loadingVerify ? "Verifying..." : "Local verify proof"}
+            {loadingAction === "verify" ? "Verifying..." : "Local verify proof"}
           </button>
           <button
             type="button"
             className="secondary"
             onClick={() => void handleSubmitWithProof()}
             disabled={!canSubmit}
+            title={
+              proofSource === "fixture"
+                ? "Fixture proofs are not report-bound. Generate from election before submitting."
+                : undefined
+            }
           >
-            {loadingSubmit ? "Submitting..." : "Submit with report-bound proof"}
+            {loadingAction === "submit"
+              ? "Submitting..."
+              : "Submit with tally proof"}
           </button>
         </div>
+      </div>
 
-        <p className="receipt-note">
-          The buttons below are fixture helpers. They are useful for sample rendering and invalid-proof checks,
-          but only the election/report-generated proof is accepted as complete Task B evidence.
+      <div className="panel form">
+        <div className="verification-heading">
+          <h2>Fixed 8x4 fixture</h2>
+          <span className="status-pill">proof sample only</span>
+        </div>
+        <p className="muted">
+          This path is useful for valid/invalid fixture testing. It is disabled
+          for chain submission because the complete B flow must bind the proof
+          to the current aggregator report.
         </p>
-
+        <div className="inline-list">
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => loadSamplePreset("valid")}
+            disabled={loadingAction !== null}
+          >
+            Load valid 8x4
+          </button>
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => loadSamplePreset("invalid-tally")}
+            disabled={loadingAction !== null}
+          >
+            Load tampered tally
+          </button>
+        </div>
         <label>
           voteVectors JSON
           <textarea
-            rows={8}
+            rows={6}
             value={matrixText}
             onChange={(event) => setMatrixText(event.target.value)}
           />
         </label>
-
         <label>
           tally JSON
           <input value={tallyText} onChange={(event) => setTallyText(event.target.value)} />
         </label>
-
-        <div className="inline-list">
-          <button type="button" onClick={() => void handleGenerate()} disabled={loadingProof}>
-            {loadingProof ? "Generating..." : "Generate fixture proof"}
-          </button>
-        </div>
+        <button
+          type="button"
+          className="secondary"
+          onClick={() => void handleGenerateFixtureProof()}
+          disabled={!electionId || loadingAction !== null}
+        >
+          {loadingAction === "fixture-proof" ? "Generating..." : "Generate fixture proof"}
+        </button>
       </div>
 
       {proofResult ? (
         <div className="panel">
           <div className="verification-heading">
-            <h2>proof overview</h2>
+            <h2>Proof result</h2>
             <span className={proofResult.valid ? "status-pill ok" : "status-pill bad"}>
               {proofResult.valid ? "valid" : "invalid"}
             </span>
           </div>
-          {sampleMode ? (
-            <p className="receipt-note">
-              Fixture mode: the submit button is disabled to avoid sending sample calldata as real chain evidence.
-            </p>
-          ) : null}
           <div className="hash-list">
             <div>
-              <span>proofId</span>
-              <code className="hash-value">{proofResult.proofId}</code>
+              <span>source</span>
+              <code className="hash-value">{proofSource}</code>
             </div>
             <div>
-              <span>proofMode</span>
-              <code className="hash-value">{proofResult.proofMode ?? "mock"}</code>
-            </div>
-            <div>
-              <span>verifierMode</span>
-              <code className="hash-value">{proofResult.verifierMode ?? "pending"}</code>
-            </div>
-            <div>
-              <span>circuitId</span>
+              <span>proofMode / verifierMode</span>
               <code className="hash-value">
-                {proofResult.circuitId ?? proofResult.publicSignals.circuitId}
+                {proofResult.proofMode} / {proofResult.verifierMode}
               </code>
             </div>
             <div>
               <span>proofHash</span>
-              <code className="hash-value">{proofResult.proofHash ?? "pending"}</code>
+              <code className="hash-value">{proofResult.proofHash}</code>
+            </div>
+            <div>
+              <span>circuitId</span>
+              <code className="hash-value">{proofResult.circuitId}</code>
             </div>
             <div>
               <span>tally</span>
@@ -356,42 +389,36 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
               </code>
             </div>
             <div>
-              <span>batchSize</span>
-              <code className="hash-value">{proofResult.publicSignals.batchSize}</code>
-            </div>
-            <div>
-              <span>validVoteCount</span>
+              <span>batchSize / validVoteCount</span>
               <code className="hash-value">
-                {proofResult.publicSignals.validVoteCount ?? "pending"}
+                {proofResult.publicSignals.batchSize} /{" "}
+                {proofResult.publicSignals.validVoteCount}
               </code>
             </div>
             <div>
               <span>tallyHash</span>
-              <code className="hash-value">
-                {proofResult.publicSignals.tallyHash ?? "pending"}
-              </code>
+              <code className="hash-value">{proofResult.publicSignals.tallyHash}</code>
             </div>
             <div>
               <span>commitmentRoot</span>
               <code className="hash-value">
-                {proofResult.publicSignals.commitmentRoot ?? "pending"}
+                {proofResult.publicSignals.commitmentRoot}
               </code>
             </div>
             <div>
               <span>partitionHash</span>
               <code className="hash-value">
-                {proofResult.publicSignals.partitionHash ?? "pending"}
+                {proofResult.publicSignals.partitionHash}
               </code>
             </div>
           </div>
-          <pre>{formatJson(proofResult.publicSignals)}</pre>
         </div>
       ) : null}
 
       {verifyResult ? (
         <div className="panel">
           <div className="verification-heading">
-            <h2>local Groth16 verification</h2>
+            <h2>Local Groth16 verification</h2>
             <span className={verifyResult.verified ? "status-pill ok" : "status-pill bad"}>
               {String(verifyResult.verified)}
             </span>
@@ -402,45 +429,20 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
 
       {audit ? (
         <div className="panel receipt-panel">
-          <h2>chain submit result</h2>
-          <div className="hash-list">
-            <div>
-              <span>zkVerified</span>
-              <code className="hash-value">{String(Boolean(audit.zkVerified))}</code>
-            </div>
-            <div>
-              <span>auditMode</span>
-              <code className="hash-value">{audit.auditMode}</code>
-            </div>
-            <div>
-              <span>verifierMode</span>
-              <code className="hash-value">{audit.verifierMode ?? "pending"}</code>
-            </div>
-            <div>
-              <span>gasUsed</span>
-              <code className="hash-value">{audit.gasUsed ?? "pending"}</code>
-            </div>
-            <div>
-              <span>transactionHash</span>
-              <code className="hash-value">{audit.transactionHash}</code>
-            </div>
-            <div>
-              <span>contractAddress</span>
-              <code className="hash-value">{audit.contractAddress}</code>
-            </div>
+          <div className="verification-heading">
+            <h2>Chain audit result</h2>
+            <span className="status-pill ok">submitted</span>
           </div>
+          <AuditSummary audit={audit} />
         </div>
       ) : null}
 
-      <div className="panel">
-        <h2>status model</h2>
-        <div className="checklist-grid">
-          <span>{proofResult ? "ok" : "pending"} proof generated</span>
-          <span>{proofResult?.proofHash ? "ok" : "pending"} proofHash</span>
-          <span>{proofResult?.verifierMode ?? "pending"} verifierMode</span>
-          <span>{audit ? "ok" : "pending"} chain matched</span>
-        </div>
-      </div>
+      {proofResult ? (
+        <details className="panel">
+          <summary>Raw proof response</summary>
+          <pre>{formatJson(proofResult)}</pre>
+        </details>
+      ) : null}
     </section>
   );
 }

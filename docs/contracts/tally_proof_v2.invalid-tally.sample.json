@@ -72,7 +72,7 @@
       2
     ]
   },
-  "proofId": "zkp_tally_9bfcb8e8-86cc-4c73-8b78-669273a929af",
+  "proofId": "zkp_tally_c7c3dd1f-9e03-41b6-a664-b393b59373c9",
   "proofMode": "real",
   "verifierMode": "real-hardhat",
   "circuitId": "tally-correctness-8x4",
@@ -89,17 +89,17 @@
     "validVoteCount": 8,
     "candidateCount": 4,
     "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
-    "commitmentRoot": "20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
-    "partitionHash": "1accd04abc1cf84fbec6b31c6be10887cc94634dfe00ba2b78098f3b5b5d2b07",
+    "commitmentRoot": "7d52dd9b91bbcfddb6d5a1520d27c93f011c32ef45dc0120d0df8794cf87d68a",
+    "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
     "circuitId": "tally-correctness-8x4"
   },
   "proof": {
     "protocol": "verivote-tally-correctness-groth16-v1",
     "proofMode": "real",
     "verifierMode": "real-hardhat",
-    "proofId": "zkp_tally_9bfcb8e8-86cc-4c73-8b78-669273a929af",
+    "proofId": "zkp_tally_c7c3dd1f-9e03-41b6-a664-b393b59373c9",
     "circuitId": "tally-correctness-8x4",
-    "generatedAt": "2026-06-27T05:34:45.586Z",
+    "generatedAt": "2026-06-27T09:30:46.669Z",
     "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
     "publicSignals": {
       "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
@@ -114,18 +114,18 @@
       "validVoteCount": 8,
       "candidateCount": 4,
       "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
-      "commitmentRoot": "20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
-      "partitionHash": "1accd04abc1cf84fbec6b31c6be10887cc94634dfe00ba2b78098f3b5b5d2b07",
+      "commitmentRoot": "7d52dd9b91bbcfddb6d5a1520d27c93f011c32ef45dc0120d0df8794cf87d68a",
+      "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
       "circuitId": "tally-correctness-8x4"
     },
     "snarkjsProof": null,
     "snarkjsPublicSignals": [],
-    "artifactDirectory": "zk-artifacts/tally-correctness",
+    "artifactDirectory": "E:\\666\\-2-main\\zk-artifacts\\tally-correctness",
     "valid": false,
     "error": "tally[0] (3) does not match column sum (2)",
-    "proofHash": "8a1d29ed77d23c5fe24f8380e943d6ac0d493fdafd670434a2814f3b46fb4af5"
+    "proofHash": "3a2f38a4b3adaadc35688e6bd4e32a2462767d5072466c7336ad129fbc584c63"
   },
-  "proofHash": "8a1d29ed77d23c5fe24f8380e943d6ac0d493fdafd670434a2814f3b46fb4af5",
+  "proofHash": "3a2f38a4b3adaadc35688e6bd4e32a2462767d5072466c7336ad129fbc584c63",
   "valid": false,
   "message": "tally[0] (3) does not match column sum (2)"
 }

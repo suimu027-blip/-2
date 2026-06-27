@@ -1,0 +1,413 @@
+{
+  "schemaVersion": "verivote.task-a-traceability.v1",
+  "generatedBy": "pnpm aggregator:complete",
+  "generatedAt": "2026-06-27T10:33:58.192Z",
+  "passed": true,
+  "itemCount": 21,
+  "items": [
+    {
+      "id": "A-01",
+      "requirement": "Define CandidatePartitionBucket, PartitionAudit, InvalidVoteDiagnostic, AggregatorReportV2.",
+      "sourceFiles": [
+        "packages/shared/src/index.ts"
+      ],
+      "evidenceFiles": [
+        "docs/contracts/aggregator_report_v2.sample.json"
+      ],
+      "commands": [
+        "pnpm typecheck"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-02",
+      "requirement": "buildVoteAuditContext gathers votes, candidates, validCandidateIds, and candidateIndexMap.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/AGGREGATOR_AUDIT_CASES.md"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-03",
+      "requirement": "isOneHotVector checks length, integer entries, 0/1, and sum=1.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/aggregator_report.non-one-hot.json"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases"
+      ],
+      "apiEndpoints": [
+        "/attack/elections/:id/inject-non-one-hot-vote"
+      ],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-04",
+      "requirement": "verifyVoteCommitmentOpening recomputes opening from electionId, voteVector, randomness, and commitment.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/aggregator_report.commitment-tamper.json"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases"
+      ],
+      "apiEndpoints": [
+        "/attack/elections/:id/tamper-commitment"
+      ],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-05",
+      "requirement": "collectInvalidVoteDiagnostics covers duplicate, candidate, one-hot, opening, and receipt-chain diagnostics.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/summary.json"
+      ],
+      "commands": [
+        "pnpm aggregator:verify"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-06",
+      "requirement": "Only diagnostics-free votes enter tally and partition buckets.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/offline_verification.json"
+      ],
+      "commands": [
+        "pnpm aggregator:verify"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-07",
+      "requirement": "Build candidate buckets with voteIds, tokenRoot, commitmentRoot, and receiptRoot.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/contracts/aggregator_report_v2.sample.json"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-08",
+      "requirement": "Compute bucketAuditHash from candidateId, roots, voteCount, and voteIdsHash.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/offline_verification.json"
+      ],
+      "commands": [
+        "pnpm aggregator:verify"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-09",
+      "requirement": "Compute partitionHash from bucket hashes and partition flags.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/contracts/public_inputs_v2.sample.json"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-10",
+      "requirement": "Compute diagnosticsHash from stable invalidVoteDiagnostics JSON.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/offline_verification.json"
+      ],
+      "commands": [
+        "pnpm aggregator:verify"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-11",
+      "requirement": "auditHash binds partitionHash, diagnosticsHash, and Pedersen/proof placeholder state.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/contracts/aggregator_report_pedersen_null.sample.json",
+        "docs/evaluation/aggregator_reports/offline_verification.json"
+      ],
+      "commands": [
+        "pnpm aggregator:verify"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-12",
+      "requirement": "createPublicInputsArtifact exports partitionHash, diagnosticsHash, tallyHash, candidateCount, and validVotes.",
+      "sourceFiles": [
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/contracts/public_inputs_v2.sample.json",
+        "docs/evaluation/aggregator_reports/api_export_public_inputs.json"
+      ],
+      "commands": [
+        "pnpm aggregator:api-smoke"
+      ],
+      "apiEndpoints": [
+        "/elections/:id/export/public_inputs.json"
+      ],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-13",
+      "requirement": "Normal 4-candidate/8-vote AggregatorReport sample exists.",
+      "sourceFiles": [
+        "scripts/aggregator-audit-cases.ts"
+      ],
+      "evidenceFiles": [
+        "docs/contracts/aggregator_report_v2.sample.json",
+        "docs/contracts/aggregator_report.sample.json"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-14",
+      "requirement": "Duplicate vote sample has duplicateVotes>0 and duplicate-token diagnostic.",
+      "sourceFiles": [
+        "scripts/aggregator-audit-cases.ts",
+        "apps/api/src/routes/attacks.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/aggregator_report.duplicate-token.json",
+        "docs/evaluation/aggregator_reports/aggregator_report.attack-duplicate-token.json"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases",
+        "pnpm aggregator:api-smoke"
+      ],
+      "apiEndpoints": [
+        "/attack/elections/:id/inject-duplicate-vote"
+      ],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-15",
+      "requirement": "Invalid candidate sample has invalidVotes>0 and excludes invalid vote from buckets.",
+      "sourceFiles": [
+        "scripts/aggregator-audit-cases.ts",
+        "apps/api/src/routes/attacks.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/aggregator_report.invalid-candidate.json",
+        "docs/evaluation/aggregator_reports/aggregator_report.attack-invalid-candidate.json"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases",
+        "pnpm aggregator:api-smoke"
+      ],
+      "apiEndpoints": [
+        "/attack/elections/:id/inject-invalid-vote"
+      ],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-16",
+      "requirement": "Non-one-hot sample has invalid-one-hot diagnostic.",
+      "sourceFiles": [
+        "scripts/aggregator-audit-cases.ts",
+        "apps/api/src/routes/attacks.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/aggregator_report.non-one-hot.json",
+        "docs/evaluation/aggregator_reports/aggregator_report.attack-non-one-hot.json"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases",
+        "pnpm aggregator:api-smoke"
+      ],
+      "apiEndpoints": [
+        "/attack/elections/:id/inject-non-one-hot-vote"
+      ],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-17",
+      "requirement": "Commitment-opening tamper sample has commitment-opening-failed diagnostic.",
+      "sourceFiles": [
+        "scripts/aggregator-audit-cases.ts",
+        "apps/api/src/routes/attacks.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/aggregator_report.commitment-tamper.json",
+        "docs/evaluation/aggregator_reports/aggregator_report.attack-commitment-tamper.json"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases",
+        "pnpm aggregator:api-smoke"
+      ],
+      "apiEndpoints": [
+        "/attack/elections/:id/tamper-commitment"
+      ],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-18",
+      "requirement": "Receipt-chain delete sample has receiptChainVerified=false.",
+      "sourceFiles": [
+        "scripts/aggregator-audit-cases.ts",
+        "apps/api/src/routes/attacks.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/aggregator_report.receipt-chain-delete.json",
+        "docs/evaluation/aggregator_reports/aggregator_report.attack-receipt-chain-delete.json"
+      ],
+      "commands": [
+        "pnpm aggregator:audit-cases",
+        "pnpm aggregator:api-smoke"
+      ],
+      "apiEndpoints": [
+        "/attack/elections/:id/delete-vote"
+      ],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-18b",
+      "requirement": "Saved AggregatorReport tally tampering is rejected even when auditHash is recomputed.",
+      "sourceFiles": [
+        "scripts/aggregator-api-smoke.ts",
+        "scripts/aggregator-audit-verify.ts",
+        "apps/api/src/routes/attacks.ts",
+        "apps/api/src/utils.ts"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/api_smoke.json",
+        "docs/evaluation/aggregator_reports/offline_verification.json",
+        "docs/evaluation/aggregator_reports/api_aggregator_report.attack-tamper-tally.json"
+      ],
+      "commands": [
+        "pnpm aggregator:api-smoke",
+        "pnpm aggregator:verify"
+      ],
+      "apiEndpoints": [
+        "/attack/elections/:id/tamper-tally",
+        "/aggregator/elections/:id/report"
+      ],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-19",
+      "requirement": "PAPER_MAPPING uses Aggios-inspired wording and avoids complete EPA overclaim.",
+      "sourceFiles": [
+        "docs/overview/PAPER_MAPPING.md"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/AGGREGATOR_AUDIT_CASES.md"
+      ],
+      "commands": [
+        "pnpm aggregator:complete"
+      ],
+      "apiEndpoints": [],
+      "passed": true,
+      "missingFiles": []
+    },
+    {
+      "id": "A-20",
+      "requirement": "API smoke proves A is independently acceptable without frontend.",
+      "sourceFiles": [
+        "scripts/aggregator-task-a-full.ts",
+        "scripts/aggregator-api-smoke.ts",
+        "scripts/aggregator-local-export.ts",
+        "scripts/aggregator-api-powershell-smoke.ps1",
+        "scripts/api_smoke_test.py",
+        "apps/api/src/verivote_api/main.py"
+      ],
+      "evidenceFiles": [
+        "docs/evaluation/aggregator_reports/api_smoke.json",
+        "docs/evaluation/aggregator_reports/task_a_full_acceptance.json",
+        "docs/evaluation/aggregator_reports/api_export_aggregator_report.json",
+        "docs/evaluation/aggregator_reports/api_export_bundle.json",
+        "docs/evaluation/aggregator_reports/local_standalone/manifest.json",
+        "docs/evaluation/aggregator_reports/local_standalone/aggregator_report.local-normal.json",
+        "docs/evaluation/aggregator_reports/local_standalone/export_bundle.local-normal.json",
+        "docs/evaluation/aggregator_reports/powershell_api/manifest.json",
+        "docs/evaluation/aggregator_reports/powershell_api/aggregator_report.normal.json",
+        "docs/evaluation/aggregator_reports/powershell_api/aggregator_report.attack-duplicate-token.json",
+        "docs/evaluation/aggregator_reports/python_api_smoke.json",
+        "docs/evaluation/aggregator_reports/python_api_aggregator_report.json",
+        "docs/evaluation/aggregator_reports/python_api_export_bundle.json"
+      ],
+      "commands": [
+        "pnpm aggregator:task-a-full",
+        "pnpm aggregator:api-smoke",
+        "pnpm aggregator:local-export",
+        "pnpm aggregator:ps-smoke",
+        "python scripts/api_smoke_test.py"
+      ],
+      "apiEndpoints": [
+        "/aggregator/elections/:id/run",
+        "/aggregator/elections/:id/report",
+        "/elections/:id/export-bundle"
+      ],
+      "passed": true,
+      "missingFiles": []
+    }
+  ]
+}

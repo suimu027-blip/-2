@@ -10,7 +10,6 @@ import {
   NoticeMessage,
   type Notice
 } from "../common";
-import { demoPedersenAggregateAuditSample } from "../data/demo-fixtures";
 
 interface PedersenBatchEntry {
   voteVector: string;
@@ -44,9 +43,6 @@ export function PedersenExperimentPage() {
   const [tamperRandomness, setTamperRandomness] = useState("");
   const [batch, setBatch] = useState<PedersenBatchEntry[]>([]);
   const [aggregateResult, setAggregateResult] =
-    useState<PedersenAggregateResponse | null>(null);
-  const [sampleAuditLoaded, setSampleAuditLoaded] = useState(false);
-  const [tamperedAggregateResult, setTamperedAggregateResult] =
     useState<PedersenAggregateResponse | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
 
@@ -125,103 +121,34 @@ export function PedersenExperimentPage() {
     setBatch((previous) => previous.filter((_, entryIndex) => entryIndex !== index));
   }
 
-  function flipLastHexChar(value: string): string {
-    const trimmed = value.trim();
-    if (!/^[0-9a-fA-F]+$/.test(trimmed) || trimmed.length === 0) {
-      throw new Error("commitment 必须是十六进制字符串，才能自动生成篡改样例");
-    }
-    const last = trimmed[trimmed.length - 1].toLowerCase();
-    return `${trimmed.slice(0, -1)}${last === "0" ? "1" : "0"}`;
-  }
-
-  async function runAggregateVerify(
-    entries: PedersenBatchEntry[]
-  ): Promise<PedersenAggregateResponse> {
-    if (entries.length === 0) {
-      throw new Error("batch 不能为空");
-    }
-    const payload = entries.map((entry) => ({
-      voteVector: parseIntegerVector(entry.voteVector),
-      randomness: entry.randomness.trim(),
-      commitment: entry.commitment.trim()
-    }));
-    return apiRequest<PedersenAggregateResponse>(
-      "/crypto/pedersen/aggregate-verify",
-      {
-        method: "POST",
-        body: {
-          electionId,
-          candidateCount,
-          batch: payload
-        }
-      }
-    );
-  }
-
   async function handleAggregateVerify() {
     setNotice(null);
     setAggregateResult(null);
-    setSampleAuditLoaded(false);
-    setTamperedAggregateResult(null);
     try {
-      const data = await runAggregateVerify(batch);
+      if (batch.length === 0) {
+        throw new Error("batch 不能为空");
+      }
+      const payload = batch.map((entry) => ({
+        voteVector: parseIntegerVector(entry.voteVector),
+        randomness: entry.randomness.trim(),
+        commitment: entry.commitment.trim()
+      }));
+      const data = await apiRequest<PedersenAggregateResponse>(
+        "/crypto/pedersen/aggregate-verify",
+        {
+          method: "POST",
+          body: {
+            electionId,
+            candidateCount,
+            batch: payload
+          }
+        }
+      );
       setAggregateResult(data);
       setNotice({ type: data.verified ? "success" : "error", text: data.message });
     } catch (error) {
       setNotice({ type: "error", text: getErrorMessage(error) });
     }
-  }
-
-  async function handleTamperedAggregateVerify() {
-    setNotice(null);
-    setTamperedAggregateResult(null);
-    setSampleAuditLoaded(false);
-    try {
-      if (batch.length === 0) {
-        throw new Error("batch 不能为空");
-      }
-      const tamperedBatch = batch.map((entry, index) =>
-        index === 0
-          ? { ...entry, commitment: flipLastHexChar(entry.commitment) }
-          : entry
-      );
-      const data = await runAggregateVerify(tamperedBatch);
-      setTamperedAggregateResult(data);
-      setNotice({
-        type: data.verified ? "error" : "success",
-        text: data.verified
-          ? "篡改样例仍然通过，请检查输入是否真的被修改。"
-          : "篡改样例已被 Pedersen aggregate audit 拒绝。"
-      });
-    } catch (error) {
-      setNotice({ type: "error", text: getErrorMessage(error) });
-    }
-  }
-
-  function handleLoadAggregateSample() {
-    setAggregateResult({
-      context: {
-        electionId,
-        contextLabel: "verivote.pedersen.experiment.v1",
-        contextHash: demoPedersenAggregateAuditSample.contextHash,
-        p: "sample",
-        q: "sample",
-        g: "sample",
-        h: []
-      },
-      contextHash: demoPedersenAggregateAuditSample.contextHash,
-      aggregatedCommitment: demoPedersenAggregateAuditSample.aggregatedCommitment,
-      expectedCommitment: demoPedersenAggregateAuditSample.expectedCommitment,
-      aggregatedRandomnessHash: demoPedersenAggregateAuditSample.aggregatedRandomnessHash,
-      aggregatedVector: demoPedersenAggregateAuditSample.aggregatedVector,
-      castVoteCount: demoPedersenAggregateAuditSample.castVoteCount,
-      pedersenAggregateHash: demoPedersenAggregateAuditSample.pedersenAggregateHash,
-      verified: demoPedersenAggregateAuditSample.verified,
-      message: demoPedersenAggregateAuditSample.message
-    });
-    setTamperedAggregateResult(null);
-    setSampleAuditLoaded(true);
-    setNotice({ type: "success", text: "Loaded PedersenAggregateAudit v2 sample." });
   }
 
   return (
@@ -327,7 +254,6 @@ export function PedersenExperimentPage() {
         <h2>3. 汇总承诺核查 (Aggregate Opening)</h2>
         <p>
           同态聚合：∏ C_i 应等于 commit(Σ v_i, Σ r_i mod q)。
-          API 只公开聚合随机数的哈希，避免把 cast 票 opening 当成公开证据。
           批次可以用上面「生成承诺」按钮自动累积，也可以手动编辑。
         </p>
         {batch.length === 0 ? (
@@ -366,83 +292,32 @@ export function PedersenExperimentPage() {
             ))}
           </div>
         )}
-        <div className="inline-list">
-          <button type="button" onClick={() => void handleAggregateVerify()}>
-            运行 aggregate-verify
-          </button>
-          <button type="button" className="secondary" onClick={handleLoadAggregateSample}>
-            Load aggregate audit sample
-          </button>
-          <button
-            type="button"
-            className="secondary"
-            onClick={() => void handleTamperedAggregateVerify()}
-          >
-            篡改首个 commitment 后验证
-          </button>
-        </div>
+        <button type="button" onClick={() => void handleAggregateVerify()}>
+          运行 aggregate-verify
+        </button>
         {aggregateResult ? (
-          <>
-            {sampleAuditLoaded ? (
-              <p className="receipt-note">
-                Fixture mode: this mirrors docs/contracts/pedersen_aggregate_audit.sample.json.
-              </p>
-            ) : null}
-            <div className="hash-list">
-              <div>
-                <span>verified</span>
-                <code className="hash-value">{String(aggregateResult.verified)}</code>
-              </div>
-              <div>
-                <span>pedersenAggregateHash</span>
-                <code className="hash-value">
-                  {aggregateResult.pedersenAggregateHash ?? "pending"}
-                </code>
-              </div>
-              <div>
-                <span>aggregatedCommitment</span>
-                <code className="hash-value">{aggregateResult.aggregatedCommitment}</code>
-              </div>
-              <div>
-                <span>expectedCommitment</span>
-                <code className="hash-value">{aggregateResult.expectedCommitment}</code>
-              </div>
-              <div>
-                <span>aggregatedRandomnessHash</span>
-                <code className="hash-value">
-                  {aggregateResult.aggregatedRandomnessHash ?? "pending"}
-                </code>
-              </div>
-              <div>
-                <span>aggregatedVector</span>
-                <code className="hash-value">
-                  [{aggregateResult.aggregatedVector.join(", ")}]
-                </code>
-              </div>
-              <div>
-                <span>castVoteCount</span>
-                <code className="hash-value">{aggregateResult.castVoteCount}</code>
-              </div>
-            </div>
-          </>
-        ) : null}
-        {tamperedAggregateResult ? (
           <div className="hash-list">
             <div>
-              <span>tamperedVerified</span>
-              <code className="hash-value">
-                {String(tamperedAggregateResult.verified)}
-              </code>
+              <span>verified</span>
+              <code className="hash-value">{String(aggregateResult.verified)}</code>
             </div>
             <div>
-              <span>tamperedAggregateHash</span>
-              <code className="hash-value">
-                {tamperedAggregateResult.pedersenAggregateHash}
-              </code>
+              <span>aggregatedCommitment</span>
+              <code className="hash-value">{aggregateResult.aggregatedCommitment}</code>
             </div>
             <div>
-              <span>message</span>
-              <code className="hash-value">{tamperedAggregateResult.message}</code>
+              <span>expectedCommitment</span>
+              <code className="hash-value">{aggregateResult.expectedCommitment}</code>
+            </div>
+            <div>
+              <span>aggregatedRandomness</span>
+              <code className="hash-value">{aggregateResult.aggregatedRandomness}</code>
+            </div>
+            <div>
+              <span>aggregatedVector</span>
+              <code className="hash-value">
+                [{aggregateResult.aggregatedVector.join(", ")}]
+              </code>
             </div>
           </div>
         ) : null}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "verivote.python-api-smoke.v1",
+  "generatedBy": "python scripts/api_smoke_test.py",
+  "passed": true,
+  "mainFlow": {
+    "electionId": "election_1",
+    "receiptCode": "31da7f21eebf837f4cfb83fb6e198032956bf9cc844cf57fa776e637c6052bc6",
+    "aggregatorAuditHash": "2986535810e5650af0e8c9340fb4411da6fb3fb5e2a3b1e1a17ac1254e04d444",
+    "partitionHash": "23edf73c80a631a615de1055559ad287a30e53064007d98023445c1051bb79f2",
+    "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+    "bundleSchemaVersion": "verivote.artifact.v2"
+  },
+  "attackFlow": {
+    "electionId": "election_2",
+    "attacks": [
+      "inject-duplicate-vote",
+      "inject-invalid-vote",
+      "inject-non-one-hot-vote",
+      "inject-candidate-vector-mismatch",
+      "tamper-tally",
+      "tamper-commitment",
+      "delete-vote"
+    ],
+    "preTamperDiagnosticReasons": [
+      "candidate-vector-mismatch",
+      "duplicate-token",
+      "invalid-candidate",
+      "invalid-one-hot"
+    ],
+    "diagnosticReasons": [
+      "candidate-vector-mismatch",
+      "invalid-candidate",
+      "invalid-one-hot",
+      "receipt-chain-break"
+    ],
+    "receiptChainVerified": false
+  },
+  "rawFiles": {
+    "aggregatorReport": "docs/evaluation/aggregator_reports/python_api_aggregator_report.json",
+    "publicInputs": "docs/evaluation/aggregator_reports/python_api_public_inputs.json",
+    "exportBundle": "docs/evaluation/aggregator_reports/python_api_export_bundle.json",
+    "attackReport": "docs/evaluation/aggregator_reports/python_api_attack_report.json"
+  }
+}

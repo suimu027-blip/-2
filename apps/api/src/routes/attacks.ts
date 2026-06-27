@@ -1,5 +1,11 @@
 import { Router } from "express";
-import { hashText, createCommitment, createReceiptCode, randomHex } from "@verivote/crypto";
+import {
+  hashText,
+  createCommitment,
+  createReceiptCode,
+  createVoteTokenHash,
+  randomHex
+} from "@verivote/crypto";
 import type { AttackType, AttackResponse, AggregatorReport, AttackLog } from "@verivote/shared";
 import {
   votes,
@@ -139,7 +145,10 @@ router.post<{ id: string }, AttackResponse | { error: string }>(
       createdAt
     });
 
-    const voteTokenHash = hashText(`verivote.vote-token-hash.v1:${target.election.id}:${target.firstVote.userId}`);
+    const voteTokenHash = createVoteTokenHash(
+      target.election.id,
+      target.firstVote.userId
+    );
     const before = {
       sourceVoteId: target.firstVote.id,
       userId: target.firstVote.userId,
@@ -182,7 +191,9 @@ router.post<{ id: string }, AttackResponse | { error: string }>(
 
     const attackType: AttackType = "inject-invalid-vote";
     const candidateCount = getCandidatesForElection(target.election.id).length;
-    const voteVector = Array.from({ length: Math.max(candidateCount, 1) }, () => 0);
+    const voteVector = Array.from({ length: Math.max(candidateCount, 1) }, (_, index) =>
+      index === 0 ? 1 : 0
+    );
     const invalidCandidateId = "invalid_candidate_demo";
     const userId = "attacker_user";
     const randomness = randomHex();
@@ -231,6 +242,155 @@ router.post<{ id: string }, AttackResponse | { error: string }>(
       attackType,
       message:
         "演示攻击已执行：已注入非法投票。重新运行聚合器后 invalidVotes 应大于 0。",
+      log
+    });
+  }
+);
+
+router.post<{ id: string }, AttackResponse | { error: string }>(
+  "/elections/:id/inject-non-one-hot-vote",
+  (request, response) => {
+    const target = getAttackTarget(request.params.id);
+
+    if (isAttackTargetError(target)) {
+      response.status(target.status).json({ error: target.error });
+      return;
+    }
+
+    const electionCandidates = getCandidatesForElection(target.election.id);
+    if (electionCandidates.length < 2) {
+      response.status(409).json({
+        error: "当前选举至少需要 2 个候选人，才能演示多选 non-one-hot 攻击。"
+      });
+      return;
+    }
+
+    const attackType: AttackType = "inject-non-one-hot-vote";
+    const voteVector = electionCandidates.map((_candidate, index) =>
+      index < 2 ? 1 : 0
+    );
+    const candidateId = electionCandidates[0].id;
+    const userId = "attacker_non_one_hot";
+    const randomness = randomHex();
+    const createdAt = now();
+    const commitment = createCommitment(target.election.id, voteVector, randomness);
+    const receiptCode = createReceiptCode(
+      target.election.id,
+      commitment,
+      userId,
+      createdAt
+    );
+    const invalidVote = appendVoteWithReceiptChain({
+      id: createId("vote"),
+      electionId: target.election.id,
+      userId,
+      candidateId,
+      voteVector,
+      randomness,
+      commitment,
+      receiptCode,
+      createdAt
+    });
+
+    const before = {
+      candidateIds: electionCandidates.map((candidate) => candidate.id)
+    };
+    const after = {
+      voteId: invalidVote.id,
+      userId: invalidVote.userId,
+      candidateId: invalidVote.candidateId,
+      voteVector: invalidVote.voteVector,
+      commitment: invalidVote.commitment,
+      receiptCode: invalidVote.receiptCode
+    };
+    const log = createAttackLog(
+      target.election.id,
+      attackType,
+      "演示攻击：注入一张 candidateId 合法但 voteVector 多选的非 one-hot 选票。",
+      before,
+      after
+    );
+
+    response.json({
+      ok: true,
+      attackType,
+      message:
+        "演示攻击已执行：已注入非 one-hot 投票。重新运行聚合器后 diagnostics 应出现 invalid-one-hot。",
+      log
+    });
+  }
+);
+
+router.post<{ id: string }, AttackResponse | { error: string }>(
+  "/elections/:id/inject-candidate-vector-mismatch",
+  (request, response) => {
+    const target = getAttackTarget(request.params.id);
+
+    if (isAttackTargetError(target)) {
+      response.status(target.status).json({ error: target.error });
+      return;
+    }
+
+    const electionCandidates = getCandidatesForElection(target.election.id);
+    if (electionCandidates.length < 2) {
+      response.status(409).json({
+        error: "Current election needs at least 2 candidates to demonstrate candidate-vector mismatch."
+      });
+      return;
+    }
+
+    const attackType: AttackType = "inject-candidate-vector-mismatch";
+    const voteVector = electionCandidates.map((_candidate, index) =>
+      index === 0 ? 1 : 0
+    );
+    const candidateId = electionCandidates[1].id;
+    const userId = "attacker_candidate_vector_mismatch";
+    const randomness = randomHex();
+    const createdAt = now();
+    const commitment = createCommitment(target.election.id, voteVector, randomness);
+    const receiptCode = createReceiptCode(
+      target.election.id,
+      commitment,
+      userId,
+      createdAt
+    );
+    const invalidVote = appendVoteWithReceiptChain({
+      id: createId("vote"),
+      electionId: target.election.id,
+      userId,
+      candidateId,
+      voteVector,
+      randomness,
+      commitment,
+      receiptCode,
+      createdAt
+    });
+
+    const before = {
+      vectorSelectedCandidateId: electionCandidates[0].id,
+      submittedCandidateId: candidateId
+    };
+    const after = {
+      voteId: invalidVote.id,
+      userId: invalidVote.userId,
+      candidateId: invalidVote.candidateId,
+      voteVector: invalidVote.voteVector,
+      commitment: invalidVote.commitment,
+      receiptCode: invalidVote.receiptCode
+    };
+    const log = createAttackLog(
+      target.election.id,
+      attackType,
+      "Demo attack: inject a vote whose candidateId is valid but does not match the selected one-hot vector entry.",
+      before,
+      after
+    );
+
+    response.json({
+      ok: true,
+      attackType,
+      message:
+        "Candidate-vector mismatch attack executed. Re-running the aggregator should produce a candidate-vector-mismatch diagnostic.",
       log
     });
   }

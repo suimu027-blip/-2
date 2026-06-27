@@ -126,33 +126,12 @@ export interface BulletinBoard {
   createdAt: string;
 }
 
-export interface AggregatorReport {
-  electionId: string;
-  totalVotes: number;
-  validVotes: number;
-  invalidVotes: number;
-  duplicateVotes: number;
-  receiptChainVerified: boolean;
-  receiptChainBreaks: ReceiptChainBreak[];
-  voteTokenHashes: string[];
-  duplicateTokenHashes: string[];
-  tallyResult: ElectionResult;
-  commitmentRoot: string;
-  receiptRoot: string;
-  auditHash: string;
-  createdAt: string;
-  
-  pedersenTallyVerified?: boolean;
-  pedersenTallyMessage?: string;
-  
-  pedersenContextHash?: string;
-}
-
 export interface CandidatePartitionBucket {
   candidateId: string;
   candidateName: string;
   voteCount: number;
   voteIds: string[];
+  tokenHashes: string[];
   tokenRoot: string;
   commitmentRoot: string;
   receiptRoot: string;
@@ -168,27 +147,22 @@ export interface PartitionAudit {
   partitionHash: string;
 }
 
+export type InvalidVoteReason =
+  | "duplicate-token"
+  | "invalid-candidate"
+  | "invalid-one-hot"
+  | "candidate-vector-mismatch"
+  | "commitment-opening-failed"
+  | "receipt-chain-break";
+
 export interface InvalidVoteDiagnostic {
   voteId: string;
   userIdHash?: string;
   tokenHash: string;
-  reason: string;
+  reason: InvalidVoteReason;
   detail: string;
   evidenceHash: string;
 }
-
-export interface PublicInputHints {
-  electionIdHash: string;
-  candidateCount: number;
-  validVotes: number;
-  tallyHash: string;
-  commitmentRoot: string;
-  receiptRoot: string;
-  partitionHash?: string | null;
-  pedersenAggregateHash?: string | null;
-}
-
-export type PedersenAggregateStatus = "pending" | "ok" | "failed";
 
 export interface PedersenAggregateAudit {
   contextHash: string;
@@ -200,21 +174,120 @@ export interface PedersenAggregateAudit {
   verified: boolean;
   message: string;
   pedersenAggregateHash: string;
-  status?: PedersenAggregateStatus;
 }
 
-export interface AggregatorReportV2 extends AggregatorReport {
-  partitionAudit?: PartitionAudit | null;
-  invalidVoteDiagnostics?: InvalidVoteDiagnostic[];
-  diagnosticsHash?: string;
+export type PedersenAggregateStatus =
+  | "not-generated"
+  | "pending"
+  | "verified"
+  | "failed";
+
+export type TallyProofStatus = "not-generated" | "pending" | "generated" | "failed";
+
+export interface TallyProofSummaryArtifact {
+  proofStatus: TallyProofStatus;
+  proofId: string | null;
+  proofMode: TallyProofModeShared | null;
+  verifierMode: TallyVerifierModeShared | null;
+  circuitId: string | null;
+  proofHash: string | null;
+  publicSignals: TallyPublicSignalsShared | null;
+  message: string;
+}
+
+export interface AggregatorReportIntegrityCheck {
+  verified: boolean;
+  checks: {
+    fieldShapeValid: boolean;
+    auditHashMatches: boolean;
+    partitionHashMatches: boolean;
+    nestedPartitionHashMatches: boolean;
+    diagnosticsHashMatches: boolean;
+    diagnosticEvidenceHashesMatch: boolean;
+    bucketAuditHashesMatch: boolean;
+    bucketVoteCountsMatch: boolean;
+    bucketTokenRootsMatchTokenHashes: boolean;
+    bucketTallyMatches: boolean;
+    bucketVoteIdsDisjoint: boolean;
+    bucketVoteCountSumMatchesValidVotes: boolean;
+    validVoteIdsMatchBuckets: boolean;
+    invalidVoteIdsMatchDiagnostics: boolean;
+    validAndInvalidVoteIdsDisjoint: boolean;
+    invalidVoteIdsExcludedFromBuckets: boolean;
+    voteIdAccountingMatchesTotalVotes: boolean;
+    partitionFlagsMatchStructure: boolean;
+    noDuplicateValidTokenHashesAsserted: boolean;
+    noDuplicateValidTokenHashesVerified: boolean;
+    publicInputHintsMatch: boolean;
+    voteTokenHashCountMatchesTotalVotes: boolean;
+    duplicateTokenHashesMatchDiagnostics: boolean;
+    receiptChainStatusMatchesBreaks: boolean;
+    candidateCountMatchesPartitions: boolean;
+    totalVoteCountMatchesValidAndInvalid: boolean;
+    tallyTotalMatchesValidVotes: boolean;
+    tallySumMatchesValidVotes: boolean;
+    invalidVoteCountMatchesDiagnostics: boolean;
+    duplicateVoteCountMatchesDiagnostics: boolean;
+    pedersenAggregateHashMatches: boolean;
+    pedersenAggregateStatusMatches: boolean;
+  };
+  failures: string[];
+  recomputed: {
+    auditHash: string;
+    partitionHash: string;
+    diagnosticsHash: string;
+    pedersenAggregateHash: string | null;
+    bucketAuditHashes: string[];
+    publicInputHints: AggregatorReport["publicInputHints"];
+  };
+}
+
+export interface AggregatorReport {
+  electionId: string;
+  totalVotes: number;
+  validVotes: number;
+  validVoteIds: string[];
+  invalidVotes: number;
+  invalidVoteIds: string[];
+  duplicateVotes: number;
+  proofStatus: TallyProofStatus;
+  tallyProofSummary: TallyProofSummaryArtifact | null;
+  receiptChainVerified: boolean;
+  receiptChainBreaks: ReceiptChainBreak[];
+  voteTokenHashes: string[];
+  duplicateTokenHashes: string[];
+  tallyResult: ElectionResult;
+  commitmentRoot: string;
+  receiptRoot: string;
+  partitionAudit: PartitionAudit;
+  partitionHash: string;
+  invalidVoteDiagnostics: InvalidVoteDiagnostic[];
+  diagnosticsHash: string;
+  publicInputHints: {
+    electionIdHash: string;
+    candidateCount: number;
+    validVotes: number;
+    tallyHash: string;
+    commitmentRoot: string;
+    receiptRoot: string;
+    partitionHash: string;
+    diagnosticsHash: string;
+    pedersenAggregateHash?: string | null;
+  };
+  auditHash: string;
+  createdAt: string;
+  
   pedersenAggregateAudit?: PedersenAggregateAudit | null;
+  pedersenAggregateStatus: PedersenAggregateStatus;
   pedersenAggregateHash?: string | null;
-  publicInputHints?: PublicInputHints;
+  
+  pedersenTallyVerified?: boolean;
+  pedersenTallyMessage?: string;
+  
+  pedersenContextHash?: string;
 }
 
 export type BlockchainAuditMode = "local-mock" | "hardhat";
-
-export type TallyVerifierMode = "mock" | "local-mock" | "real-hardhat";
 
 export type BlockchainAuditStatus = "submitted" | "not_found";
 
@@ -232,13 +305,11 @@ export interface BlockchainAuditRecord extends BlockchainAuditFields {
   transactionHash: string;
   contractAddress: string;
   auditMode: BlockchainAuditMode;
-  verifierMode?: TallyVerifierMode;
   createdAt: string;
   submitter?: string;
   mockSubmitter?: string;
   
   zkVerified?: boolean;
-  gasUsed?: number;
   status: BlockchainAuditStatus;
 }
 
@@ -283,6 +354,8 @@ export type AttackType =
   | "delete-vote"
   | "inject-duplicate-vote"
   | "inject-invalid-vote"
+  | "inject-non-one-hot-vote"
+  | "inject-candidate-vector-mismatch"
   | "tamper-tally";
 
 export interface AttackLog {
@@ -294,6 +367,8 @@ export interface AttackLog {
   after: unknown;
   createdAt: string;
 }
+
+export type AggregatorReportV2 = AggregatorReport;
 
 export interface ApiErrorResponse {
   error: string;
@@ -362,6 +437,7 @@ export interface PrepareBallotResponse {
 }
 
 export interface CastPreparedBallotResponse {
+  vote: Vote;
   voteId: string;
   receiptCode: string;
   commitment: string;
@@ -411,6 +487,7 @@ export interface GetReceiptProofResponse {
 export interface RunAggregatorResponse {
   election: Election;
   report: AggregatorReport;
+  integrityCheck: AggregatorReportIntegrityCheck;
 }
 
 export interface GetAggregatorReportResponse {
@@ -418,6 +495,7 @@ export interface GetAggregatorReportResponse {
   report: AggregatorReport;
   tallyConsistent: boolean;
   consistencyMessage: string;
+  integrityCheck: AggregatorReportIntegrityCheck;
 }
 
 export interface SubmitBlockchainAuditResponse {
@@ -540,8 +618,14 @@ export interface PedersenAggregateRequest {
   contextLabel?: string;
 }
 
-export interface PedersenAggregateResponse extends PedersenAggregateAudit {
+export interface PedersenAggregateResponse {
   context: PedersenContextSnapshot;
+  aggregatedCommitment: string;
+  expectedCommitment: string;
+  aggregatedRandomness: string;
+  aggregatedVector: number[];
+  verified: boolean;
+  message: string;
 }
 
 // --------------------------------------------------------------------------
@@ -569,65 +653,47 @@ export interface PublicInputsArtifact {
   commitmentRoot: string;
   receiptRoot: string;
   tallyHash: string;
+  partitionHash: string;
+  diagnosticsHash: string;
   auditHash: string;
-  partitionHash?: string;
-  diagnosticsHash?: string;
-  pedersenAggregateHash?: string | null;
   zkCircuitId?: string;
 }
 
 export interface BulletinBoardArtifact extends BulletinBoard {}
 
-export interface AggregatorReportArtifact extends AggregatorReportV2 {
+export interface AggregatorReportArtifact extends AggregatorReport {
   tallyConsistent: boolean;
   consistencyMessage: string;
+  integrityCheck: AggregatorReportIntegrityCheck;
 }
 
 export interface ZkSummaryArtifact {
   proofMode: ZkProofMode | null;
-  verifierMode?: TallyVerifierMode;
   circuitId: string | null;
   proofGenerated: boolean;
-  proofHash?: string | null;
-  publicSignals: ZkValidityPublicSignals | TallyPublicSignalsShared | null;
+  publicSignals: ZkValidityPublicSignals | null;
   message: string;
 }
 
 export interface ChainAuditArtifact {
   auditMode: BlockchainAuditMode;
-  verifierMode?: TallyVerifierMode;
+  verifierMode: TallyVerifierModeShared | null;
   contractAddress: string;
-  transactionHash?: string | null;
-  zkVerified?: boolean;
-  gasUsed?: number;
-  status?: string;
   hasAudit: boolean;
   audit: BlockchainAuditRecord | null;
-}
-
-export interface TallyProofSummaryArtifact {
-  proofId: string;
-  proofMode?: ZkProofMode | "mock" | "real";
-  verifierMode?: TallyVerifierMode;
-  circuitId?: string;
-  publicSignals: TallyPublicSignalsShared;
-  proofHash?: string;
-  valid: boolean;
-  message: string;
+  transactionHash: string | null;
+  zkVerified: boolean;
+  gasUsed?: string | null;
+  status: BlockchainAuditStatus | "not_submitted";
 }
 
 export interface DemoMetadataArtifact {
-  seedName?: string;
-  seedVersion?: string;
-  fixtureMode?: "fixture" | "api";
-  generatedAt?: string;
-  electionId?: string;
-  candidateCount?: number;
-  userCount?: number;
-  castVotes?: number;
-  challengeBallots?: number;
-  normalFlow?: string;
-  attackMatrix?: string[];
+  demoSeedFile: string;
+  aggregatorCasesFile: string;
+  apiSmokeFile: string;
+  completenessMatrixFile: string;
+  generatedBy: string;
+  notes: string[];
 }
 
 export interface ElectionExportBundle {
@@ -637,12 +703,14 @@ export interface ElectionExportBundle {
   bulletinBoard: BulletinBoardArtifact | null;
   aggregatorReport: AggregatorReportArtifact | null;
   zkSummary: ZkSummaryArtifact;
-  tallyProofSummary?: TallyProofSummaryArtifact | null;
+  tallyProofSummary: TallyProofSummaryArtifact;
   chainAudit: ChainAuditArtifact;
+  demoMetadata: DemoMetadataArtifact;
   
   challengeRecords: ChallengeRecord[];
-  demoMetadata?: DemoMetadataArtifact;
 }
+
+export type ExportBundleV2 = ElectionExportBundle;
 
 export interface ExportBundleResponse {
   bundle: ElectionExportBundle;
@@ -665,27 +733,32 @@ export interface TallyPublicSignalsShared {
   circuitId: string;
 }
 
+export type TallyProofModeShared = "mock" | "real";
+export type TallyVerifierModeShared = "mock" | "local-mock" | "real-hardhat";
+
+export interface TallyProofMetadataShared {
+  batchId: string;
+  validVoteCount: number;
+  tallyHash: string;
+  commitmentRoot: string;
+  partitionHash: string;
+}
+
 export interface TallyProofRequestShared {
   electionId: string;
   voteVectors: number[][];
   realRows?: number[];
   tally: number[];
   batchId?: string;
-  proofMode?: "mock" | "real";
-  verifierMode?: TallyVerifierMode;
-  metadata?: {
-    batchId?: string;
-    validVoteCount?: number;
-    tallyHash?: string;
-    commitmentRoot?: string;
-    partitionHash?: string;
-  };
+  proofMode?: TallyProofModeShared;
+  verifierMode?: TallyVerifierModeShared;
+  metadata?: Partial<TallyProofMetadataShared>;
 }
 
 export interface TallyProofResponseShared {
   proofId: string;
-  proofMode: "mock" | "real";
-  verifierMode: TallyVerifierMode;
+  proofMode: TallyProofModeShared;
+  verifierMode: TallyVerifierModeShared;
   circuitId: string;
   publicSignals: TallyPublicSignalsShared;
   proof: unknown;

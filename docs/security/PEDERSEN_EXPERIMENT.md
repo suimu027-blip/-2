@@ -9,8 +9,6 @@
 - 该实验模块位于 `packages/crypto/src/pedersen.ts`，通过 `/crypto/pedersen/*` API 和前端「Pedersen 实验」页面暴露。
 - 使用 RFC 3526 MODP Group 14（2048-bit 安全素数）的二次剩余子群，阶 `q = (p - 1) / 2`。
 - 生成元 `g, h_1, …, h_n` 从 `(electionId, contextLabel, candidateCount)` 哈希派生，相同输入会得到相同 context，便于审计者复核。
-- cast 票的 `voteVector` 和 `randomness` 属于内部 witness，不作为公开证据输出；challenge 票会公开 opening，但 challenge 票不计入 tally。
-- 聚合审计公开 `aggregatedRandomnessHash`，不公开 `aggregatedRandomness` 明文，避免把 cast 票 opening 误当成可发布材料。
 - **未经生产级审计**：参数选择、hash-to-group、序列化、侧信道均未做工程硬化。请勿把该模块直接接入主流程或部署生产。
 
 ## 2. 构造
@@ -88,16 +86,12 @@ exportPedersenContext(context)         // 导出可序列化 snapshot
 {
   "aggregatedCommitment": "∏ C_i",
   "expectedCommitment": "commit(Σ v_i, Σ r_i mod q)",
+  "aggregatedRandomness": "...",
   "aggregatedVector": [1, 1, 0, 0],
-  "aggregatedRandomnessHash": "sha256(domain || contextHash || Σr)",
-  "castVoteCount": 2,
   "verified": true,
-  "pedersenAggregateHash": "sha256(contextHash || commitments || vector || verified)",
   "message": "Pedersen 聚合承诺核查通过：..."
 }
 ```
-
-`pedersenAggregateHash` 是给 AggregatorReport / ExportBundle 引用的稳定摘要。当前实现的 hash 输入包含 `contextHash`、`aggregatedCommitment`、`expectedCommitment`、`aggregatedRandomnessHash`、`aggregatedVector`、`castVoteCount` 和 `verified`。
 
 ## 5. 前端
 
@@ -105,18 +99,16 @@ exportPedersenContext(context)         // 导出可序列化 snapshot
 
 1. 输入 `electionId / candidateCount / voteVector` 点「commit」。
 2. 生成承诺后可点「以原 randomness 验证」或「以当前输入 randomness 验证（演示篡改）」展示开通验证的成功 / 失败。
-3. 每次生成承诺会自动追加一条到 batch。在「汇总承诺核查」区点「运行 aggregate-verify」得到 valid audit；点「篡改首个 commitment 后验证」得到 tampered audit。
-4. 页面展示 `aggregatedRandomnessHash` 和 `pedersenAggregateHash`，不展示聚合随机数明文。
+3. 每次生成承诺会自动追加一条到 batch。在「汇总承诺核查」区改动任一字段后点「运行 aggregate-verify」，可以展示篡改后聚合不一致。
 
 ## 6. 和安全测试矩阵的关系
 
 - 开通验证覆盖 `SECURITY_TESTS.md` 中 **T8 挑战开口篡改** 的实验版。
 - 汇总承诺核查覆盖 **T9 Pedersen 聚合承诺核查**（Haechi homomorphic tally verification）。
-- `docs/contracts/pedersen_aggregate_audit.valid.sample.json` 和 `docs/contracts/pedersen_aggregate_audit.tampered.sample.json` 可直接交给 A/D 接入 AggregatorReport 和导出 bundle。
 - 不覆盖：完整 Aggios EPA、完整 Zeeperio 链上 verifier。
 
 ## 7. 后续增强方向
 
 - 把 SHA-256 承诺路径和 Pedersen 路径做可切换的「commitment adapter」，在某个实验 election 上用 Pedersen，而不改主流程默认行为。
 - 引入椭圆曲线（如 ristretto255 / bn254）以减小体积，便于写进 Circom 电路。
-- 把 `verifyAggregateOpening` 接入链上审计：把 `aggregatedCommitment / aggregatedVector / aggregatedRandomnessHash / pedersenAggregateHash` 作为 `tally proof` 的基础数据提交。
+- 把 `verifyAggregateOpening` 接入链上审计：把 `aggregatedCommitment / aggregatedVector / aggregatedRandomness` 作为 `tally proof` 的基础数据提交。

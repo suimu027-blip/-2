@@ -1,16 +1,15 @@
 {
-  "electionId": "demo-election-v2",
-  "electionIdHash": "a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8a8",
+  "electionId": "election_fixture_8x4",
+  "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
   "candidateCount": 4,
   "totalVotes": 8,
   "validVotes": 8,
-  "merkleRoot": "m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1m1",
-  "commitmentRoot": "d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1d1",
-  "receiptRoot": "e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1e1",
-  "tallyHash": "a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9a9",
-  "auditHash": "f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1f1",
-  "partitionHash": "p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1p1",
-  "diagnosticsHash": "d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2d2",
-  "pedersenAggregateHash": "a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7",
-  "zkCircuitId": "tally-correctness-8x4-v2"
+  "merkleRoot": "79b557ac0633ead59201a391e8174923373e11b4d820297cb562647e0caa174d",
+  "commitmentRoot": "7d52dd9b91bbcfddb6d5a1520d27c93f011c32ef45dc0120d0df8794cf87d68a",
+  "receiptRoot": "bc24032feed14911d4a5e368ccd9beb975591f98170a45df132c87dda9822b30",
+  "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+  "partitionHash": "1dc8d841928022d3f49a00b7bb2cf8799db460040eff9fbc525762aff2d4e959",
+  "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+  "auditHash": "8c9148ac4430f41febfe7bae1777f1ed07760c4a4c9fd76767284a41536a73af",
+  "zkCircuitId": "valid-vote-4"
 }

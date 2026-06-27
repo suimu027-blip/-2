@@ -5,10 +5,12 @@ import sys
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
+import json
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 API_SRC = PROJECT_ROOT / "apps" / "api" / "src"
+REPORT_DIR = PROJECT_ROOT / "docs" / "evaluation" / "aggregator_reports"
 
 os.environ.setdefault("VERIVOTE_PERSISTENCE", "memory")
 sys.path.insert(0, str(API_SRC))
@@ -18,6 +20,11 @@ from verivote_api.main import app  # noqa: E402
 
 
 client = TestClient(app)
+
+
+def write_json(path: Path, value: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
 def tamper_hex(value: str) -> str:
@@ -34,6 +41,33 @@ def expect(response: Any, *statuses: int) -> dict[str, Any]:
             f"{response.status_code}: {response.text}"
         )
     return response.json()
+
+
+def assert_aggregator_v2(report: dict[str, Any], integrity_check: dict[str, Any] | None = None) -> None:
+    assert report["proofStatus"] == "not-generated"
+    assert report["tallyProofSummary"]["proofStatus"] == "not-generated"
+    assert report["tallyProofSummary"]["proofId"] is None
+    assert report["pedersenAggregateStatus"] in {"pending", "verified", "failed"}
+    assert isinstance(report["validVoteIds"], list)
+    assert isinstance(report["invalidVoteIds"], list)
+    assert isinstance(report["invalidVoteDiagnostics"], list)
+    assert isinstance(report["diagnosticsHash"], str) and report["diagnosticsHash"]
+    assert isinstance(report["partitionHash"], str) and report["partitionHash"]
+    assert report["partitionAudit"]["partitionHash"] == report["partitionHash"]
+    assert all(isinstance(bucket["tokenHashes"], list) for bucket in report["partitionAudit"]["buckets"])
+    assert report["publicInputHints"]["partitionHash"] == report["partitionHash"]
+    assert report["publicInputHints"]["diagnosticsHash"] == report["diagnosticsHash"]
+    assert report["publicInputHints"].get("pedersenAggregateHash") == report.get("pedersenAggregateHash")
+    assert sorted(report["validVoteIds"]) == sorted(
+        vote_id
+        for bucket in report["partitionAudit"]["buckets"]
+        for vote_id in bucket["voteIds"]
+    )
+    assert sorted(report["invalidVoteIds"]) == sorted(
+        {diagnostic["voteId"] for diagnostic in report["invalidVoteDiagnostics"]}
+    )
+    if integrity_check is not None:
+        assert integrity_check["verified"] is True
 
 
 def create_election_with_candidates(title: str) -> dict[str, Any]:
@@ -127,14 +161,17 @@ def test_main_flow() -> dict[str, Any]:
         409,
     )
 
-    report = expect(client.post(f"/aggregator/elections/{detail['id']}/run"), 201)["report"]
+    run_response = expect(client.post(f"/aggregator/elections/{detail['id']}/run"), 201)
+    report = run_response["report"]
     assert report["validVotes"] == 2
     assert report["duplicateVotes"] == 0
     assert report["invalidVotes"] == 0
     assert report["receiptChainVerified"] is True
+    assert_aggregator_v2(report, run_response["integrityCheck"])
 
     report_view = expect(client.get(f"/aggregator/elections/{detail['id']}/report"), 200)
     assert report_view["tallyConsistent"] is True
+    assert_aggregator_v2(report_view["report"], report_view["integrityCheck"])
 
     receipt = expect(client.get(f"/receipts/{vote['receiptCode']}"), 200)
     assert receipt["exists"] is True
@@ -250,7 +287,24 @@ def test_main_flow() -> dict[str, Any]:
     assert audit["status"] == "submitted"
     bundle = expect(client.get(f"/elections/{detail['id']}/export-bundle"), 200)["bundle"]
     assert bundle["publicInputs"]["totalVotes"] == 2
-    return {"electionId": detail["id"], "receiptCode": vote["receiptCode"]}
+    assert bundle["envelope"]["schemaVersion"] == "verivote.artifact.v2"
+    assert bundle["aggregatorReport"]["integrityCheck"]["verified"] is True
+    assert bundle["tallyProofSummary"]["proofStatus"] == "not-generated"
+    assert bundle["demoMetadata"]["apiSmokeFile"] == "docs/evaluation/aggregator_reports/python_api_smoke.json"
+    raw_public_inputs = expect(client.get(f"/elections/{detail['id']}/export/public_inputs.json"), 200)
+    assert raw_public_inputs["partitionHash"] == report["partitionHash"]
+    assert raw_public_inputs["diagnosticsHash"] == report["diagnosticsHash"]
+    write_json(REPORT_DIR / "python_api_aggregator_report.json", report_view)
+    write_json(REPORT_DIR / "python_api_public_inputs.json", raw_public_inputs)
+    write_json(REPORT_DIR / "python_api_export_bundle.json", bundle)
+    return {
+        "electionId": detail["id"],
+        "receiptCode": vote["receiptCode"],
+        "aggregatorAuditHash": report["auditHash"],
+        "partitionHash": report["partitionHash"],
+        "diagnosticsHash": report["diagnosticsHash"],
+        "bundleSchemaVersion": bundle["envelope"]["schemaVersion"],
+    }
 
 
 def test_attack_detection() -> dict[str, Any]:
@@ -280,10 +334,21 @@ def test_attack_detection() -> dict[str, Any]:
     assert duplicate["ok"] is True
     invalid = expect(client.post(f"/attack/elections/{detail['id']}/inject-invalid-vote"), 200)
     assert invalid["ok"] is True
+    non_one_hot = expect(client.post(f"/attack/elections/{detail['id']}/inject-non-one-hot-vote"), 200)
+    assert non_one_hot["ok"] is True
+    vector_mismatch = expect(client.post(f"/attack/elections/{detail['id']}/inject-candidate-vector-mismatch"), 200)
+    assert vector_mismatch["ok"] is True
 
-    report = expect(client.post(f"/aggregator/elections/{detail['id']}/run"), 200)["report"]
+    attack_run_response = expect(client.post(f"/aggregator/elections/{detail['id']}/run"), 200)
+    report = attack_run_response["report"]
+    assert_aggregator_v2(report, attack_run_response["integrityCheck"])
     assert report["duplicateVotes"] >= 1
     assert report["invalidVotes"] >= 1
+    assert "duplicate-token" in {diagnostic["reason"] for diagnostic in report["invalidVoteDiagnostics"]}
+    assert "invalid-candidate" in {diagnostic["reason"] for diagnostic in report["invalidVoteDiagnostics"]}
+    assert "invalid-one-hot" in {diagnostic["reason"] for diagnostic in report["invalidVoteDiagnostics"]}
+    assert "candidate-vector-mismatch" in {diagnostic["reason"] for diagnostic in report["invalidVoteDiagnostics"]}
+    pre_tamper_diagnostic_reasons = sorted({diagnostic["reason"] for diagnostic in report["invalidVoteDiagnostics"]})
 
     tampered_tally = expect(client.post(f"/attack/elections/{detail['id']}/tamper-tally"), 200)
     assert tampered_tally["ok"] is True
@@ -300,24 +365,48 @@ def test_attack_detection() -> dict[str, Any]:
     assert deleted["ok"] is True
     deleted_receipt = expect(client.get(f"/receipts/{first_vote['receiptCode']}"), 200)
     assert deleted_receipt["exists"] is False
-    broken_report = expect(client.post(f"/aggregator/elections/{detail['id']}/run"), 200)["report"]
+    broken_run_response = expect(client.post(f"/aggregator/elections/{detail['id']}/run"), 200)
+    broken_report = broken_run_response["report"]
+    assert_aggregator_v2(broken_report, broken_run_response["integrityCheck"])
     assert broken_report["receiptChainVerified"] is False
     assert len(broken_report["receiptChainBreaks"]) > 0
 
     logs = expect(client.get(f"/attack/elections/{detail['id']}/logs"), 200)["logs"]
     assert len(logs) >= 5
-    return {"electionId": detail["id"], "attacks": [log["type"] for log in logs]}
+    write_json(REPORT_DIR / "python_api_attack_report.json", broken_run_response)
+    return {
+        "electionId": detail["id"],
+        "attacks": [log["type"] for log in logs],
+        "preTamperDiagnosticReasons": pre_tamper_diagnostic_reasons,
+        "diagnosticReasons": sorted({diagnostic["reason"] for diagnostic in broken_report["invalidVoteDiagnostics"]}),
+        "receiptChainVerified": broken_report["receiptChainVerified"],
+    }
 
 
 def main() -> None:
     main_flow = test_main_flow()
     attack_flow = test_attack_detection()
+    output = {
+        "schemaVersion": "verivote.python-api-smoke.v1",
+        "generatedBy": "python scripts/api_smoke_test.py",
+        "passed": True,
+        "mainFlow": main_flow,
+        "attackFlow": attack_flow,
+        "rawFiles": {
+            "aggregatorReport": "docs/evaluation/aggregator_reports/python_api_aggregator_report.json",
+            "publicInputs": "docs/evaluation/aggregator_reports/python_api_public_inputs.json",
+            "exportBundle": "docs/evaluation/aggregator_reports/python_api_export_bundle.json",
+            "attackReport": "docs/evaluation/aggregator_reports/python_api_attack_report.json",
+        },
+    }
+    write_json(REPORT_DIR / "python_api_smoke.json", output)
     print(
         "api smoke ok",
         {
             "mainElectionId": main_flow["electionId"],
             "attackElectionId": attack_flow["electionId"],
             "attackTypes": attack_flow["attacks"],
+            "pythonApiSmoke": "docs/evaluation/aggregator_reports/python_api_smoke.json",
         },
     )
 

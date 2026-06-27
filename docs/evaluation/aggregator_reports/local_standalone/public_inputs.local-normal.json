@@ -1,0 +1,15 @@
+{
+  "electionId": "election_local_export_8x4",
+  "electionIdHash": "cdf561d0535f3a093159fbd1f1d63699c33e78f6935f06b746db013ddca2e6d7",
+  "candidateCount": 4,
+  "totalVotes": 8,
+  "validVotes": 8,
+  "merkleRoot": "94631d1ae874abf99ce3ac03591164da71af7a75eb788b4405ec718e6bce10d1",
+  "commitmentRoot": "541646307c0af78d5b176fc0877de3a97ae6c50288fbd4c107942222e4715ba9",
+  "receiptRoot": "1001dddbbd43a285240cd5d26d96456b2cca7e47be41b1d1863341d06362e66f",
+  "tallyHash": "b926786d343944fe4bca3c93dd69df619e50567d80d2a8ea92247580fe77cf05",
+  "partitionHash": "379bf0ffdc3af583163f40142592378eb3e5c46fea3c3eb5f12642657f701a3f",
+  "diagnosticsHash": "7dc82062fbc98d4f968f4d21356ee2058cede01cdcb0f4160424d165dc7814e6",
+  "auditHash": "e8bf2966385dd363c296d156119bc37d1c543793fd3ea0fa9c10853c8c3366fc",
+  "zkCircuitId": "valid-vote-4"
+}

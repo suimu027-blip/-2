@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "verivote.task-a-full-acceptance.v1",
+  "generatedBy": "pnpm aggregator:task-a-full",
+  "generatedAt": "2026-06-27T10:33:58.230Z",
+  "startedAt": "2026-06-27T10:33:22.646Z",
+  "durationMs": 35584,
+  "passed": true,
+  "stepCount": 9,
+  "steps": [
+    {
+      "name": "Generate A-track samples",
+      "command": "pnpm aggregator:audit-cases",
+      "passed": true,
+      "durationMs": 2713
+    },
+    {
+      "name": "Generate no-server local export",
+      "command": "pnpm aggregator:local-export",
+      "passed": true,
+      "durationMs": 1250
+    },
+    {
+      "name": "Run TypeScript API smoke",
+      "command": "pnpm aggregator:api-smoke",
+      "passed": true,
+      "durationMs": 10601
+    },
+    {
+      "name": "Run Python API smoke",
+      "command": "python scripts/api_smoke_test.py",
+      "passed": true,
+      "durationMs": 1996
+    },
+    {
+      "name": "PowerShell API smoke",
+      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/aggregator-api-powershell-smoke.ps1 -BaseUrl http://127.0.0.1:39646",
+      "passed": true,
+      "durationMs": 4584
+    },
+    {
+      "name": "Run offline verifier",
+      "command": "pnpm aggregator:verify",
+      "passed": true,
+      "durationMs": 953
+    },
+    {
+      "name": "Run TypeScript typecheck",
+      "command": "pnpm typecheck",
+      "passed": true,
+      "durationMs": 3494
+    },
+    {
+      "name": "Run production build",
+      "command": "pnpm build",
+      "passed": true,
+      "durationMs": 9272
+    },
+    {
+      "name": "Run completeness gate",
+      "command": "pnpm aggregator:complete",
+      "passed": true,
+      "durationMs": 719
+    }
+  ],
+  "evidence": {
+    "completenessMatrix": "docs/evaluation/aggregator_reports/completeness_matrix.json",
+    "apiSmoke": "docs/evaluation/aggregator_reports/api_smoke.json",
+    "offlineVerification": "docs/evaluation/aggregator_reports/offline_verification.json",
+    "pythonApiSmoke": "docs/evaluation/aggregator_reports/python_api_smoke.json",
+    "powershellApiSmoke": "docs/evaluation/aggregator_reports/powershell_api/manifest.json",
+    "localStandalone": "docs/evaluation/aggregator_reports/local_standalone/manifest.json"
+  }
+}
