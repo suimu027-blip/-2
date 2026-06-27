@@ -1,0 +1,40 @@
+{
+  "sampleKind": "hardhat-real-verifier-chain-audit",
+  "generatedBy": "pnpm --filter @verivote/contracts run sample:chain-audit",
+  "network": "default",
+  "verifierMode": "real-hardhat",
+  "contracts": {
+    "tallyVerifier": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    "veriVoteAudit": "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512"
+  },
+  "transaction": {
+    "hash": "0x860db239e523b3854d57f55b9c3c8f42a5bd1a400fe951b25bffae7b7d5ec780",
+    "blockNumber": 3,
+    "gasUsed": "432387"
+  },
+  "gas": {
+    "tallyVerifierVerifyProofEstimate": "241358",
+    "submitAuditWithTallyProof": "432387"
+  },
+  "submittedFields": {
+    "electionId": "election_fixture_8x4",
+    "electionIdHash": "0x8633cfa6481da21a784612accd882679b81bc9b387e5112d45ec07b4624543b7",
+    "merkleRoot": "0x34abbd53980914d459a42da93301de7dc1d2e7599d898e0ff162f481b5a98cb3",
+    "commitmentRoot": "0x20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
+    "receiptRoot": "0x03653f082bbeb45cde28707cb2623c99929d459de25a00d05127035e4180709b",
+    "auditHash": "0x2a0193a248a6856496f516921c60584ca8b911dba767baa393a08bc3c82be4af",
+    "tallyHash": "0xede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a"
+  },
+  "auditRecord": {
+    "electionId": "0x8633cfa6481da21a784612accd882679b81bc9b387e5112d45ec07b4624543b7",
+    "merkleRoot": "0x34abbd53980914d459a42da93301de7dc1d2e7599d898e0ff162f481b5a98cb3",
+    "commitmentRoot": "0x20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
+    "receiptRoot": "0x03653f082bbeb45cde28707cb2623c99929d459de25a00d05127035e4180709b",
+    "auditHash": "0x2a0193a248a6856496f516921c60584ca8b911dba767baa393a08bc3c82be4af",
+    "tallyHash": "0xede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+    "zkVerified": true,
+    "exists": true
+  },
+  "calldataSource": "docs/contracts/calldata.sample.json",
+  "reportSource": "docs/contracts/task_b_aggregator_report_8x4.sample.json"
+}

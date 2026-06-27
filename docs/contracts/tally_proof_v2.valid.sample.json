@@ -1,0 +1,151 @@
+{
+  "sampleKind": "real-groth16-valid-tally-proof-v2",
+  "generatedBy": "pnpm zk:samples",
+  "proofGenerationMs": 1013.568,
+  "proofVerificationMs": 416.667,
+  "verifyResult": {
+    "verified": true,
+    "message": "Tally correctness proof verified."
+  },
+  "bindingCheck": {
+    "verified": true,
+    "message": "Tally proof is strongly bound to the aggregator report.",
+    "checks": {
+      "responseShape": true,
+      "responseValidFlag": true,
+      "proofHashMatches": true,
+      "responseProofIdMatchesProof": true,
+      "responseCircuitIdMatchesProof": true,
+      "responseProofModeMatchesProof": true,
+      "responseVerifierModeMatchesProof": true,
+      "proofPublicSignalsMatchResponse": true,
+      "proofElectionIdMatchesPublicSignals": true,
+      "proofCircuitMatchesPublicSignals": true,
+      "proofSoliditySignalsMatchPublicSignals": true,
+      "proofModeAllowed": true,
+      "verifierModeAllowed": true,
+      "reportHasElectionId": true,
+      "reportHasTallyResult": true,
+      "reportHasValidVotes": true,
+      "reportHasCommitmentRoot": true,
+      "reportHasPartitionHash": true,
+      "electionIdHashMatchesReport": true,
+      "electionIdHashHintMatchesReport": true,
+      "tallyMatchesReport": true,
+      "tallyResultElectionIdMatchesReport": true,
+      "tallyResultTotalVotesMatchesValidVotes": true,
+      "validVotesMatchesTallySum": true,
+      "batchSizeMatchesReport": true,
+      "validVotesHintMatchesReport": true,
+      "candidateCountMatchesCircuit": true,
+      "candidateCountHintMatchesCircuit": true,
+      "tallyHashMatchesReport": true,
+      "tallyHashHintMatchesReport": true,
+      "commitmentRootMatchesReport": true,
+      "commitmentRootHintMatchesReport": true,
+      "partitionHashMatchesReport": true,
+      "partitionHashHintMatchesReport": true
+    },
+    "expected": {
+      "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
+      "tally": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "validVoteCount": 8,
+      "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+      "commitmentRoot": "20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
+      "partitionHash": "1accd04abc1cf84fbec6b31c6be10887cc94634dfe00ba2b78098f3b5b5d2b07"
+    }
+  },
+  "proofId": "zkp_tally_690badda-7f1e-49c5-81c8-9dc759dae7db",
+  "proofMode": "real",
+  "verifierMode": "real-hardhat",
+  "circuitId": "tally-correctness-8x4",
+  "publicSignals": {
+    "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
+    "batchId": "fixture-8x4-real-valid",
+    "tally": [
+      2,
+      2,
+      2,
+      2
+    ],
+    "batchSize": 8,
+    "validVoteCount": 8,
+    "candidateCount": 4,
+    "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+    "commitmentRoot": "20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
+    "partitionHash": "1accd04abc1cf84fbec6b31c6be10887cc94634dfe00ba2b78098f3b5b5d2b07",
+    "circuitId": "tally-correctness-8x4"
+  },
+  "proof": {
+    "protocol": "verivote-tally-correctness-groth16-v1",
+    "proofMode": "real",
+    "verifierMode": "real-hardhat",
+    "proofId": "zkp_tally_690badda-7f1e-49c5-81c8-9dc759dae7db",
+    "circuitId": "tally-correctness-8x4",
+    "generatedAt": "2026-06-27T05:34:45.153Z",
+    "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
+    "publicSignals": {
+      "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
+      "batchId": "fixture-8x4-real-valid",
+      "tally": [
+        2,
+        2,
+        2,
+        2
+      ],
+      "batchSize": 8,
+      "validVoteCount": 8,
+      "candidateCount": 4,
+      "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+      "commitmentRoot": "20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
+      "partitionHash": "1accd04abc1cf84fbec6b31c6be10887cc94634dfe00ba2b78098f3b5b5d2b07",
+      "circuitId": "tally-correctness-8x4"
+    },
+    "snarkjsProof": {
+      "pi_a": [
+        "8347856214173274561097102290468824232753776988267336464261888525334088249684",
+        "9771477867515847879377731892040428933514379967469096979850089488203832084045",
+        "1"
+      ],
+      "pi_b": [
+        [
+          "11120086473768212665143768218561731268044832880734904421978790206106072849091",
+          "16408877559133987531098450166730788555693594920017808453575999753323557303405"
+        ],
+        [
+          "9046655272585412307138979911841409775968882790520985053778357377897677017930",
+          "15776986739128147103877767219964292581129958740551806404281999676056824080718"
+        ],
+        [
+          "1",
+          "0"
+        ]
+      ],
+      "pi_c": [
+        "6453626574634183208759867167975374425311381234626721203483959798496474070110",
+        "5932793753272188207384867345661441627381444725844171065684933982940217840258",
+        "1"
+      ],
+      "protocol": "groth16",
+      "curve": "bn128"
+    },
+    "snarkjsPublicSignals": [
+      "2",
+      "2",
+      "2",
+      "2",
+      "8"
+    ],
+    "artifactDirectory": "zk-artifacts/tally-correctness",
+    "valid": true,
+    "proofHash": "6d0ae1bcb1771f6f27d89fb5a8db61e619084b980c39e584055ae1f2d0a94999"
+  },
+  "proofHash": "6d0ae1bcb1771f6f27d89fb5a8db61e619084b980c39e584055ae1f2d0a94999",
+  "valid": true,
+  "message": "Tally correctness proof generated and verified."
+}

@@ -663,30 +663,42 @@ export interface ExportBundleResponse {
 
 export interface TallyPublicSignalsShared {
   electionIdHash: string;
-  batchId?: string;
+  batchId: string;
   tally: number[];
   batchSize: number;
-  validVoteCount?: number;
-  tallyHash?: string;
-  commitmentRoot?: string;
-  partitionHash?: string;
+  validVoteCount: number;
+  candidateCount: number;
+  tallyHash: string;
+  commitmentRoot: string;
+  partitionHash: string;
   circuitId: string;
 }
 
 export interface TallyProofRequestShared {
   electionId: string;
   voteVectors: number[][];
+  realRows?: number[];
   tally: number[];
+  batchId?: string;
+  proofMode?: "mock" | "real";
+  verifierMode?: TallyVerifierMode;
+  metadata?: {
+    batchId?: string;
+    validVoteCount?: number;
+    tallyHash?: string;
+    commitmentRoot?: string;
+    partitionHash?: string;
+  };
 }
 
 export interface TallyProofResponseShared {
   proofId: string;
-  proofMode?: ZkProofMode | "mock" | "real";
-  verifierMode?: TallyVerifierMode;
-  circuitId?: string;
+  proofMode: "mock" | "real";
+  verifierMode: TallyVerifierMode;
+  circuitId: string;
   publicSignals: TallyPublicSignalsShared;
   proof: unknown;
-  proofHash?: string;
+  proofHash: string;
   valid: boolean;
   message: string;
 }

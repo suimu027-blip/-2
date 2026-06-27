@@ -34,7 +34,7 @@ describe("VeriVoteAudit", function () {
     const auditHash = ethers.id("auditHash");
     const tallyHash = ethers.id("tallyHash");
 
-    await audit.submitAudit(
+    const tx = await audit.submitAudit(
       electionId,
       merkleRoot,
       commitmentRoot,
@@ -42,6 +42,8 @@ describe("VeriVoteAudit", function () {
       auditHash,
       tallyHash
     );
+    const receipt = await tx.wait();
+    console.log("gas submitAudit mock/no-zk:", receipt?.gasUsed?.toString() ?? "unknown");
 
     const record = await audit.getAudit(electionId);
 
@@ -66,7 +68,7 @@ describe("VeriVoteAudit", function () {
     const auditHash = ethers.id("auditHash");
     const tallyHash = ethers.id("tallyHash");
 
-    await audit.submitAuditWithTallyProof(
+    const tx = await audit.submitAuditWithTallyProof(
       electionId,
       merkleRoot,
       commitmentRoot,
@@ -78,6 +80,8 @@ describe("VeriVoteAudit", function () {
       ZERO_PROOF_C,
       PUBLIC_INPUT
     );
+    const receipt = await tx.wait();
+    console.log("gas submitAuditWithTallyProof mock:", receipt?.gasUsed?.toString() ?? "unknown");
 
     const record = await audit.getAudit(electionId);
     expect(record.exists).to.equal(true);
@@ -177,5 +181,36 @@ describe("VeriVoteAudit", function () {
       audit,
       "AlreadySubmitted"
     );
+  });
+
+  it("rejects duplicate submitAuditWithTallyProof submissions", async function () {
+    const { audit } = await deployFixture(true);
+
+    const electionId = ethers.id("election_dup_tally_proof");
+    const baseArgs: [string, string, string, string, string, string] = [
+      electionId,
+      ethers.id("m"),
+      ethers.id("c"),
+      ethers.id("r"),
+      ethers.id("a"),
+      ethers.id("t")
+    ];
+
+    await audit.submitAuditWithTallyProof(
+      ...baseArgs,
+      ZERO_PROOF_A,
+      ZERO_PROOF_B,
+      ZERO_PROOF_C,
+      PUBLIC_INPUT
+    );
+    await expect(
+      audit.submitAuditWithTallyProof(
+        ...baseArgs,
+        ZERO_PROOF_A,
+        ZERO_PROOF_B,
+        ZERO_PROOF_C,
+        PUBLIC_INPUT
+      )
+    ).to.be.revertedWithCustomError(audit, "AlreadySubmitted");
   });
 });

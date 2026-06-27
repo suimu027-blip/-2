@@ -18,6 +18,12 @@ const snarkjsCliPath = join(
   "build",
   "cli.cjs"
 );
+const circomCandidates = [
+  process.env.CIRCOM_BIN,
+  "circom",
+  "E:\\ToCodex\\bin\\circom.exe",
+  "E:\\下载\\Codex\\tools\\circom\\circom.exe"
+].filter((candidate): candidate is string => Boolean(candidate));
 
 interface CircuitPlan {
   label: string;
@@ -96,21 +102,29 @@ function runSnarkjs(args: string[]): CommandResult {
   return runCommand(process.execPath, [snarkjsCliPath, ...args]);
 }
 
-function hasCircom(): boolean {
-  const result = runCommand("circom", ["--version"], { allowFailure: true });
-  return result.exitCode === 0;
+function resolveCircomCommand(): string | null {
+  for (const candidate of circomCandidates) {
+    if (candidate !== "circom" && !existsSync(candidate)) {
+      continue;
+    }
+    const result = runCommand(candidate, ["--version"], { allowFailure: true });
+    if (result.exitCode === 0) {
+      return candidate;
+    }
+  }
+  return null;
 }
 
 function logStep(message: string): void {
   console.log(`\n== ${message}`);
 }
 
-function buildPlan(plan: CircuitPlan): void {
+function buildPlan(plan: CircuitPlan, circomCommand: string): void {
   logStep(`[${plan.label}] Compile circom source`);
   rmSync(plan.outputDir, { recursive: true, force: true });
   mkdirSync(plan.outputDir, { recursive: true });
 
-  runCommand("circom", [
+  runCommand(circomCommand, [
     plan.source,
     "--r1cs",
     "--wasm",
@@ -168,7 +182,8 @@ function buildPlan(plan: CircuitPlan): void {
     // that multiple circuits (e.g. future valid_vote verifier) do not collide
     // and so that Hardhat and the `ITallyVerifier` interface can find it.
     const source = readFileSync(generatedPath, "utf8");
-    const rewritten = source.replace(
+    const sourceWithoutSpdx = source.replace(/^\/\/ SPDX-License-Identifier:.*\r?\n/, "");
+    const rewritten = sourceWithoutSpdx.replace(
       /contract\s+Groth16Verifier/g,
       `contract ${contractName}`
     );
@@ -189,14 +204,16 @@ function buildPlan(plan: CircuitPlan): void {
 function main(): void {
   console.log("VeriVote real ZK setup (valid_vote + tally_correctness)");
 
-  if (!hasCircom()) {
-    console.log("Skipped: Circom compiler was not found on PATH.");
-    console.log("Install Circom 2, then run pnpm zk:setup again.");
-    return;
+  const circomCommand = resolveCircomCommand();
+  if (!circomCommand) {
+    throw new Error(
+      "Circom compiler was not found. Install Circom 2, put `circom` on PATH, or set CIRCOM_BIN, then run pnpm zk:setup again."
+    );
   }
+  console.log(`Using Circom: ${circomCommand}`);
 
   for (const plan of PLANS) {
-    buildPlan(plan);
+    buildPlan(plan, circomCommand);
   }
 
   console.log("\nAll ZK artifacts are ready.");

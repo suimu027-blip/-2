@@ -35,6 +35,7 @@ import type {
   ChallengeRecord
 } from "@verivote/shared";
 import type { ZkValidityVerifyRequest } from "@verivote/shared";
+import { createTallyElectionIdHash } from "@verivote/zk";
 import {
   users,
   elections,
@@ -431,6 +432,31 @@ export function createAggregatorReport(electionId: string): AggregatorReport {
     validVoteRecords.map((vote) => vote.receiptCode)
   );
   const receiptChainVerification = verifyReceiptChain(electionVotes);
+  const electionCandidates = getCandidatesForElection(electionId);
+  const tallyHash = createAuditHash(tallyResult);
+  const partitionHash = createAuditHash({
+    domain: "verivote.partition-audit.legacy-v1",
+    electionId,
+    candidateIds: electionCandidates.map((candidate) => candidate.id),
+    validVoteIds: validVoteRecords.map((vote) => vote.id),
+    tally: tallyResult.results.map((item) => ({
+      candidateId: item.candidateId,
+      voteCount: item.voteCount
+    })),
+    duplicateTokenHashes,
+    commitmentRoot,
+    receiptRoot
+  });
+  const publicInputHints = {
+    electionIdHash: createTallyElectionIdHash(electionId),
+    candidateCount: electionCandidates.length,
+    validVotes: validVoteRecords.length,
+    tallyHash,
+    commitmentRoot,
+    receiptRoot,
+    partitionHash,
+    pedersenAggregateHash: null
+  };
 
   // --- Pedersen homomorphic tally verification ---
   let pedersenTallyVerified: boolean | undefined;
@@ -469,6 +495,8 @@ export function createAggregatorReport(electionId: string): AggregatorReport {
     tallyResult,
     commitmentRoot,
     receiptRoot,
+    partitionHash,
+    publicInputHints,
     pedersenTallyVerified,
     pedersenTallyMessage,
     pedersenContextHash

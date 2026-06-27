@@ -13,10 +13,13 @@
     "demo:seed": "tsx scripts/demo-seed.ts",
     "zk:setup": "tsx scripts/zk-setup.ts",
     "zk:demo": "tsx scripts/zk-demo.ts",
+    "zk:audit": "tsx scripts/zk-binding-audit.ts",
+    "zk:samples": "tsx scripts/zk-generate-contract-samples.ts",
     "contract:compile": "corepack pnpm --filter @verivote/contracts compile",
     "contract:test": "corepack pnpm --filter @verivote/contracts test",
     "contract:node": "corepack pnpm --filter @verivote/contracts node",
-    "contract:deploy": "corepack pnpm --filter @verivote/contracts run deploy"
+    "contract:deploy": "corepack pnpm --filter @verivote/contracts run deploy",
+    "contract:deploy:tally-verifier": "corepack pnpm --filter @verivote/contracts run deploy:tally-verifier"
   },
   "devDependencies": {
     "snarkjs": "^0.7.6",

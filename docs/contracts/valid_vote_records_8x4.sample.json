@@ -1,0 +1,198 @@
+{
+  "schemaVersion": "verivote.valid-vote-records.v1.sample",
+  "electionId": "election_fixture_8x4",
+  "candidates": [
+    {
+      "id": "candidate_1",
+      "electionId": "election_fixture_8x4",
+      "name": "Alice"
+    },
+    {
+      "id": "candidate_2",
+      "electionId": "election_fixture_8x4",
+      "name": "Bob"
+    },
+    {
+      "id": "candidate_3",
+      "electionId": "election_fixture_8x4",
+      "name": "Carol"
+    },
+    {
+      "id": "candidate_4",
+      "electionId": "election_fixture_8x4",
+      "name": "Dave"
+    }
+  ],
+  "voteVectors": [
+    [
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1
+    ],
+    [
+      1,
+      0,
+      0,
+      0
+    ],
+    [
+      0,
+      1,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      1,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      1
+    ]
+  ],
+  "realRows": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "votes": [
+    {
+      "voteId": "vote_1",
+      "userId": "user_1",
+      "candidateId": "candidate_1",
+      "voteVector": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "commitment": "fixture_commitment_1",
+      "receiptCode": "fixture_receipt_1"
+    },
+    {
+      "voteId": "vote_2",
+      "userId": "user_2",
+      "candidateId": "candidate_2",
+      "voteVector": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "commitment": "fixture_commitment_2",
+      "receiptCode": "fixture_receipt_2"
+    },
+    {
+      "voteId": "vote_3",
+      "userId": "user_3",
+      "candidateId": "candidate_3",
+      "voteVector": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "commitment": "fixture_commitment_3",
+      "receiptCode": "fixture_receipt_3"
+    },
+    {
+      "voteId": "vote_4",
+      "userId": "user_4",
+      "candidateId": "candidate_4",
+      "voteVector": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "commitment": "fixture_commitment_4",
+      "receiptCode": "fixture_receipt_4"
+    },
+    {
+      "voteId": "vote_5",
+      "userId": "user_5",
+      "candidateId": "candidate_1",
+      "voteVector": [
+        1,
+        0,
+        0,
+        0
+      ],
+      "commitment": "fixture_commitment_5",
+      "receiptCode": "fixture_receipt_5"
+    },
+    {
+      "voteId": "vote_6",
+      "userId": "user_6",
+      "candidateId": "candidate_2",
+      "voteVector": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "commitment": "fixture_commitment_6",
+      "receiptCode": "fixture_receipt_6"
+    },
+    {
+      "voteId": "vote_7",
+      "userId": "user_7",
+      "candidateId": "candidate_3",
+      "voteVector": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "commitment": "fixture_commitment_7",
+      "receiptCode": "fixture_receipt_7"
+    },
+    {
+      "voteId": "vote_8",
+      "userId": "user_8",
+      "candidateId": "candidate_4",
+      "voteVector": [
+        0,
+        0,
+        0,
+        1
+      ],
+      "commitment": "fixture_commitment_8",
+      "receiptCode": "fixture_receipt_8"
+    }
+  ],
+  "tally": [
+    2,
+    2,
+    2,
+    2
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "verivote.aggregator-report.v2.sample",
+  "electionId": "election_fixture_8x4",
+  "totalVotes": 8,
+  "validVotes": 8,
+  "invalidVotes": 0,
+  "duplicateVotes": 0,
+  "receiptChainVerified": true,
+  "receiptChainBreaks": [],
+  "voteTokenHashes": [
+    "fad480e48ef1fa966bf509c0db5c17768c1876fc227acaa9131782cd249b0f54",
+    "befee1129a0061547945a3f9730a56e267b70fcf2ddd0bb6386b16f363475839",
+    "d3c880b083ef8962e5bbb3662d3e3d43b28242d65a0f5304e5a5d2a63a498b44",
+    "a4321056a9b103d753542221868d30cf68678b9c90cf532d1d425f5560d3ac85",
+    "5b8f3df3b03d7a2e8aa2c81009204132f362150fe77faefb74c0fdf4bef5df11",
+    "0c9c0d7dbda2927a214ba48af466d454c7019fd83376b69e19075553dd39bd09",
+    "b3257008ee69df7148ecab51f5f3312097502248c0a804c6cea019db6e02ae80",
+    "11df3181f2ea2737a24bb20b95757597a96ec14a900eef9630b5e19a438d3534"
+  ],
+  "duplicateTokenHashes": [],
+  "tallyResult": {
+    "electionId": "election_fixture_8x4",
+    "totalVotes": 8,
+    "results": [
+      {
+        "candidateId": "candidate_1",
+        "candidateName": "Alice",
+        "voteCount": 2
+      },
+      {
+        "candidateId": "candidate_2",
+        "candidateName": "Bob",
+        "voteCount": 2
+      },
+      {
+        "candidateId": "candidate_3",
+        "candidateName": "Carol",
+        "voteCount": 2
+      },
+      {
+        "candidateId": "candidate_4",
+        "candidateName": "Dave",
+        "voteCount": 2
+      }
+    ]
+  },
+  "commitmentRoot": "20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
+  "receiptRoot": "03653f082bbeb45cde28707cb2623c99929d459de25a00d05127035e4180709b",
+  "partitionHash": "1accd04abc1cf84fbec6b31c6be10887cc94634dfe00ba2b78098f3b5b5d2b07",
+  "publicInputHints": {
+    "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
+    "candidateCount": 4,
+    "validVotes": 8,
+    "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+    "commitmentRoot": "20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
+    "partitionHash": "1accd04abc1cf84fbec6b31c6be10887cc94634dfe00ba2b78098f3b5b5d2b07",
+    "receiptRoot": "03653f082bbeb45cde28707cb2623c99929d459de25a00d05127035e4180709b",
+    "pedersenAggregateHash": null
+  },
+  "auditHash": "2a0193a248a6856496f516921c60584ca8b911dba767baa393a08bc3c82be4af",
+  "createdAt": "2026-06-26T00:00:00.000Z",
+  "fixtureDerived": {
+    "merkleRoot": "34abbd53980914d459a42da93301de7dc1d2e7599d898e0ff162f481b5a98cb3",
+    "source": "docs/contracts/valid_vote_records_8x4.sample.json"
+  }
+}

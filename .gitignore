@@ -13,8 +13,9 @@ venv/
 *.pyo
 *.db
 *-dev*.log
-data/
+/data/
 zk-artifacts/
+contracts/TallyVerifier.sol
 contracts/artifacts/
 contracts/cache/
 contracts/types/

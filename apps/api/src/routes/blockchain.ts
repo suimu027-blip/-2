@@ -1,11 +1,17 @@
 import { Router } from "express";
-import { encodeTallySolidityCalldata } from "@verivote/zk";
+import {
+  encodeTallySolidityCalldata,
+  verifyTallyCorrectnessProof,
+  verifyTallyProofAgainstReport,
+  type TallyVerifierMode
+} from "@verivote/zk";
 import type {
   SubmitBlockchainAuditResponse,
   SubmitBlockchainAuditWithTallyProofRequest,
   SubmitBlockchainAuditWithTallyProofResponse,
   GetBlockchainAuditResponse,
-  BlockchainAuditRecord
+  BlockchainAuditRecord,
+  BlockchainAuditMode
 } from "@verivote/shared";
 import {
   blockchainAuditRecords,
@@ -23,11 +29,20 @@ import {
   getHardhatAuditContract,
   createAuditRecordFromChain,
   toBytes32Hex,
-  getDisplayedContractAddress,
   getUnknownErrorMessage
 } from "../utils.js";
 
 const router = Router();
+
+interface TallyProofBindingErrorResponse {
+  error: string;
+  checks?: Record<string, boolean>;
+  expected?: unknown;
+}
+
+function expectedVerifierModes(auditMode: BlockchainAuditMode): TallyVerifierMode[] {
+  return auditMode === "hardhat" ? ["real-hardhat"] : ["local-mock"];
+}
 
 router.post<{ id: string }, SubmitBlockchainAuditResponse | { error: string }>(
   "/elections/:id/submit-audit",
@@ -35,21 +50,21 @@ router.post<{ id: string }, SubmitBlockchainAuditResponse | { error: string }>(
     const election = findElection(request.params.id);
 
     if (!election) {
-      response.status(404).json({ error: "选举不存在，无法提交链上审计摘要。" });
+      response.status(404).json({ error: "election not found" });
       return;
     }
 
     const bulletin = findBulletinBoard(election.id);
 
     if (!bulletin) {
-      response.status(409).json({ error: "请先生成公告板。" });
+      response.status(409).json({ error: "create the bulletin board first" });
       return;
     }
 
     const report = findAggregatorReport(election.id);
 
     if (!report) {
-      response.status(409).json({ error: "请先运行聚合器。" });
+      response.status(409).json({ error: "run the aggregator first" });
       return;
     }
 
@@ -60,8 +75,7 @@ router.post<{ id: string }, SubmitBlockchainAuditResponse | { error: string }>(
       if (auditMode === "local-mock") {
         if (blockchainAuditRecords.has(election.id)) {
           response.status(409).json({
-            error:
-              "该 electionId 已提交链上审计摘要，本阶段策略为拒绝重复提交。"
+            error: "audit already submitted for this electionId"
           });
           return;
         }
@@ -83,7 +97,7 @@ router.post<{ id: string }, SubmitBlockchainAuditResponse | { error: string }>(
           audit,
           submittedFields: fields,
           duplicatePolicy: "reject",
-          message: "Local Mock Chain Audit 已记录审计摘要。"
+          message: "Local mock chain audit recorded."
         });
         return;
       }
@@ -95,7 +109,7 @@ router.post<{ id: string }, SubmitBlockchainAuditResponse | { error: string }>(
 
       if (alreadySubmitted) {
         response.status(409).json({
-          error: "该 electionId 已提交链上审计摘要，合约策略为拒绝重复提交。"
+          error: "audit already submitted for this electionId"
         });
         return;
       }
@@ -125,11 +139,11 @@ router.post<{ id: string }, SubmitBlockchainAuditResponse | { error: string }>(
         audit,
         submittedFields: fields,
         duplicatePolicy: "reject",
-        message: "Hardhat Audit 已提交审计摘要。"
+        message: "Hardhat audit submitted."
       });
     } catch (error) {
       response.status(500).json({
-        error: `链上审计提交失败：${getUnknownErrorMessage(error)}`
+        error: `chain audit submission failed: ${getUnknownErrorMessage(error)}`
       });
     }
   }
@@ -137,59 +151,66 @@ router.post<{ id: string }, SubmitBlockchainAuditResponse | { error: string }>(
 
 router.post<
   { id: string },
-  SubmitBlockchainAuditWithTallyProofResponse | { error: string },
+  SubmitBlockchainAuditWithTallyProofResponse | TallyProofBindingErrorResponse,
   SubmitBlockchainAuditWithTallyProofRequest
 >("/elections/:id/submit-audit-with-tally-proof", async (request, response) => {
   const election = findElection(request.params.id);
   if (!election) {
-    response.status(404).json({ error: "选举不存在，无法提交链上审计摘要。" });
+    response.status(404).json({ error: "election not found" });
     return;
   }
   const bulletin = findBulletinBoard(election.id);
   if (!bulletin) {
-    response.status(409).json({ error: "请先生成公告板。" });
+    response.status(409).json({ error: "create the bulletin board first" });
     return;
   }
   const report = findAggregatorReport(election.id);
   if (!report) {
-    response.status(409).json({ error: "请先运行聚合器。" });
+    response.status(409).json({ error: "run the aggregator first" });
     return;
   }
 
+  const auditMode = getBlockchainAuditMode();
   const tallyProofResponse = request.body?.tallyProofResponse;
   if (!tallyProofResponse || !tallyProofResponse.proof) {
-    response.status(400).json({ error: "tallyProofResponse.proof 不能为空" });
-    return;
-  }
-  if (!tallyProofResponse.valid) {
-    response.status(400).json({ error: "tallyProofResponse.valid 为 false，请先重新生成一个合法的 tally proof" });
+    response.status(400).json({ error: "tallyProofResponse.proof is required" });
     return;
   }
 
-  let calldata;
-  try {
-    calldata = encodeTallySolidityCalldata(tallyProofResponse.proof);
-  } catch (error) {
+  const binding = verifyTallyProofAgainstReport({
+    proofResponse: tallyProofResponse,
+    report,
+    expectedElectionId: election.id,
+    expectedVerifierModes: expectedVerifierModes(auditMode),
+    requireRealProof: true
+  });
+  if (!binding.verified) {
     response.status(400).json({
-      error: `无法编码 tally proof calldata: ${getUnknownErrorMessage(error)}`
+      error: binding.message,
+      checks: binding.checks,
+      expected: binding.expected
     });
     return;
   }
-  if (calldata.input.length !== 5) {
+
+  const localProofVerification = verifyTallyCorrectnessProof({
+    proof: tallyProofResponse.proof,
+    publicSignals: tallyProofResponse.publicSignals
+  });
+  if (!localProofVerification.verified) {
     response.status(400).json({
-      error: `期望 5 个 public signals（4 个 tally + batchSize），实际 ${calldata.input.length}`
+      error: localProofVerification.message
     });
     return;
   }
 
   const fields = createBlockchainAuditFields(election.id, bulletin, report);
-  const auditMode = getBlockchainAuditMode();
 
   try {
     if (auditMode === "local-mock") {
       if (blockchainAuditRecords.has(election.id)) {
         response.status(409).json({
-          error: "该 electionId 已提交链上审计摘要，本阶段策略为拒绝重复提交。"
+          error: "audit already submitted for this electionId"
         });
         return;
       }
@@ -199,9 +220,9 @@ router.post<
         transactionHash: createMockTransactionHash(fields, createdAt),
         contractAddress: MOCK_CONTRACT_ADDRESS,
         auditMode,
+        verifierMode: "local-mock",
         createdAt,
         mockSubmitter: MOCK_SUBMITTER,
-        verifierMode: "local-mock",
         zkVerified: true,
         status: "submitted"
       };
@@ -213,7 +234,23 @@ router.post<
         duplicatePolicy: "reject",
         zkVerified: true,
         message:
-          "Local Mock Chain Audit 已记录带 ZK 验证标记 of 审计摘要（本地模式不调用链上 verifier）。"
+          "Local mock chain audit recorded after TallyProof v2 binding checks."
+      });
+      return;
+    }
+
+    let calldata;
+    try {
+      calldata = encodeTallySolidityCalldata(tallyProofResponse.proof);
+    } catch (error) {
+      response.status(400).json({
+        error: `cannot encode tally proof calldata: ${getUnknownErrorMessage(error)}`
+      });
+      return;
+    }
+    if (calldata.input.length !== 5) {
+      response.status(400).json({
+        error: `expected 5 public signals (4 tally values + batchSize), got ${calldata.input.length}`
       });
       return;
     }
@@ -224,7 +261,7 @@ router.post<
     )) as boolean;
     if (alreadySubmitted) {
       response.status(409).json({
-        error: "该 electionId 已提交链上审计摘要，合约策略为拒绝重复提交。"
+        error: "audit already submitted for this electionId"
       });
       return;
     }
@@ -260,11 +297,12 @@ router.post<
       submittedFields: fields,
       duplicatePolicy: "reject",
       zkVerified: true,
-      message: "Hardhat Audit 已提交审计摘要，并通过链上 Groth16 Tally Verifier 验证。"
+      message:
+        "Hardhat audit submitted and verified by the configured Groth16 tally verifier."
     });
   } catch (error) {
     response.status(500).json({
-      error: `带 tally proof 的链上审计提交失败：${getUnknownErrorMessage(error)}`
+      error: `chain audit with tally proof failed: ${getUnknownErrorMessage(error)}`
     });
   }
 });
@@ -275,7 +313,7 @@ router.get<{ id: string }, GetBlockchainAuditResponse | { error: string }>(
     const election = findElection(request.params.id);
 
     if (!election) {
-      response.status(404).json({ error: "选举不存在，无法查询链上审计摘要。" });
+      response.status(404).json({ error: "election not found" });
       return;
     }
 
@@ -320,6 +358,8 @@ router.get<{ id: string }, GetBlockchainAuditResponse | { error: string }>(
         knownAudit?.transactionHash ?? "",
         contractAddress
       );
+      audit.verifierMode = knownAudit?.verifierMode;
+      audit.gasUsed = knownAudit?.gasUsed;
 
       response.json({
         election,
@@ -331,7 +371,7 @@ router.get<{ id: string }, GetBlockchainAuditResponse | { error: string }>(
       });
     } catch (error) {
       response.status(500).json({
-        error: `链上审计查询失败：${getUnknownErrorMessage(error)}`
+        error: `chain audit query failed: ${getUnknownErrorMessage(error)}`
       });
     }
   }

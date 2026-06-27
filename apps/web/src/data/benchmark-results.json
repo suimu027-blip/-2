@@ -1,0 +1,52 @@
+{
+  "generatedAt": "2026-05-05T10:09:47.136Z",
+  "environment": {
+    "nodeVersion": "v24.15.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "results": [
+    {
+      "voteCount": 100,
+      "candidateCount": 4,
+      "proofSampleSize": 32,
+      "summary": {
+        "commitmentGenerationMs": {
+          "average": 1.876,
+          "min": 0.868,
+          "max": 3.861
+        },
+        "merkleBuildMs": {
+          "average": 0.158,
+          "min": 0.096,
+          "max": 0.281
+        },
+        "merkleProofGenerationMs": {
+          "average": 4.744,
+          "min": 4.082,
+          "max": 5.506
+        },
+        "merkleProofVerificationMs": {
+          "average": 0.266,
+          "min": 0.233,
+          "max": 0.323
+        },
+        "aggregationMs": {
+          "average": 0.711,
+          "min": 0.346,
+          "max": 1.234
+        },
+        "auditHashGenerationMs": {
+          "average": 0.025,
+          "min": 0.019,
+          "max": 0.035
+        },
+        "totalMs": {
+          "average": 7.846,
+          "min": 6.234,
+          "max": 10.702
+        }
+      }
+    }
+  ]
+}

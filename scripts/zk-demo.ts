@@ -4,6 +4,7 @@ import {
   verifyRealZkValidityProof,
   createTallyCorrectnessProof,
   getTallyArtifactStatus,
+  recomputeTallyProofHash,
   verifyTallyCorrectnessProof,
   TALLY_BATCH_SIZE,
   TALLY_CANDIDATE_COUNT
@@ -64,6 +65,16 @@ const tallyCases: TallyCase[] = [
   }
 ];
 
+function tamperFirstProofScalar(proof: unknown): unknown {
+  const copy = JSON.parse(JSON.stringify(proof)) as {
+    snarkjsProof?: { pi_a?: string[] };
+  };
+  if (Array.isArray(copy.snarkjsProof?.pi_a) && copy.snarkjsProof.pi_a.length > 0) {
+    copy.snarkjsProof.pi_a[0] = (BigInt(copy.snarkjsProof.pi_a[0]) + 1n).toString();
+  }
+  return copy;
+}
+
 function main(): void {
   console.log("VeriVote real ZK proof demo");
 
@@ -121,6 +132,16 @@ function main(): void {
       console.log(
         `${status} tally_correctness ${tallyCase.label} -> valid=${proofResult.valid} verified=${verifyResult.verified}`
       );
+
+      if (tallyCase.expectedValid && proofResult.valid) {
+        const tamperedProof = tamperFirstProofScalar(proofResult.proof);
+        const tamperedHash = recomputeTallyProofHash(tamperedProof as typeof proofResult.proof);
+        const hashChanged = tamperedHash !== proofResult.proofHash;
+        ok = ok && hashChanged;
+        console.log(
+          `${hashChanged ? "PASS" : "UNEXPECTED"} tally proofHash changes when snarkjsProof is tampered`
+        );
+      }
     }
   }
 

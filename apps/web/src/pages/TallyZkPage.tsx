@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import type { Election, TallyProofResponseShared } from "@verivote/shared";
+import type {
+  BlockchainAuditRecord,
+  Election,
+  SubmitBlockchainAuditWithTallyProofResponse,
+  TallyProofResponseShared,
+  TallyVerifyResponseShared
+} from "@verivote/shared";
 import {
   apiRequest,
   getErrorMessage,
@@ -38,9 +44,12 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
     JSON.stringify(columnSums(createBalancedBatch()))
   );
   const [proofResult, setProofResult] = useState<TallyProofResponseShared | null>(null);
-  const [submitResult, setSubmitResult] = useState<string | null>(null);
+  const [verifyResult, setVerifyResult] = useState<TallyVerifyResponseShared | null>(null);
+  const [audit, setAudit] = useState<BlockchainAuditRecord | null>(null);
   const [notice, setNotice] = useState<Notice | null>(null);
   const [loadingProof, setLoadingProof] = useState(false);
+  const [loadingElectionProof, setLoadingElectionProof] = useState(false);
+  const [loadingVerify, setLoadingVerify] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [sampleMode, setSampleMode] = useState(false);
 
@@ -60,22 +69,55 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
     setMatrixText(JSON.stringify(batch, null, 2));
     setTallyText(JSON.stringify(sums));
     setProofResult(null);
-    setSubmitResult(null);
+    setVerifyResult(null);
+    setAudit(null);
     setSampleMode(false);
     setNotice(null);
   }
 
   function loadSampleProof() {
     setProofResult(demoTallyProofV2Sample as TallyProofResponseShared);
-    setSubmitResult(null);
+    setVerifyResult(null);
+    setAudit(null);
     setSampleMode(true);
     setNotice({ type: "success", text: "Loaded TallyProof v2 sample." });
+  }
+
+  async function handleGenerateFromElection() {
+    setNotice(null);
+    setProofResult(null);
+    setVerifyResult(null);
+    setAudit(null);
+    setSampleMode(false);
+
+    if (!electionId) {
+      setNotice({ type: "error", text: "Select an election first." });
+      return;
+    }
+
+    setLoadingElectionProof(true);
+    try {
+      const data = await apiRequest<TallyProofResponseShared>(
+        `/zk/elections/${encodeURIComponent(electionId)}/prove-tally-correctness`,
+        {
+          method: "POST",
+          body: { proofMode: "real" }
+        }
+      );
+      setProofResult(data);
+      setNotice({ type: data.valid ? "success" : "error", text: data.message });
+    } catch (error) {
+      setNotice({ type: "error", text: getErrorMessage(error) });
+    } finally {
+      setLoadingElectionProof(false);
+    }
   }
 
   async function handleGenerate() {
     setNotice(null);
     setProofResult(null);
-    setSubmitResult(null);
+    setVerifyResult(null);
+    setAudit(null);
     setSampleMode(false);
 
     if (!electionId) {
@@ -99,7 +141,7 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
         "/zk/prove-tally-correctness",
         {
           method: "POST",
-          body: { electionId, voteVectors, tally }
+          body: { electionId, voteVectors, tally, proofMode: "real" }
         }
       );
       setProofResult(data);
@@ -111,28 +153,52 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
     }
   }
 
+  async function handleVerifyProof() {
+    if (!proofResult) {
+      setNotice({ type: "error", text: "Generate or load a tally proof first." });
+      return;
+    }
+
+    setNotice(null);
+    setVerifyResult(null);
+    setLoadingVerify(true);
+    try {
+      const data = await apiRequest<TallyVerifyResponseShared>(
+        "/zk/verify-tally-correctness",
+        {
+          method: "POST",
+          body: {
+            proof: proofResult.proof,
+            publicSignals: proofResult.publicSignals
+          }
+        }
+      );
+      setVerifyResult(data);
+      setNotice({ type: data.verified ? "success" : "error", text: data.message });
+    } catch (error) {
+      setNotice({ type: "error", text: getErrorMessage(error) });
+    } finally {
+      setLoadingVerify(false);
+    }
+  }
+
   async function handleSubmitWithProof() {
     if (!electionId || !proofResult) {
       setNotice({ type: "error", text: "Generate or load a tally proof first." });
       return;
     }
 
-    setSubmitResult(null);
+    setAudit(null);
     setLoadingSubmit(true);
     try {
-      const data = await apiRequest<{
-        audit: { zkVerified?: boolean; transactionHash: string };
-        message: string;
-      }>(
+      const data = await apiRequest<SubmitBlockchainAuditWithTallyProofResponse>(
         `/blockchain/elections/${encodeURIComponent(electionId)}/submit-audit-with-tally-proof`,
         {
           method: "POST",
           body: { tallyProofResponse: proofResult }
         }
       );
-      setSubmitResult(
-        `zkVerified=${String(Boolean(data.audit?.zkVerified))} tx=${data.audit?.transactionHash}`
-      );
+      setAudit(data.audit);
       setNotice({ type: "success", text: data.message });
     } catch (error) {
       setNotice({ type: "error", text: getErrorMessage(error) });
@@ -140,6 +206,13 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
       setLoadingSubmit(false);
     }
   }
+
+  const canSubmit =
+    Boolean(proofResult?.valid) &&
+    !sampleMode &&
+    Boolean(proofResult?.proofHash) &&
+    Boolean(proofResult?.verifierMode) &&
+    !loadingSubmit;
 
   return (
     <section className="page-section">
@@ -150,8 +223,9 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
         </div>
       </div>
       <p className="page-lead">
-        This page renders the B-line TallyProof v2 contract. It can call the current
-        API, or load a sample proof while the real verifier path is still pending.
+        This page renders the B-line TallyProof v2 contract. Use the election-bound
+        path for the full ZK + report binding + chain verifier flow, or load samples
+        for D-side display checks.
       </p>
 
       <NoticeMessage notice={notice} />
@@ -187,6 +261,37 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
           </div>
         </div>
 
+        <div className="inline-list">
+          <button
+            type="button"
+            onClick={() => void handleGenerateFromElection()}
+            disabled={!electionId || loadingElectionProof}
+          >
+            {loadingElectionProof ? "Generating..." : "Generate proof from election/report"}
+          </button>
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => void handleVerifyProof()}
+            disabled={!proofResult || loadingVerify}
+          >
+            {loadingVerify ? "Verifying..." : "Local verify proof"}
+          </button>
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => void handleSubmitWithProof()}
+            disabled={!canSubmit}
+          >
+            {loadingSubmit ? "Submitting..." : "Submit with report-bound proof"}
+          </button>
+        </div>
+
+        <p className="receipt-note">
+          The buttons below are fixture helpers. They are useful for sample rendering and invalid-proof checks,
+          but only the election/report-generated proof is accepted as complete Task B evidence.
+        </p>
+
         <label>
           voteVectors JSON
           <textarea
@@ -203,15 +308,7 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
 
         <div className="inline-list">
           <button type="button" onClick={() => void handleGenerate()} disabled={loadingProof}>
-            {loadingProof ? "Generating..." : "Generate proof from current election"}
-          </button>
-          <button
-            type="button"
-            className="secondary"
-            onClick={() => void handleSubmitWithProof()}
-            disabled={!proofResult || !proofResult.valid || loadingSubmit || sampleMode}
-          >
-            {loadingSubmit ? "Submitting..." : "Submit with proof"}
+            {loadingProof ? "Generating..." : "Generate fixture proof"}
           </button>
         </div>
       </div>
@@ -263,6 +360,24 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
               <code className="hash-value">{proofResult.publicSignals.batchSize}</code>
             </div>
             <div>
+              <span>validVoteCount</span>
+              <code className="hash-value">
+                {proofResult.publicSignals.validVoteCount ?? "pending"}
+              </code>
+            </div>
+            <div>
+              <span>tallyHash</span>
+              <code className="hash-value">
+                {proofResult.publicSignals.tallyHash ?? "pending"}
+              </code>
+            </div>
+            <div>
+              <span>commitmentRoot</span>
+              <code className="hash-value">
+                {proofResult.publicSignals.commitmentRoot ?? "pending"}
+              </code>
+            </div>
+            <div>
               <span>partitionHash</span>
               <code className="hash-value">
                 {proofResult.publicSignals.partitionHash ?? "pending"}
@@ -273,10 +388,47 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
         </div>
       ) : null}
 
-      {submitResult ? (
+      {verifyResult ? (
+        <div className="panel">
+          <div className="verification-heading">
+            <h2>local Groth16 verification</h2>
+            <span className={verifyResult.verified ? "status-pill ok" : "status-pill bad"}>
+              {String(verifyResult.verified)}
+            </span>
+          </div>
+          <p>{verifyResult.message}</p>
+        </div>
+      ) : null}
+
+      {audit ? (
         <div className="panel receipt-panel">
           <h2>chain submit result</h2>
-          <code className="hash-value">{submitResult}</code>
+          <div className="hash-list">
+            <div>
+              <span>zkVerified</span>
+              <code className="hash-value">{String(Boolean(audit.zkVerified))}</code>
+            </div>
+            <div>
+              <span>auditMode</span>
+              <code className="hash-value">{audit.auditMode}</code>
+            </div>
+            <div>
+              <span>verifierMode</span>
+              <code className="hash-value">{audit.verifierMode ?? "pending"}</code>
+            </div>
+            <div>
+              <span>gasUsed</span>
+              <code className="hash-value">{audit.gasUsed ?? "pending"}</code>
+            </div>
+            <div>
+              <span>transactionHash</span>
+              <code className="hash-value">{audit.transactionHash}</code>
+            </div>
+            <div>
+              <span>contractAddress</span>
+              <code className="hash-value">{audit.contractAddress}</code>
+            </div>
+          </div>
         </div>
       ) : null}
 
@@ -286,7 +438,7 @@ export function TallyZkPage({ elections }: { elections: Election[] }) {
           <span>{proofResult ? "ok" : "pending"} proof generated</span>
           <span>{proofResult?.proofHash ? "ok" : "pending"} proofHash</span>
           <span>{proofResult?.verifierMode ?? "pending"} verifierMode</span>
-          <span>{submitResult ? "ok" : "pending"} chain matched</span>
+          <span>{audit ? "ok" : "pending"} chain matched</span>
         </div>
       </div>
     </section>

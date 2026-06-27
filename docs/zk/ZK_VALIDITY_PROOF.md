@@ -145,7 +145,8 @@ This implements a first ballot well-formedness proof: the system can prove that 
 2. `voteVector` is currently public in the circuit, so this is a correctness demo rather than a privacy-preserving final design.
 3. The real adapter proves one ballot, not a full election tally.
 4. Trusted setup is local demo setup and not production ceremony material.
-5. No Solidity verifier is generated or deployed in this stage.
+5. No Solidity verifier is generated for the single-ballot `valid_vote` circuit
+   in this stage; the generated on-chain verifier is for `tally_correctness`.
 6. The mock adapter remains available and unchanged as a fallback/demo mode.
 
 ## 8. Next Steps
@@ -153,7 +154,5 @@ This implements a first ballot well-formedness proof: the system can prove that 
 1. Make `voteVector` private and expose a public commitment.
 2. Version the wasm/zkey/vkey artifacts deliberately.
 3. Add configurable proof mode at deployment time.
-4. Extend from single-ballot validity to batch validity.
-5. Add tally correctness proofs.
-6. Generate and test a Solidity verifier.
-7. Explore aggregation and proof compression.
+4. Extend the current fixed 8x4 tally circuit to multi-batch elections.
+5. Explore aggregation and proof compression.

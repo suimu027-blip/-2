@@ -1,0 +1,131 @@
+{
+  "sampleKind": "real-groth16-invalid-tally-proof-v2",
+  "generatedBy": "pnpm zk:samples",
+  "expectedValid": false,
+  "invalidReason": "tally vector [3,1,2,2] does not match the 8x4 witness column sums [2,2,2,2]",
+  "request": {
+    "electionId": "election_fixture_8x4",
+    "voteVectors": [
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ],
+      [
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        1,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        1
+      ]
+    ],
+    "realRows": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    "tally": [
+      3,
+      1,
+      2,
+      2
+    ]
+  },
+  "proofId": "zkp_tally_9bfcb8e8-86cc-4c73-8b78-669273a929af",
+  "proofMode": "real",
+  "verifierMode": "real-hardhat",
+  "circuitId": "tally-correctness-8x4",
+  "publicSignals": {
+    "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
+    "batchId": "fixture-8x4-invalid-tally",
+    "tally": [
+      3,
+      1,
+      2,
+      2
+    ],
+    "batchSize": 8,
+    "validVoteCount": 8,
+    "candidateCount": 4,
+    "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+    "commitmentRoot": "20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
+    "partitionHash": "1accd04abc1cf84fbec6b31c6be10887cc94634dfe00ba2b78098f3b5b5d2b07",
+    "circuitId": "tally-correctness-8x4"
+  },
+  "proof": {
+    "protocol": "verivote-tally-correctness-groth16-v1",
+    "proofMode": "real",
+    "verifierMode": "real-hardhat",
+    "proofId": "zkp_tally_9bfcb8e8-86cc-4c73-8b78-669273a929af",
+    "circuitId": "tally-correctness-8x4",
+    "generatedAt": "2026-06-27T05:34:45.586Z",
+    "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
+    "publicSignals": {
+      "electionIdHash": "86ea05499d22abc3fe96a390140f373fc30e911ba0531feac69bba0037d179b9",
+      "batchId": "fixture-8x4-invalid-tally",
+      "tally": [
+        3,
+        1,
+        2,
+        2
+      ],
+      "batchSize": 8,
+      "validVoteCount": 8,
+      "candidateCount": 4,
+      "tallyHash": "ede2c70cc1f5e1251c51a00eee5d3b4f0070ae28a13e0ff6fd88c6194cbdb55a",
+      "commitmentRoot": "20b3868945e518ecde62b5a59bf95d41d2dbbe7914669d40893446087606e73f",
+      "partitionHash": "1accd04abc1cf84fbec6b31c6be10887cc94634dfe00ba2b78098f3b5b5d2b07",
+      "circuitId": "tally-correctness-8x4"
+    },
+    "snarkjsProof": null,
+    "snarkjsPublicSignals": [],
+    "artifactDirectory": "zk-artifacts/tally-correctness",
+    "valid": false,
+    "error": "tally[0] (3) does not match column sum (2)",
+    "proofHash": "8a1d29ed77d23c5fe24f8380e943d6ac0d493fdafd670434a2814f3b46fb4af5"
+  },
+  "proofHash": "8a1d29ed77d23c5fe24f8380e943d6ac0d493fdafd670434a2814f3b46fb4af5",
+  "valid": false,
+  "message": "tally[0] (3) does not match column sum (2)"
+}

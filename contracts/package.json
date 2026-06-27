@@ -8,7 +8,9 @@
     "compile": "hardhat build",
     "test": "hardhat test",
     "node": "hardhat node",
-    "deploy": "hardhat run scripts/deploy-audit.ts --network localhost"
+    "deploy": "hardhat run scripts/deploy-audit.ts --network localhost",
+    "deploy:tally-verifier": "hardhat run scripts/deploy-tally-verifier.ts --network localhost",
+    "sample:chain-audit": "hardhat run scripts/write-chain-audit-sample.ts"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "^4.0.10",
