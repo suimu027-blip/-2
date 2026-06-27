@@ -362,7 +362,6 @@ export interface PrepareBallotResponse {
 }
 
 export interface CastPreparedBallotResponse {
-  vote: Vote;
   voteId: string;
   receiptCode: string;
   commitment: string;
@@ -541,16 +540,8 @@ export interface PedersenAggregateRequest {
   contextLabel?: string;
 }
 
-export interface PedersenAggregateResponse {
+export interface PedersenAggregateResponse extends PedersenAggregateAudit {
   context: PedersenContextSnapshot;
-  aggregatedCommitment: string;
-  expectedCommitment: string;
-  aggregatedRandomness: string;
-  aggregatedRandomnessHash?: string;
-  aggregatedVector: number[];
-  pedersenAggregateHash?: string;
-  verified: boolean;
-  message: string;
 }
 
 // --------------------------------------------------------------------------

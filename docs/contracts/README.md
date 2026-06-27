@@ -8,7 +8,9 @@ These files are stable demo contracts for parallel work. Frontend and export pag
 | `aggregator_report_v2.sample.json` | A sample | B/D | Includes partition audit, diagnostics hash, public input hints, and Pedersen aggregate status. |
 | `public_inputs_v2.sample.json` | A sample | B/D | Flattened public inputs for ZK/report binding. |
 | `tally_proof_v2.sample.json` | B sample | D | Mock/local-mock tally proof shape with verifier mode and proof hash. |
-| `pedersen_aggregate_audit.sample.json` | C sample | A/D | Pedersen aggregate status with verified hash. |
+| `pedersen_aggregate_audit.sample.json` | C sample | A/D | Default valid Pedersen aggregate audit used by D's demo fixture loader. |
+| `pedersen_aggregate_audit.valid.sample.json` | C sample | A/D | Valid Pedersen aggregate audit with `verified=true`. |
+| `pedersen_aggregate_audit.tampered.sample.json` | C sample | A/D | Tampered aggregate audit with `verified=false`. |
 | `chain_audit.real.sample.json` | B/D sample | D | Hardhat-style audit record, tx hash, contract address, gas. |
 | `export_bundle_v2.sample.json` | D | Report owner | Full export bundle envelope for screenshots and report material. |
 
@@ -55,4 +57,3 @@ pnpm zk:audit
 pnpm contract:test
 pnpm --filter @verivote/contracts run sample:chain-audit
 ```
-
